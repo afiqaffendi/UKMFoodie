@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - UKMFoodie Seller</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* [KOD CSS KEKAL SAMA] */
+        :root { --primary-yellow: #FFC93C; --sidebar-dark: #1E1E2D; --bg-light: #E9ECEF; --text-dark: #1A1A1A; --text-gray: #888888; --white: #FFFFFF; --border-color: #E6E6E8; --blue-link: #3B82F6; --green-accept: #50CD89; --red-reject: #F1416C; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { display: flex; background-color: var(--bg-light); min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--sidebar-dark); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar-logo { padding: 25px; display: flex; align-items: center; gap: 15px; font-size: 20px; font-weight: 700; color: var(--primary-yellow); }
+        .logo-box { width: 35px; height: 35px; background-color: var(--primary-yellow); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: var(--text-dark); }
+        .nav-links { list-style: none; padding: 0 15px; margin-top: 20px; }
+        .nav-links li { margin-bottom: 10px; }
+        .nav-links a { display: flex; align-items: center; padding: 12px 20px; color: #A1A5B7; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; transition: 0.3s; }
+        .nav-links a i { margin-right: 15px; font-size: 18px; }
+        .nav-links a.active { background-color: var(--primary-yellow); color: var(--text-dark); }
+        .badge { background-color: var(--red-reject); color: white; padding: 2px 6px; border-radius: 50%; font-size: 10px; margin-left: auto; }
+
+        .main-content { flex: 1; padding: 0; display: flex; flex-direction: column; overflow-y: auto; }
+        .top-navbar { background-color: var(--white); padding: 15px 30px; font-weight: 500; color: var(--text-gray); font-size: 14px; }
+        .content-wrapper { padding: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .page-header-text h1 { font-size: 28px; color: var(--text-dark); font-weight: 700; margin-bottom: 5px; }
+        .page-header-text p { color: var(--text-gray); font-size: 15px; }
+        .stall-status-container { display: flex; align-items: center; gap: 15px; font-weight: 600; color: var(--text-dark); }
+        
+        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #D1D1D6; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: var(--green-accept); }
+        input:checked + .slider:before { transform: translateX(22px); }
+        .status-text { color: var(--green-accept); font-weight: 700; }
+
+        .settings-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: start; }
+        .card { background-color: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); margin-bottom: 25px; }
+        .card-title { font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-gray); margin-bottom: 8px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper i { position: absolute; left: 15px; color: #A9A9A9; font-size: 14px; }
+        .form-control { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; color: var(--text-dark); outline: none; transition: border-color 0.2s; }
+        .form-control:focus { border-color: var(--primary-yellow); }
+        textarea.form-control { padding: 12px 15px; resize: vertical; min-height: 80px; }
+        select.form-control { padding-left: 15px; } 
+        .form-row { display: flex; gap: 15px; }
+        .form-row .form-group { flex: 1; }
+
+        .profile-img-section { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
+        .profile-img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); }
+        .btn-outline { background: none; border: 1px solid var(--red-reject); color: var(--red-reject); padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+
+        .warning-banner { background-color: #FFF8DD; color: #D9A000; padding: 12px 15px; border-radius: 8px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .btn-upload { background-color: var(--bg-light); border: 1px solid var(--border-color); color: var(--text-dark); padding: 10px 15px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+        .hours-container { display: flex; justify-content: space-around; gap: 20px; margin-bottom: 30px; }
+        .time-picker-mock { background-color: var(--bg-light); border-radius: 12px; padding: 15px; text-align: center; flex: 1; }
+        .time-picker-title { font-size: 14px; font-weight: 700; margin-bottom: 15px; color: var(--text-dark); }
+        .time-input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 18px; font-weight: 600; color: var(--blue-link); text-align: center; background-color: white; }
+        
+        .off-days-title { font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; }
+        .checkbox-label { font-size: 13px; color: var(--text-gray); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .checkbox-label input[type="checkbox"] { accent-color: var(--red-reject); width: 16px; height: 16px; }
+
+        .btn-logout { width: 100%; background-color: var(--red-reject); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        
+        .btn-save-settings { width: 100%; background-color: var(--primary-yellow); color: var(--text-dark); border: none; padding: 15px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 4px 6px rgba(255, 201, 60, 0.2); }
+        .btn-save-settings:hover { transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo"><div class="logo-box"><i class="fa-solid fa-utensils"></i></div>UKMFoodie</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
+            <li><a href="menu.html"><i class="fa-solid fa-book-open"></i> Menu Management</a></li>
+            <li><a href="orders.html"><i class="fa-solid fa-inbox"></i> Incoming Orders <span class="badge">5</span></a></li>
+            <li><a href="settings.html" class="active"><i class="fa-solid fa-gear"></i> Setting</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-navbar">UKMFoodie Seller Portal</div>
+
+        <div class="content-wrapper">
+            
+            <div class="page-header">
+                <div class="page-header-text">
+                    <h1>Store Settings</h1>
+                    <p>Update your store profile and payment details.</p>
+                </div>
+                
+                <div class="stall-status-container">
+                    <span>Stall Status</span>
+                    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                    <span class="status-text">OPEN</span>
+                </div>
+            </div>
+
+            <div class="settings-grid">
+                
+                <div class="left-col">
+                    
+                    <div class="card">
+                        <div class="card-title">Store Profile</div>
+                        <div class="profile-img-section">
+                            <img src="https://via.placeholder.com/150" id="previewImg" class="profile-img">
+                            <input type="file" id="imageInput" style="display:none;" accept="image/*">
+                            <button class="btn-outline" onclick="document.getElementById('imageInput').click()">Change Image</button>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Stall Name</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-store"></i>
+                                <input type="text" id="stallName" class="form-control" value="Gerai Pak Mus">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description/Tagline</label>
+                            <textarea id="stallDesc" class="form-control" style="padding-left:15px;">Authentic Malaysian flavors, delivered fresh daily!</textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-phone"></i>
+                                    <input type="text" id="stallPhone" class="form-control" value="012-3456789">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-regular fa-envelope"></i>
+                                    <input type="email" id="stallEmail" class="form-control" value="pakmus@ukm.edu.my">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Payment Details (For Manual Transfer)</div>
+                        <div class="warning-banner">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            This info will be visible to students for bank transfers.
+                        </div>
+
+                        <div class="form-group">
+                            <label>Bank Name</label>
+                            <select id="bankName" class="form-control">
+                                <option value="Maybank">Maybank</option>
+                                <option value="CIMB Bank">CIMB Bank</option>
+                                <option value="Bank Islam">Bank Islam</option>
+                                <option value="RHB Bank">RHB Bank</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Account Number</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-money-check-dollar"></i>
+                                <input type="text" id="accNo" class="form-control" value="123456789012">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Account Holder Name</label>
+                            <div class="input-wrapper">
+                                <i class="fa-regular fa-user"></i>
+                                <input type="text" id="accHolder" class="form-control" value="Mus bin Ahmad">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="saveSettingsBtn" class="btn-save-settings"><i class="fa-solid fa-floppy-disk"></i> Save All Settings</button>
+
+                </div>
+
+                <div class="right-col">
+                    
+                    <div class="card">
+                        <div class="card-title">Hours & Security</div>
+                        
+                        <div style="text-align: center; font-weight: 600; color: #1A1A1A; margin-bottom: 15px;">Operating Hours</div>
+                        <div class="hours-container">
+                            <div class="time-picker-mock">
+                                <div class="time-picker-title">Opening Time</div>
+                                <input type="time" id="openTime" class="time-input" value="10:00">
+                            </div>
+                            <div class="time-picker-mock">
+                                <div class="time-picker-title">Closing Time</div>
+                                <input type="time" id="closeTime" class="time-input" value="17:30">
+                            </div>
+                        </div>
+
+                        <div class="off-days-title"><i class="fa-regular fa-calendar"></i> Off Days</div>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label"><input type="checkbox"> Monday</label>
+                            <label class="checkbox-label"><input type="checkbox"> Tuesday</label>
+                            <label class="checkbox-label"><input type="checkbox"> Wednesday</label>
+                            <label class="checkbox-label"><input type="checkbox"> Thursday</label>
+                            <label class="checkbox-label"><input type="checkbox" checked> Friday</label>
+                            <label class="checkbox-label"><input type="checkbox"> Saturday</label>
+                            <label class="checkbox-label"><input type="checkbox" checked> Sunday</label>
+                        </div>
+                    </div>
+
+                    <button class="btn-logout">Log Out</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 1. Tunjuk preview gambar yang baru dipilih oleh peniaga
+        document.getElementById('imageInput').addEventListener('change', function(evt) {
+            const file = evt.target.files[0];
+            if (file) {
+                document.getElementById('previewImg').src = URL.createObjectURL(file);
+            }
+        });
+
+        // 2. Tarik Data Tetapan & Gambar Terkini dari Database
+        async function loadSettingsData() {
+            try {
+                const response = await fetch('http://localhost/ukmfoodie_api/fetch_settings.php');
+                const result = await response.json();
+                
+                if(result.status === 'success') {
+                    const data = result.data;
+                    
+                    // Masukkan data ke dalam kotak input
+                    document.getElementById('stallName').value = data.stall_name || '';
+                    document.getElementById('stallDesc').value = data.description || '';
+                    document.getElementById('stallPhone').value = data.phone || '';
+                    document.getElementById('stallEmail').value = data.email || '';
+                    
+                    // Muatkan Gambar Gerai Sedia Ada (Jika wujud di XAMPP)
+                    if(data.stall_image && data.stall_image !== 'default_stall.jpg') {
+                        document.getElementById('previewImg').src = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api/uploads/' + data.stall_image;
+                    }
+                    
+                    // Tetapan Bank
+                    if(data.bank_name) document.getElementById('bankName').value = data.bank_name;
+                    document.getElementById('accNo').value = data.account_number || '';
+                    document.getElementById('accHolder').value = data.account_holder || '';
+                    
+                    // Masa Operasi
+                    if(data.opening_time) document.getElementById('openTime').value = data.opening_time.substring(0, 5);
+                    if(data.closing_time) document.getElementById('closeTime').value = data.closing_time.substring(0, 5);
+                }
+            } catch (error) {
+                console.error("Gagal menarik data tetapan:", error);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', loadSettingsData);
+
+        // 3. FUNGSI SIMPAN BARU (Guna FormData untuk muat naik Imej)
+        document.getElementById('saveSettingsBtn').addEventListener('click', async function() {
+            
+            // Kita guna FormData() supaya boleh kepilkan fail gambar sekali
+            const formData = new FormData();
+            formData.append('stall_id', 1); // ID statik untuk ujian
+            formData.append('stall_name', document.getElementById('stallName').value);
+            formData.append('description', document.getElementById('stallDesc').value);
+            formData.append('phone', document.getElementById('stallPhone').value);
+            formData.append('email', document.getElementById('stallEmail').value);
+            formData.append('bank_name', document.getElementById('bankName').value);
+            formData.append('account_number', document.getElementById('accNo').value);
+            formData.append('account_holder', document.getElementById('accHolder').value);
+            formData.append('opening_time', document.getElementById('openTime').value);
+            formData.append('closing_time', document.getElementById('closeTime').value);
+            
+            // Dapatkan fail gambar (jika peniaga ada upload gambar baru)
+            const imageFile = document.getElementById('imageInput').files[0];
+            if(imageFile) {
+                formData.append('stall_image', imageFile);
+            }
+
+            try {
+                const btn = document.getElementById('saveSettingsBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+                
+                // Hantar ke API. Nota: Kita tidak letak headers "Content-Type" sebab FormData akan uruskannya sendiri
+                const response = await fetch('http://localhost/ukmfoodie_workspace/ukmfoodie_api/update_settings.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if(result.status === 'success') {
+                    alert('Berjaya: ' + result.message);
+                } else {
+                    alert('Gagal: ' + result.message);
+                }
+                
+                btn.innerHTML = originalText;
+                
+            } catch (error) {
+                alert('Ralat Sistem: Pastikan XAMPP sedang berjalan.');
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>

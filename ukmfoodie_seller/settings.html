@@ -236,7 +236,7 @@
         // 2. Tarik Data Tetapan & Gambar Terkini dari Database
         async function loadSettingsData() {
             try {
-                const response = await fetch('http://localhost/ukmfoodie_api/fetch_settings.php');
+                const response = await fetch('http://localhost/ukmfoodie_workspace/ukmfoodie_api/fetch_settings.php');
                 const result = await response.json();
                 
                 if(result.status === 'success') {

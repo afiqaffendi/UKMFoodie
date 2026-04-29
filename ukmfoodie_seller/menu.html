@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* [KOD CSS SEDIA ADA] */
         :root {
             --primary-yellow: #FFC93C;
             --sidebar-dark: #1E1E2D;
@@ -22,7 +21,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { display: flex; background-color: var(--bg-light); min-height: 100vh; }
 
-        .sidebar { width: 260px; background-color: var(--sidebar-dark); color: var(--white); display: flex; flex-direction: column; }
+        /* === SIDEBAR === */
+        .sidebar { width: 260px; background-color: var(--sidebar-dark); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; }
         .sidebar-logo { padding: 25px; display: flex; align-items: center; gap: 15px; font-size: 20px; font-weight: 700; color: var(--primary-yellow); }
         .logo-box { width: 35px; height: 35px; background-color: var(--primary-yellow); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: var(--text-dark); }
         .nav-links { list-style: none; padding: 0 15px; margin-top: 20px; }
@@ -30,60 +30,47 @@
         .nav-links a { display: flex; align-items: center; padding: 12px 20px; color: #A1A5B7; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; transition: 0.3s; }
         .nav-links a i { margin-right: 15px; font-size: 18px; }
         .nav-links a.active { background-color: var(--primary-yellow); color: var(--text-dark); }
-        .badge { background-color: #F1416C; color: white; padding: 2px 6px; border-radius: 50%; font-size: 10px; margin-left: auto; }
 
+        /* === MAIN CONTENT === */
         .main-content { flex: 1; padding: 0; display: flex; flex-direction: column; }
         .top-navbar { background-color: var(--white); padding: 15px 30px; font-weight: 500; color: var(--text-gray); font-size: 14px; }
         .content-wrapper { padding: 30px; }
 
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .page-header h1 { font-size: 28px; color: var(--text-dark); font-weight: 700; margin-bottom: 5px; }
-        .page-header p { color: var(--text-gray); font-size: 15px; }
-
-        .btn-add { background-color: var(--primary-yellow); color: var(--text-dark); border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(255, 201, 60, 0.2); transition: 0.2s; }
-        .btn-add:hover { transform: translateY(-2px); }
-
+        .page-header h1 { font-size: 28px; color: var(--text-dark); font-weight: 700; }
+        .btn-add { background-color: var(--primary-yellow); color: var(--text-dark); border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        
         .table-card { background-color: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        table { width: 100%; border-collapse: collapse; min-width: 850px; }
         th { text-align: left; padding: 15px 10px; font-size: 14px; color: var(--text-dark); font-weight: 700; border-bottom: 2px solid var(--border-color); }
-        td { padding: 15px 10px; font-size: 14px; color: var(--text-gray); border-bottom: 1px solid #F4F4F4; vertical-align: middle; }
+        td { padding: 20px 10px; font-size: 14px; color: var(--text-gray); border-bottom: 1px solid #F4F4F4; vertical-align: middle; }
 
-        .item-image-upload { position: relative; width: 60px; height: 60px; border-radius: 8px; overflow: hidden; background-color: #F4F4F4; border: 1px dashed #A9A9A9; cursor: pointer; display: flex; justify-content: center; align-items: center; }
-        .item-image-upload label { width: 100%; height: 100%; cursor: pointer; display: block; }
-        .item-thumb { width: 100%; height: 100%; object-fit: cover; }
-        .upload-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.6); color: white; font-size: 12px; text-align: center; padding: 4px 0; opacity: 0; transition: opacity 0.3s; }
-        .item-image-upload:hover .upload-overlay { opacity: 1; }
-        .item-name { color: var(--text-dark); font-weight: 500; }
+        .item-thumb { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; background-color: #F4F4F4; border: 1px solid var(--border-color); }
+        .item-name { color: var(--text-dark); font-weight: 600; }
+        .price-box { border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; color: var(--text-dark); font-size: 13px; font-weight: 600; background: #fafafa; }
 
-        .price-box { border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; display: inline-block; color: var(--text-dark); font-size: 13px; }
-        .category-select { border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; color: var(--text-dark); font-size: 13px; outline: none; cursor: pointer; background-color: var(--white); }
+        .flex-center { display: flex; align-items: center; height: 100%; }
 
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; margin: 0; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #D1D1D6; transition: .4s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #50CD89; }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        .action-icons { display: flex; gap: 15px; align-items: center; }
-        .action-btn { background: none; border: none; cursor: pointer; font-size: 16px; transition: 0.2s; }
-        .edit-btn { color: #666666; } .edit-btn:hover { color: var(--text-dark); }
-        .delete-btn { color: #F1416C; } .delete-btn:hover { color: #D9214E; }
+        .action-container { display: flex; align-items: center; gap: 15px; }
+        .action-btn { background: none; border: none; cursor: pointer; font-size: 18px; transition: 0.2s; display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 6px; }
+        .edit-btn { color: #666; } .edit-btn:hover { background-color: #f0f0f0; color: var(--text-dark); }
+        .delete-btn { color: #F1416C; } .delete-btn:hover { background-color: #fff1f3; color: #D9214E; }
 
-        /* === TAMBAHAN KOD CSS UNTUK POP-UP MODAL === */
         .modal-overlay { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
         .modal-content { background-color: var(--white); padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 20px; cursor: pointer; color: var(--text-gray); transition: 0.2s; }
-        .close-modal:hover { color: var(--text-dark); }
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 20px; cursor: pointer; color: var(--text-gray); }
         .modal-title { font-size: 20px; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; }
-        
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-gray); margin-bottom: 8px; }
-        .form-control { width: 100%; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; color: var(--text-dark); outline: none; }
-        .form-control:focus { border-color: var(--primary-yellow); }
-        
-        .btn-submit { background-color: var(--primary-yellow); color: var(--text-dark); width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-        .btn-submit:hover { opacity: 0.9; }
+        .form-control { width: 100%; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; outline: none; }
+        .btn-submit { background-color: var(--primary-yellow); color: var(--text-dark); width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -93,7 +80,7 @@
         <ul class="nav-links">
             <li><a href="dashboard.html"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
             <li><a href="menu.html" class="active"><i class="fa-solid fa-book-open"></i> Menu Management</a></li>
-            <li><a href="orders.html"><i class="fa-solid fa-inbox"></i> Incoming Orders <span class="badge">5</span></a></li>
+            <li><a href="orders.html"><i class="fa-solid fa-inbox"></i> Incoming Orders</a></li>
             <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Setting</a></li>
         </ul>
     </aside>
@@ -103,10 +90,7 @@
 
         <div class="content-wrapper">
             <div class="page-header">
-                <div>
-                    <h1>Menu Management</h1>
-                    <p>Manage your food items and availability.</p>
-                </div>
+                <h1>Menu Management</h1>
                 <button class="btn-add" id="openModalBtn"><i class="fa-solid fa-plus"></i> Add New Item</button>
             </div>
 
@@ -114,26 +98,15 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Image</th><th>Item Name</th><th>Price</th><th>Category</th><th>Status (available/not)</th><th>Actions</th>
+                            <th>Image</th>
+                            <th>Item Name</th>
+                            <th>Price</th>
+                            <th>Category</th>
+                            <th>Availability</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="menuTableBody">
-                        <tr>
-                            <td>
-                                <div class="item-image-upload">
-                                    <label><img src="https://via.placeholder.com/60/FFC93C/ffffff?text=NL" class="item-thumb"></label>
-                                </div>
-                            </td>
-                            <td class="item-name">Nasi Lemak</td>
-                            <td><span class="price-box">RM 3.00</span></td>
-                            <td><select class="category-select"><option>Food</option></select></td>
-                            <td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td>
-                            <td class="action-icons">
-                                <button class="action-btn edit-btn"><i class="fa-solid fa-pencil"></i></button>
-                                <button class="action-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody id="menuTableBody"></tbody>
                 </table>
             </div>
         </div>
@@ -143,140 +116,195 @@
         <div class="modal-content">
             <i class="fa-solid fa-xmark close-modal" id="closeModalBtn"></i>
             <h2 class="modal-title">Add New Menu Item</h2>
-            
             <form id="addItemForm">
-                <div class="form-group">
-                    <label>Item Name</label>
-                    <input type="text" id="itemName" class="form-control" placeholder="e.g., Mee Goreng Ayam" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Price (RM)</label>
-                    <input type="number" id="itemPrice" class="form-control" placeholder="e.g., 6.50" step="0.01" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Category</label>
-                    <select id="itemCategory" class="form-control">
-                        <option value="Main Dish">Main Dish</option>
-                        <option value="Beverage">Beverage</option>
-                        <option value="Fast Food">Fast Food</option>
-                        <option value="Dessert">Dessert</option>
-                    </select>
-                </div>
-                
+                <div class="form-group"><label>Item Name</label><input type="text" id="itemName" class="form-control" placeholder="e.g., Nasi Lemak" required></div>
+                <div class="form-group"><label>Price (RM)</label><input type="number" id="itemPrice" class="form-control" placeholder="3.50" step="0.01" required></div>
+                <div class="form-group"><label>Category</label><select id="itemCategory" class="form-control"><option value="Food">Food</option><option value="Main Dish">Main Dish</option><option value="Beverage">Beverage</option></select></div>
+                <div class="form-group"><label>Food Image</label><input type="file" id="itemImage" class="form-control" accept="image/*"></div>
                 <button type="submit" class="btn-submit">Save Item</button>
             </form>
         </div>
     </div>
 
+    <div class="modal-overlay" id="editItemModal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark close-modal" onclick="closeEditModal()"></i>
+            <h2 class="modal-title">Edit Menu Item</h2>
+            <form id="editItemForm">
+                <input type="hidden" id="editId">
+                <div class="form-group"><label>Item Name</label><input type="text" id="editName" class="form-control" required></div>
+                <div class="form-group"><label>Price (RM)</label><input type="number" id="editPrice" class="form-control" step="0.01" required></div>
+                <div class="form-group"><label>Category</label>
+                    <select id="editCategory" class="form-control">
+                        <option value="Food">Food</option>
+                        <option value="Main Dish">Main Dish</option>
+                        <option value="Beverage">Beverage</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="editStatus" class="form-control">
+                        <option value="Available">Available</option>
+                        <option value="Not Available">Not Available</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Change Image (Optional)</label><input type="file" id="editImage" class="form-control" accept="image/*"></div>
+                <button type="submit" class="btn-submit">Update Item</button>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // 1. Kawalan Pop-up Modal
-const modal = document.getElementById('addItemModal');
-const openBtn = document.getElementById('openModalBtn');
-const closeBtn = document.getElementById('closeModalBtn');
+        // Gunakan variable global untuk simpan senarai menu sementara
+        let currentMenuList = [];
 
-openBtn.addEventListener('click', () => { modal.style.display = 'flex'; });
-closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+        const modal = document.getElementById('addItemModal');
+        const editModal = document.getElementById('editItemModal');
+        const openBtn = document.getElementById('openModalBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
+        const API_BASE = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api';
 
-window.addEventListener('click', (e) => {
-    if (e.target === modal) { modal.style.display = 'none'; }
-});
+        openBtn.addEventListener('click', () => { modal.style.display = 'flex'; });
+        closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+        function closeEditModal() { editModal.style.display = 'none'; }
 
-// 2. FUNGSI BAHARU: Tarik (Fetch) Data Menu dari Database
-async function loadMenuData() {
-    try {
-        const response = await fetch('http://localhost/ukmfoodie_workspace/ukmfoodie_api/fetch_menu.php');
-        const result = await response.json();
-        
-        if(result.status === 'success') {
-            const tbody = document.getElementById('menuTableBody');
-            tbody.innerHTML = ''; // Padam semua data dummy
-            
-            // Loop melalui data sebenar dan bina barisan jadual (tr)
-            result.data.forEach(item => {
-                // Tentukan status toggle (hijau/kelabu)
-                const isChecked = item.status === 'Available' ? 'checked' : '';
-                
-                // Ambil huruf pertama nama makanan untuk gambar dummy
-                const firstLetter = item.item_name.charAt(0).toUpperCase();
-                
-                const row = `
-                    <tr>
-                        <td>
-                            <div class="item-image-upload">
-                                <label><img src="https://via.placeholder.com/60/FFC93C/ffffff?text=${firstLetter}" class="item-thumb"></label>
-                            </div>
-                        </td>
-                        <td class="item-name">${item.item_name}</td>
-                        <td><span class="price-box">RM ${parseFloat(item.price).toFixed(2)}</span></td>
-                        <td>
-                            <select class="category-select">
-                                <option>${item.category}</option>
-                            </select>
-                        </td>
-                        <td>
-                            <label class="switch">
-                                <input type="checkbox" ${isChecked}>
-                                <span class="slider"></span>
-                            </label>
-                        </td>
-                        <td class="action-icons">
-                            <button class="action-btn edit-btn"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="action-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
-                        </td>
-                    </tr>
-                `;
-                tbody.innerHTML += row; // Masukkan ke dalam jadual
-            });
+  async function loadMenuData() {
+            try {
+                const response = await fetch(`${API_BASE}/fetch_menu.php?stall_id=1`);
+                const result = await response.json();
+                if(result.status === 'success') {
+                    currentMenuList = result.data; // Data ini sekarang mengandungi info 'status'
+                    const tbody = document.getElementById('menuTableBody');
+                    tbody.innerHTML = '';
+                    result.data.forEach(item => {
+                        const imgUrl = (item.food_image && item.food_image !== 'default_food.jpg') ? `${API_BASE}/uploads/${item.food_image}` : 'https://via.placeholder.com/60';
+                        
+                        // LOGIK PENTING: Semak status dari database
+                        // Pastikan 'Available' dieja tepat seperti dalam database awak
+                        const isChecked = (item.status === 'Available') ? 'checked' : '';
+                        
+                        const row = `
+                            <tr>
+                                <td><img src="${imgUrl}" class="item-thumb" onerror="this.src='https://via.placeholder.com/60'"></td>
+                                <td class="item-name">${item.item_name}</td>
+                                <td><span class="price-box">RM ${parseFloat(item.price).toFixed(2)}</span></td>
+                                <td>${item.category || 'N/A'}</td>
+                                <td>
+                                    <div class="flex-center">
+                                        <label class="switch">
+                                            <input type="checkbox" ${isChecked} onchange="toggleStatus(${item.id}, this)">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-container">
+                                        <button class="action-btn edit-btn" onclick="openEditModal(${item.id})" title="Edit Item">
+                                            <i class="fa-solid fa-pencil"></i>
+                                        </button>
+                                        <button class="action-btn delete-btn" onclick="deleteMenu(${item.id})" title="Delete Item">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                        tbody.innerHTML += row;
+                    });
+                }
+            } catch (error) { console.error("Error fetching menu:", error); }
         }
-    } catch (error) {
-        console.error("Gagal menarik data menu:", error);
-    }
-}
 
-// 3. Panggil fungsi loadMenuData() bila page siap dimuat (Loading awal)
-window.addEventListener('DOMContentLoaded', loadMenuData);
+        // BUKA MODAL EDIT & ISI DETAIL SECARA AUTOMATIK
+        function openEditModal(id) {
+            const item = currentMenuList.find(i => i.id == id);
+            if(item) {
+                document.getElementById('editId').value = item.id;
+                document.getElementById('editName').value = item.item_name;
+                document.getElementById('editPrice').value = item.price;
+                document.getElementById('editCategory').value = item.category || 'Food';
+                document.getElementById('editStatus').value = item.status || 'Available';
+                editModal.style.display = 'flex';
+            } else {
+                alert("Data tidak dijumpai.");
+            }
+        }
 
-// 4. Hantar Data Form ke API (Add New Item)
-document.getElementById('addItemForm').addEventListener('submit', async function(e) {
-    e.preventDefault(); 
-    
-    const name = document.getElementById('itemName').value;
-    const price = document.getElementById('itemPrice').value;
-    const category = document.getElementById('itemCategory').value;
-    
-    try {
-        const response = await fetch('http://localhost/ukmfoodie_workspace/ukmfoodie_api/add_menu.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                stall_id: 1, 
-                item_name: name,
-                price: price,
-                category: category,
-                status: 'Available'
-            })
+        // UPDATE MENU ITEM
+        document.getElementById('editItemForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('id', document.getElementById('editId').value);
+            formData.append('item_name', document.getElementById('editName').value);
+            formData.append('price', document.getElementById('editPrice').value);
+            formData.append('category', document.getElementById('editCategory').value);
+            formData.append('status', document.getElementById('editStatus').value);
+            const fileInput = document.getElementById('editImage');
+            if (fileInput.files[0]) formData.append('food_image', fileInput.files[0]);
+
+            try {
+                const response = await fetch(`${API_BASE}/update_menu.php`, { method: 'POST', body: formData });
+                const result = await response.json();
+                if(result.status === 'success') {
+                    alert(result.message);
+                    closeEditModal();
+                    loadMenuData();
+                } else {
+                    alert('Gagal update: ' + result.message);
+                }
+            } catch(error) { alert('Ralat rangkaian. Sila semak XAMPP.'); }
         });
-        
-        const result = await response.json();
-        
-        if(result.status === 'success') {
-            alert('Berjaya: ' + result.message);
-            modal.style.display = 'none'; 
-            this.reset(); 
-            
-            // REFRESH JADUAL SECARA AUTOMATIK selepas tambah data!
-            loadMenuData(); 
-            
-        } else {
-            alert('Gagal: ' + result.message);
+
+        // TAMBAH ITEM BARU
+        document.getElementById('addItemForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('stall_id', 1);
+            formData.append('item_name', document.getElementById('itemName').value);
+            formData.append('price', document.getElementById('itemPrice').value);
+            formData.append('category', document.getElementById('itemCategory').value);
+            const fileInput = document.getElementById('itemImage');
+            if (fileInput.files[0]) formData.append('food_image', fileInput.files[0]);
+
+            try {
+                const response = await fetch(`${API_BASE}/add_menu.php`, { method: 'POST', body: formData });
+                const result = await response.json();
+                if(result.status === 'success') { alert(result.message); modal.style.display = 'none'; this.reset(); loadMenuData(); }
+            } catch(error) { alert('Ralat rangkaian.'); }
+        });
+
+        // PADAM MENU
+        async function deleteMenu(id) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                try {
+                    const response = await fetch(`${API_BASE}/delete_menu.php?id=${id}`);
+                    const result = await response.json();
+                    if(result.status === 'success') { alert(result.message); loadMenuData(); }
+                } catch (error) { alert('Gagal memadam.'); }
+            }
         }
-    } catch(error) {
-        alert('Ralat Rangkaian: Pastikan XAMPP berjalan.');
-        console.error(error);
-    }
-});
+
+        // TOGGLE STATUS (BETULKAN LOGIK FORM DATA)
+        async function toggleStatus(id, checkbox) {
+            const status = checkbox.checked ? 'Available' : 'Not Available';
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('status', status);
+
+            try {
+                const response = await fetch(`${API_BASE}/update_menu.php`, { method: 'POST', body: formData });
+                const result = await response.json();
+                if (result.status !== 'success') {
+                    alert('Gagal mengemaskini status: ' + result.message);
+                    checkbox.checked = !checkbox.checked;
+                }
+            } catch (error) { 
+                alert('Ralat rangkaian. Sila semak XAMPP.');
+                checkbox.checked = !checkbox.checked;
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', loadMenuData);
     </script>
 </body>
 </html>

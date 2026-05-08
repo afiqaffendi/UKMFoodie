@@ -5,7 +5,6 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 include 'db.php';
 
-// Ambil data dari $_POST (bukan JSON kerana kita hantar fail)
 if(isset($_POST['stall_id'])) {
     $id = $_POST['stall_id'];
     $stall_name = $conn->real_escape_string($_POST['stall_name']);
@@ -20,13 +19,21 @@ if(isset($_POST['stall_id'])) {
 
     $image_query = "";
     
-    // Semak jika ada fail gambar dimuat naik
-    if(isset($_FILES['stall_image'])) {
-        $file_name = time() . "_" . $_FILES['stall_image']['name'];
+    // 1. Logik Muat Naik Gambar Profil Gerai
+    if(isset($_FILES['stall_image']) && $_FILES['stall_image']['error'] === UPLOAD_ERR_OK) {
+        $file_name = time() . "_profile_" . $_FILES['stall_image']['name'];
         $target_dir = "uploads/" . $file_name;
-        
         if(move_uploaded_file($_FILES['stall_image']['tmp_name'], $target_dir)) {
-            $image_query = ", stall_image='$file_name'";
+            $image_query .= ", stall_image='$file_name'";
+        }
+    }
+
+    // 2. Logik Muat Naik QR Code (BARU)
+    if(isset($_FILES['qr_image']) && $_FILES['qr_image']['error'] === UPLOAD_ERR_OK) {
+        $qr_name = time() . "_qr_" . $_FILES['qr_image']['name'];
+        $qr_target = "uploads/" . $qr_name;
+        if(move_uploaded_file($_FILES['qr_image']['tmp_name'], $qr_target)) {
+            $image_query .= ", qr_path='$qr_name'";
         }
     }
 
@@ -44,7 +51,7 @@ if(isset($_POST['stall_id'])) {
             WHERE id=$id";
             
     if($conn->query($sql) === TRUE) {
-        echo json_encode(["status" => "success", "message" => "Profil berjaya dikemas kini!"]);
+        echo json_encode(["status" => "success", "message" => "Profil & QR berjaya dikemas kini!"]);
     } else {
         echo json_encode(["status" => "error", "message" => $conn->error]);
     }

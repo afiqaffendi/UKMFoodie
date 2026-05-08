@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* [KOD CSS KEKAL SAMA] */
         :root { --primary-yellow: #FFC93C; --sidebar-dark: #1E1E2D; --bg-light: #E9ECEF; --text-dark: #1A1A1A; --text-gray: #888888; --white: #FFFFFF; --border-color: #E6E6E8; --blue-link: #3B82F6; --green-accept: #50CD89; --red-reject: #F1416C; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { display: flex; background-color: var(--bg-light); min-height: 100vh; }
@@ -60,7 +59,7 @@
         .btn-outline { background: none; border: 1px solid var(--red-reject); color: var(--red-reject); padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
 
         .warning-banner { background-color: #FFF8DD; color: #D9A000; padding: 12px 15px; border-radius: 8px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .btn-upload { background-color: var(--bg-light); border: 1px solid var(--border-color); color: var(--text-dark); padding: 10px 15px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .btn-upload { background-color: var(--bg-light); border: 1px solid var(--border-color); color: var(--text-dark); padding: 10px 15px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: block; width: fit-content; margin-top: 10px; }
 
         .hours-container { display: flex; justify-content: space-around; gap: 20px; margin-bottom: 30px; }
         .time-picker-mock { background-color: var(--bg-light); border-radius: 12px; padding: 15px; text-align: center; flex: 1; }
@@ -183,6 +182,13 @@
                                 <input type="text" id="accHolder" class="form-control" value="Mus bin Ahmad">
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label>QR Payment Code</label>
+                            <input type="file" id="qrInput" style="display:none;" accept="image/*">
+                            <button class="btn-upload" onclick="document.getElementById('qrInput').click()"><i class="fa-solid fa-qrcode"></i> Upload QR</button>
+                            <small id="qrFileName" style="color:var(--text-gray); font-size:11px; margin-top:5px; display:block;">No file chosen</small>
+                        </div>
                     </div>
                     
                     <button id="saveSettingsBtn" class="btn-save-settings"><i class="fa-solid fa-floppy-disk"></i> Save All Settings</button>
@@ -225,7 +231,7 @@
     </main>
 
     <script>
-        // 1. Tunjuk preview gambar yang baru dipilih oleh peniaga
+        // Preview Imej Profil
         document.getElementById('imageInput').addEventListener('change', function(evt) {
             const file = evt.target.files[0];
             if (file) {
@@ -233,7 +239,14 @@
             }
         });
 
-        // 2. Tarik Data Tetapan & Gambar Terkini dari Database
+        // Tunjuk nama fail QR yang dipilih
+        document.getElementById('qrInput').addEventListener('change', function(evt) {
+            const file = evt.target.files[0];
+            if (file) {
+                document.getElementById('qrFileName').innerText = "Selected: " + file.name;
+            }
+        });
+
         async function loadSettingsData() {
             try {
                 const response = await fetch('http://localhost/ukmfoodie_workspace/ukmfoodie_api/fetch_settings.php');
@@ -241,24 +254,23 @@
                 
                 if(result.status === 'success') {
                     const data = result.data;
-                    
-                    // Masukkan data ke dalam kotak input
                     document.getElementById('stallName').value = data.stall_name || '';
                     document.getElementById('stallDesc').value = data.description || '';
                     document.getElementById('stallPhone').value = data.phone || '';
                     document.getElementById('stallEmail').value = data.email || '';
                     
-                    // Muatkan Gambar Gerai Sedia Ada (Jika wujud di XAMPP)
                     if(data.stall_image && data.stall_image !== 'default_stall.jpg') {
                         document.getElementById('previewImg').src = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api/uploads/' + data.stall_image;
                     }
                     
-                    // Tetapan Bank
+                    if(data.qr_path && data.qr_path !== 'default_qr.png') {
+                        document.getElementById('qrFileName').innerText = "Current QR: " + data.qr_path;
+                    }
+                    
                     if(data.bank_name) document.getElementById('bankName').value = data.bank_name;
                     document.getElementById('accNo').value = data.account_number || '';
                     document.getElementById('accHolder').value = data.account_holder || '';
                     
-                    // Masa Operasi
                     if(data.opening_time) document.getElementById('openTime').value = data.opening_time.substring(0, 5);
                     if(data.closing_time) document.getElementById('closeTime').value = data.closing_time.substring(0, 5);
                 }
@@ -269,12 +281,9 @@
 
         window.addEventListener('DOMContentLoaded', loadSettingsData);
 
-        // 3. FUNGSI SIMPAN BARU (Guna FormData untuk muat naik Imej)
         document.getElementById('saveSettingsBtn').addEventListener('click', async function() {
-            
-            // Kita guna FormData() supaya boleh kepilkan fail gambar sekali
             const formData = new FormData();
-            formData.append('stall_id', 1); // ID statik untuk ujian
+            formData.append('stall_id', 1); 
             formData.append('stall_name', document.getElementById('stallName').value);
             formData.append('description', document.getElementById('stallDesc').value);
             formData.append('phone', document.getElementById('stallPhone').value);
@@ -285,32 +294,26 @@
             formData.append('opening_time', document.getElementById('openTime').value);
             formData.append('closing_time', document.getElementById('closeTime').value);
             
-            // Dapatkan fail gambar (jika peniaga ada upload gambar baru)
-            const imageFile = document.getElementById('imageInput').files[0];
-            if(imageFile) {
-                formData.append('stall_image', imageFile);
-            }
+            const profileFile = document.getElementById('imageInput').files[0];
+            if(profileFile) formData.append('stall_image', profileFile);
+
+            const qrFile = document.getElementById('qrInput').files[0];
+            if(qrFile) formData.append('qr_image', qrFile);
 
             try {
                 const btn = document.getElementById('saveSettingsBtn');
                 const originalText = btn.innerHTML;
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
                 
-                // Hantar ke API. Nota: Kita tidak letak headers "Content-Type" sebab FormData akan uruskannya sendiri
                 const response = await fetch('http://localhost/ukmfoodie_workspace/ukmfoodie_api/update_settings.php', {
                     method: 'POST',
                     body: formData
                 });
                 
                 const result = await response.json();
-                
-                if(result.status === 'success') {
-                    alert('Berjaya: ' + result.message);
-                } else {
-                    alert('Gagal: ' + result.message);
-                }
-                
+                alert(result.status === 'success' ? 'Berjaya: ' + result.message : 'Gagal: ' + result.message);
                 btn.innerHTML = originalText;
+                if(result.status === 'success') loadSettingsData();
                 
             } catch (error) {
                 alert('Ralat Sistem: Pastikan XAMPP sedang berjalan.');

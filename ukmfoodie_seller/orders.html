@@ -22,7 +22,6 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
         body { display: flex; background-color: var(--bg-light); min-height: 100vh; }
 
         /* === SIDEBAR STYLES === */
@@ -40,8 +39,6 @@
         .main-content { flex: 1; padding: 0; display: flex; flex-direction: column; overflow-y: auto; }
         .top-navbar { background-color: var(--white); padding: 15px 30px; font-weight: 500; color: var(--text-gray); font-size: 14px; }
         .content-wrapper { padding: 30px; }
-
-        /* === PAGE HEADER === */
         .page-header { margin-bottom: 25px; }
         .page-header h1 { font-size: 28px; color: var(--text-dark); font-weight: 700; }
 
@@ -60,30 +57,31 @@
         .item-name-col i { color: var(--text-gray); font-size: 11px; margin-top: 2px; }
         .item-price-col { font-weight: 500; margin-left: 10px; }
 
-        /* Divider & Total */
         .total-section { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; margin-bottom: 15px; }
         .total-label { font-size: 15px; font-weight: 600; color: var(--text-dark); }
         .total-amount { font-size: 16px; font-weight: 700; color: var(--text-dark); }
 
-        .receipt-link { color: var(--blue-link); text-decoration: none; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; margin-bottom: 20px; transition: 0.2s; }
+        .receipt-link { color: var(--blue-link); text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 20px; cursor: pointer; }
         .receipt-link:hover { text-decoration: underline; }
 
-        /* Action Buttons */
         .card-actions { display: flex; gap: 10px; margin-top: auto; }
         .btn { flex: 1; padding: 12px 0; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; color: var(--white); cursor: pointer; transition: 0.2s; text-align: center; }
         .btn-accept { background-color: var(--green-accept); }
         .btn-accept:hover { background-color: #40B877; }
         .btn-reject { background-color: var(--red-reject); }
         .btn-reject:hover { background-color: #D93A60; }
+
+        /* === MODAL FOR RECEIPT === */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 12px; max-width: 500px; width: 90%; text-align: center; position: relative; }
+        .modal-content img { width: 100%; border-radius: 8px; margin-top: 15px; }
+        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #333; }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-logo">
-            <div class="logo-box"><i class="fa-solid fa-utensils"></i></div>
-            UKMFoodie
-        </div>
+        <div class="sidebar-logo"><div class="logo-box"><i class="fa-solid fa-utensils"></i></div>UKMFoodie</div>
         <ul class="nav-links">
             <li><a href="dashboard.html"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
             <li><a href="menu.html"><i class="fa-solid fa-book-open"></i> Menu Management</a></li>
@@ -105,12 +103,18 @@
         </div>
     </main>
 
+    <div class="modal-overlay" id="receiptModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeReceipt()">&times;</span>
+            <h3>Payment Receipt</h3>
+            <img id="receiptImg" src="" alt="Receipt Image">
+        </div>
+    </div>
+
     <script>
         const API_BASE = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api';
-        
-        // SISTEM BUNYI NOTIFIKASI
         const notificationSound = new Audio('notification.mp3');
-        let lastOrderCount = 0; // Penanda aras jumlah order
+        let lastOrderCount = 0;
 
         async function loadOrders() {
             try {
@@ -121,12 +125,10 @@
                     const currentOrders = result.data;
                     const grid = document.getElementById('ordersGrid');
                     
-                    // SEMAK JIKA ADA ORDER BARU (BUNYI DING!)
                     if (currentOrders.length > lastOrderCount) {
-                        notificationSound.play().catch(e => console.log("Klik pada skrin dahulu untuk aktifkan bunyi."));
+                        notificationSound.play().catch(e => console.log("User interaction required for audio"));
                     }
                     lastOrderCount = currentOrders.length;
-
                     grid.innerHTML = ''; 
 
                     currentOrders.forEach(order => {
@@ -154,7 +156,9 @@
                                     <span class="total-amount">RM ${parseFloat(order.total_amount).toFixed(2)}</span>
                                 </div>
 
-                                <a href="#" class="receipt-link"><i class="fa-solid fa-receipt"></i> View Receipt</a>
+                                <div class="receipt-link" onclick="viewReceipt('${order.payment_receipt}')">
+                                    <i class="fa-solid fa-receipt"></i> View Receipt
+                                </div>
 
                                 <div class="card-actions">
                                     <button class="btn btn-accept" onclick="updateStatus(${order.id}, 'Preparing')">Accept</button>
@@ -167,38 +171,46 @@
                     
                     document.getElementById('orderBadge').innerText = currentOrders.length;
                 }
-            } catch (error) {
-                console.error("Gagal menarik data pesanan:", error);
+            } catch (error) { console.error("Error:", error); }
+        }
+
+        // Fungsi tunjuk resit
+        function viewReceipt(fileName) {
+            const modal = document.getElementById('receiptModal');
+            const img = document.getElementById('receiptImg');
+            
+            // Tentukan path folder resit awak (ikut path di place_order.php)
+            if(fileName && fileName !== 'no_receipt.jpg') {
+                img.src = `${API_BASE}/uploads/receipts/${fileName}`;
+            } else {
+                img.src = 'https://via.placeholder.com/400x500?text=No+Receipt+Uploaded';
             }
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeReceipt() {
+            document.getElementById('receiptModal').style.display = 'none';
         }
 
         async function updateStatus(id, newStatus) {
-            const confirmAction = confirm(`Adakah anda pasti mahu set pesanan #${id} kepada ${newStatus}?`);
+            const confirmAction = confirm(`Are you sure to ${newStatus} this order?`);
             if (!confirmAction) return;
 
             try {
                 const response = await fetch(`${API_BASE}/update_order_status.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        order_id: id,
-                        status: newStatus
-                    })
+                    body: JSON.stringify({ order_id: id, status: newStatus })
                 });
-
                 const result = await response.json();
                 if (result.status === 'success') {
-                    loadOrders(); 
-                    alert(`Pesanan #${id} telah dikemas kini.`);
-                } else {
-                    alert("Gagal mengemaskini status.");
+                    loadOrders();
+                    alert(`Order #${id} is now ${newStatus}`);
                 }
-            } catch (error) {
-                console.error("Error:", error);
-            }
+            } catch (error) { console.error("Error:", error); }
         }
 
-        // Panggil setiap 10 saat untuk real-time update
         setInterval(loadOrders, 10000);
         window.addEventListener('DOMContentLoaded', loadOrders);
     </script>

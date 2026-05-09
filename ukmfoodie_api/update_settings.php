@@ -16,6 +16,8 @@ if(isset($_POST['stall_id'])) {
     $account_holder = $conn->real_escape_string($_POST['account_holder']);
     $opening_time = $conn->real_escape_string($_POST['opening_time']);
     $closing_time = $conn->real_escape_string($_POST['closing_time']);
+    $off_days = isset($_POST['off_days']) ? $conn->real_escape_string($_POST['off_days']) : '';
+    $status = isset($_POST['status']) ? $conn->real_escape_string($_POST['status']) : 'Buka';
 
     $image_query = "";
     
@@ -46,7 +48,9 @@ if(isset($_POST['stall_id'])) {
             account_number='$account_number', 
             account_holder='$account_holder',
             opening_time='$opening_time',
-            closing_time='$closing_time'
+            closing_time='$closing_time',
+            off_days='$off_days',
+            status='$status'
             $image_query
             WHERE id=$id";
             

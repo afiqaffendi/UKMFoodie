@@ -102,7 +102,7 @@
                 
                 <div class="stall-status-container">
                     <span>Stall Status</span>
-                    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                    <label class="switch"><input type="checkbox" id="stallStatusToggle" checked><span class="slider"></span></label>
                     <span class="status-text">OPEN</span>
                 </div>
             </div>
@@ -214,13 +214,13 @@
 
                         <div class="off-days-title"><i class="fa-regular fa-calendar"></i> Off Days</div>
                         <div class="checkbox-group">
-                            <label class="checkbox-label"><input type="checkbox"> Monday</label>
-                            <label class="checkbox-label"><input type="checkbox"> Tuesday</label>
-                            <label class="checkbox-label"><input type="checkbox"> Wednesday</label>
-                            <label class="checkbox-label"><input type="checkbox"> Thursday</label>
-                            <label class="checkbox-label"><input type="checkbox" checked> Friday</label>
-                            <label class="checkbox-label"><input type="checkbox"> Saturday</label>
-                            <label class="checkbox-label"><input type="checkbox" checked> Sunday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Monday"> Monday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Tuesday"> Tuesday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Wednesday"> Wednesday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Thursday"> Thursday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Friday" checked> Friday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Saturday"> Saturday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Sunday" checked> Sunday</label>
                         </div>
                     </div>
 
@@ -244,6 +244,18 @@
             const file = evt.target.files[0];
             if (file) {
                 document.getElementById('qrFileName').innerText = "Selected: " + file.name;
+            }
+        });
+
+        // Ubah teks status apabila toggle ditekan
+        document.getElementById('stallStatusToggle').addEventListener('change', function(evt) {
+            const text = document.querySelector('.status-text');
+            if (evt.target.checked) {
+                text.innerText = 'OPEN';
+                text.style.color = 'var(--green-accept)';
+            } else {
+                text.innerText = 'CLOSED';
+                text.style.color = 'var(--red-reject)';
             }
         });
 
@@ -273,6 +285,25 @@
                     
                     if(data.opening_time) document.getElementById('openTime').value = data.opening_time.substring(0, 5);
                     if(data.closing_time) document.getElementById('closeTime').value = data.closing_time.substring(0, 5);
+
+                    // Load status toggle
+                    const toggle = document.getElementById('stallStatusToggle');
+                    const statusText = document.querySelector('.status-text');
+                    if(data.status === 'Buka') {
+                        toggle.checked = true;
+                        statusText.innerText = 'OPEN';
+                        statusText.style.color = 'var(--green-accept)';
+                    } else {
+                        toggle.checked = false;
+                        statusText.innerText = 'CLOSED';
+                        statusText.style.color = 'var(--red-reject)';
+                    }
+
+                    // Load off days
+                    const offDaysArray = data.off_days ? data.off_days.split(',') : [];
+                    document.querySelectorAll('.off-day-cb').forEach(cb => {
+                        cb.checked = offDaysArray.includes(cb.value);
+                    });
                 }
             } catch (error) {
                 console.error("Gagal menarik data tetapan:", error);
@@ -293,6 +324,14 @@
             formData.append('account_holder', document.getElementById('accHolder').value);
             formData.append('opening_time', document.getElementById('openTime').value);
             formData.append('closing_time', document.getElementById('closeTime').value);
+
+            // Save status
+            const statusVal = document.getElementById('stallStatusToggle').checked ? 'Buka' : 'Tutup';
+            formData.append('status', statusVal);
+
+            // Save off days
+            const selectedOffDays = Array.from(document.querySelectorAll('.off-day-cb:checked')).map(cb => cb.value).join(',');
+            formData.append('off_days', selectedOffDays);
             
             const profileFile = document.getElementById('imageInput').files[0];
             if(profileFile) formData.append('stall_image', profileFile);

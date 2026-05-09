@@ -85,7 +85,7 @@
         <ul class="nav-links">
             <li><a href="dashboard.html"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
             <li><a href="menu.html"><i class="fa-solid fa-book-open"></i> Menu Management</a></li>
-            <li><a href="orders.html" class="active"><i class="fa-solid fa-inbox"></i> Incoming Orders <span class="badge" id="orderBadge">0</span></a></li>
+            <li><a href="orders.html" class="active"><i class="fa-solid fa-inbox"></i> Incoming Orders <span class="badge" id="orderBadge" style="display: none;">0</span></a></li>
             <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Setting</a></li>
         </ul>
     </aside>
@@ -113,65 +113,56 @@
 
     <script>
         const API_BASE = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api';
-        const notificationSound = new Audio('notification.mp3');
-        let lastOrderCount = 0;
 
-        async function loadOrders() {
-            try {
-                const response = await fetch(`${API_BASE}/fetch_orders.php?stall_id=1`);
-                const result = await response.json();
-                
-                if(result.status === 'success') {
-                    const currentOrders = result.data;
-                    const grid = document.getElementById('ordersGrid');
-                    
-                    if (currentOrders.length > lastOrderCount) {
-                        notificationSound.play().catch(e => console.log("User interaction required for audio"));
-                    }
-                    lastOrderCount = currentOrders.length;
-                    grid.innerHTML = ''; 
+        document.addEventListener('globalOrdersUpdated', (e) => {
+            const currentOrders = e.detail;
+            const grid = document.getElementById('ordersGrid');
+            grid.innerHTML = ''; 
 
-                    currentOrders.forEach(order => {
-                        let itemsHtml = '';
-                        order.items.forEach(item => {
-                            itemsHtml += `
-                                <div class="item-row">
-                                    <div class="item-name-col"><i class="fa-solid fa-utensils"></i> ${item.quantity}x ${item.item_name}</div>
-                                    <div class="item-price-col">RM ${parseFloat(item.price).toFixed(2)}</div>
-                                </div>
-                            `;
-                        });
+            currentOrders.forEach(order => {
+                let itemsHtml = '';
+                order.items.forEach(item => {
+                    itemsHtml += `
+                        <div class="item-row">
+                            <div class="item-name-col"><i class="fa-solid fa-utensils"></i> ${item.quantity}x ${item.item_name}</div>
+                            <div class="item-price-col">RM ${parseFloat(item.price).toFixed(2)}</div>
+                        </div>
+                    `;
+                });
 
-                        const card = `
-                            <div class="order-card">
-                                <span class="order-id">Order #${order.id}</span>
-                                <h3 class="customer-name">${order.customer_name}</h3>
-                                <div class="collect-time"><i class="fa-regular fa-clock"></i> Collect Time: ${order.collect_time}</div>
-                                
-                                <div class="ordered-items-title">Ordered Items:</div>
-                                <div class="item-list">${itemsHtml}</div>
+                const card = `
+                    <div class="order-card">
+                        <span class="order-id">Order #${order.id}</span>
+                        <h3 class="customer-name">${order.customer_name}</h3>
+                        <div class="collect-time"><i class="fa-regular fa-clock"></i> Collect Time: ${order.collect_time}</div>
+                        
+                        <div class="ordered-items-title">Ordered Items:</div>
+                        <div class="item-list">${itemsHtml}</div>
 
-                                <div class="total-section">
-                                    <span class="total-label">Total Amount:</span>
-                                    <span class="total-amount">RM ${parseFloat(order.total_amount).toFixed(2)}</span>
-                                </div>
+                        <div class="total-section">
+                            <span class="total-label">Total Amount:</span>
+                            <span class="total-amount">RM ${parseFloat(order.total_amount).toFixed(2)}</span>
+                        </div>
 
-                                <div class="receipt-link" onclick="viewReceipt('${order.payment_receipt}')">
-                                    <i class="fa-solid fa-receipt"></i> View Receipt
-                                </div>
+                        <div class="receipt-link" onclick="viewReceipt('${order.payment_receipt}')">
+                            <i class="fa-solid fa-receipt"></i> View Receipt
+                        </div>
 
-                                <div class="card-actions">
-                                    <button class="btn btn-accept" onclick="updateStatus(${order.id}, 'Preparing')">Accept</button>
-                                    <button class="btn btn-reject" onclick="updateStatus(${order.id}, 'Rejected')">Reject</button>
-                                </div>
-                            </div>
-                        `;
-                        grid.innerHTML += card;
-                    });
-                    
-                    document.getElementById('orderBadge').innerText = currentOrders.length;
-                }
-            } catch (error) { console.error("Error:", error); }
+                        <div class="card-actions">
+                            <button class="btn btn-accept" onclick="updateStatus(${order.id}, 'Preparing')">Accept</button>
+                            <button class="btn btn-reject" onclick="updateStatus(${order.id}, 'Rejected')">Reject</button>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        });
+
+        // Wrapper to allow status update to trigger refresh
+        function loadOrders() {
+            if (typeof checkGlobalOrders === 'function') {
+                checkGlobalOrders();
+            }
         }
 
         // Fungsi tunjuk resit
@@ -210,9 +201,7 @@
                 }
             } catch (error) { console.error("Error:", error); }
         }
-
-        setInterval(loadOrders, 10000);
-        window.addEventListener('DOMContentLoaded', loadOrders);
     </script>
+    <script src="global_notification.js"></script>
 </body>
 </html>

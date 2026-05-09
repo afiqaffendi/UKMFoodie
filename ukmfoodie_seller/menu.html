@@ -30,6 +30,7 @@
         .nav-links a { display: flex; align-items: center; padding: 12px 20px; color: #A1A5B7; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; transition: 0.3s; }
         .nav-links a i { margin-right: 15px; font-size: 18px; }
         .nav-links a.active { background-color: var(--primary-yellow); color: var(--text-dark); }
+        .badge { background-color: #F1416C; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: auto; font-weight: 700; }
 
         /* === MAIN CONTENT === */
         .main-content { flex: 1; padding: 0; display: flex; flex-direction: column; }
@@ -80,7 +81,7 @@
         <ul class="nav-links">
             <li><a href="dashboard.html"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
             <li><a href="menu.html" class="active"><i class="fa-solid fa-book-open"></i> Menu Management</a></li>
-            <li><a href="orders.html"><i class="fa-solid fa-inbox"></i> Incoming Orders</a></li>
+            <li><a href="orders.html"><i class="fa-solid fa-inbox"></i> Incoming Orders <span class="badge" id="orderBadge" style="display: none;">0</span></a></li>
             <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Setting</a></li>
         </ul>
     </aside>
@@ -306,5 +307,6 @@
 
         window.addEventListener('DOMContentLoaded', loadMenuData);
     </script>
+    <script src="global_notification.js"></script>
 </body>
 </html>

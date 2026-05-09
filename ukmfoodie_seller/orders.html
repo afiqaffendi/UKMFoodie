@@ -22,10 +22,10 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { display: flex; background-color: var(--bg-light); min-height: 100vh; }
+        body { display: flex; background-color: var(--bg-light); height: 100vh; overflow: hidden; }
 
         /* === SIDEBAR STYLES === */
-        .sidebar { width: 260px; background-color: var(--sidebar-dark); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar { width: 260px; background-color: var(--sidebar-dark); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; overflow-y: auto; }
         .sidebar-logo { padding: 25px; display: flex; align-items: center; gap: 15px; font-size: 20px; font-weight: 700; color: var(--primary-yellow); }
         .logo-box { width: 35px; height: 35px; background-color: var(--primary-yellow); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: var(--text-dark); }
         .nav-links { list-style: none; padding: 0 15px; margin-top: 20px; }
@@ -36,7 +36,7 @@
         .badge { background-color: var(--red-reject); color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: auto; font-weight: 700; }
 
         /* === MAIN CONTENT STYLES === */
-        .main-content { flex: 1; padding: 0; display: flex; flex-direction: column; overflow-y: auto; }
+        .main-content { flex: 1; padding: 0; display: flex; flex-direction: column; overflow-y: auto; height: 100vh; }
         .top-navbar { background-color: var(--white); padding: 15px 30px; font-weight: 500; color: var(--text-gray); font-size: 14px; }
         .content-wrapper { padding: 30px; }
         .page-header { margin-bottom: 25px; }
@@ -93,13 +93,26 @@
     <main class="main-content">
         <div class="top-navbar">UKMFoodie Seller Portal</div>
 
-        <div class="content-wrapper">
-            <div class="page-header">
-                <h1>Incoming Orders</h1>
-            </div>
-
-            <div class="orders-grid" id="ordersGrid">
+        <div class="content-wrapper" style="height: calc(100vh - 50px); overflow: hidden; padding-bottom: 0;">
+            <div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: nowrap; height: 100%;">
+                
+                <!-- Kiri: Incoming Orders -->
+                <div style="flex: 1; min-width: 320px; height: 100%; display: flex; flex-direction: column;">
+                    <div class="page-header" style="flex-shrink: 0;">
+                        <h1>Incoming Orders</h1>
+                    </div>
+                    <div class="orders-grid" id="pendingGrid" style="grid-template-columns: 1fr; overflow-y: auto; padding-right: 15px; padding-bottom: 30px;"></div>
                 </div>
+
+                <!-- Kanan: Preparing Orders -->
+                <div style="flex: 1; min-width: 320px; height: 100%; display: flex; flex-direction: column;">
+                    <div class="page-header" style="flex-shrink: 0;">
+                        <h1>Preparing Orders</h1>
+                    </div>
+                    <div class="orders-grid" id="preparingGrid" style="grid-template-columns: 1fr; overflow-y: auto; padding-right: 15px; padding-bottom: 30px;"></div>
+                </div>
+
+            </div>
         </div>
     </main>
 
@@ -116,10 +129,14 @@
 
         document.addEventListener('globalOrdersUpdated', (e) => {
             const currentOrders = e.detail;
-            const grid = document.getElementById('ordersGrid');
-            grid.innerHTML = ''; 
+            const pendingGrid = document.getElementById('pendingGrid');
+            const preparingGrid = document.getElementById('preparingGrid');
+            pendingGrid.innerHTML = ''; 
+            preparingGrid.innerHTML = '';
 
             currentOrders.forEach(order => {
+                if (order.status === 'Ready' || order.status === 'Completed' || order.status === 'Rejected') return;
+
                 let itemsHtml = '';
                 order.items.forEach(item => {
                     itemsHtml += `
@@ -130,11 +147,26 @@
                     `;
                 });
 
+                let actionsHtml = '';
+                let timerHtml = '';
+
+                if (order.status === 'Pending') {
+                    actionsHtml = `
+                        <button class="btn btn-accept" onclick="updateStatus(${order.id}, 'Preparing')">Accept</button>
+                        <button class="btn btn-reject" onclick="updateStatus(${order.id}, 'Rejected')">Reject</button>
+                    `;
+                } else if (order.status === 'Preparing') {
+                    actionsHtml = `
+                        <button class="btn btn-accept" style="background-color: #50CD89; width: 100%;" onclick="updateStatus(${order.id}, 'Ready')">Mark as Ready</button>
+                    `;
+                    timerHtml = `<div class="collect-time countdown" data-time="${order.accepted_at}" style="color: #F1416C; font-weight: bold;"><i class="fa-regular fa-clock"></i> Time Left: 15:00</div>`;
+                }
+
                 const card = `
                     <div class="order-card">
                         <span class="order-id">Order #${order.id}</span>
                         <h3 class="customer-name">${order.customer_name}</h3>
-                        <div class="collect-time"><i class="fa-regular fa-clock"></i> Collect Time: ${order.collect_time}</div>
+                        ${order.status === 'Pending' ? `<div class="collect-time"><i class="fa-regular fa-clock"></i> Collect Time: ${order.collect_time}</div>` : timerHtml}
                         
                         <div class="ordered-items-title">Ordered Items:</div>
                         <div class="item-list">${itemsHtml}</div>
@@ -149,14 +181,42 @@
                         </div>
 
                         <div class="card-actions">
-                            <button class="btn btn-accept" onclick="updateStatus(${order.id}, 'Preparing')">Accept</button>
-                            <button class="btn btn-reject" onclick="updateStatus(${order.id}, 'Rejected')">Reject</button>
+                            ${actionsHtml}
                         </div>
                     </div>
                 `;
-                grid.innerHTML += card;
+                if (order.status === 'Pending') pendingGrid.innerHTML += card;
+                else if (order.status === 'Preparing') preparingGrid.innerHTML += card;
             });
         });
+
+        setInterval(() => {
+            document.querySelectorAll('.countdown').forEach(el => {
+                const acceptedAt = el.getAttribute('data-time');
+                if (!acceptedAt || acceptedAt === "null" || acceptedAt.trim() === "") {
+                    el.innerHTML = `<i class="fa-regular fa-clock"></i> Time Left: N/A`;
+                    return;
+                }
+                
+                const acceptedDate = new Date(acceptedAt.replace(' ', 'T'));
+                if (isNaN(acceptedDate.getTime())) {
+                    el.innerHTML = `<i class="fa-regular fa-clock"></i> Time Left: N/A`;
+                    return;
+                }
+
+                const targetDate = new Date(acceptedDate.getTime() + 15 * 60000);
+                const now = new Date();
+                
+                const diffMs = targetDate - now;
+                if (diffMs <= 0) {
+                    el.innerHTML = `<i class="fa-regular fa-clock"></i> LATE`;
+                } else {
+                    const mins = Math.floor(diffMs / 60000);
+                    const secs = Math.floor((diffMs % 60000) / 1000);
+                    el.innerHTML = `<i class="fa-regular fa-clock"></i> Time Left: ${mins}:${secs.toString().padStart(2, '0')}`;
+                }
+            });
+        }, 1000);
 
         // Wrapper to allow status update to trigger refresh
         function loadOrders() {

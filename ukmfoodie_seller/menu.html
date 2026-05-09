@@ -19,10 +19,10 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { display: flex; background-color: var(--bg-light); min-height: 100vh; }
+        body { display: flex; background-color: var(--bg-light); height: 100vh; overflow: hidden; }
 
         /* === SIDEBAR === */
-        .sidebar { width: 260px; background-color: var(--sidebar-dark); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar { width: 260px; background-color: var(--sidebar-dark); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; overflow-y: auto; }
         .sidebar-logo { padding: 25px; display: flex; align-items: center; gap: 15px; font-size: 20px; font-weight: 700; color: var(--primary-yellow); }
         .logo-box { width: 35px; height: 35px; background-color: var(--primary-yellow); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: var(--text-dark); }
         .nav-links { list-style: none; padding: 0 15px; margin-top: 20px; }
@@ -33,13 +33,18 @@
         .badge { background-color: #F1416C; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: auto; font-weight: 700; }
 
         /* === MAIN CONTENT === */
-        .main-content { flex: 1; padding: 0; display: flex; flex-direction: column; }
+        .main-content { flex: 1; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
         .top-navbar { background-color: var(--white); padding: 15px 30px; font-weight: 500; color: var(--text-gray); font-size: 14px; }
         .content-wrapper { padding: 30px; }
 
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .page-header h1 { font-size: 28px; color: var(--text-dark); font-weight: 700; }
         .btn-add { background-color: var(--primary-yellow); color: var(--text-dark); border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        
+        .category-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { padding: 10px 20px; border-radius: 20px; background-color: var(--white); border: 1px solid var(--border-color); color: var(--text-gray); font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .tab-btn:hover { background-color: #f8f9fa; }
+        .tab-btn.active { background-color: var(--primary-yellow); color: var(--text-dark); border-color: var(--primary-yellow); }
         
         .table-card { background-color: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 850px; }
@@ -95,6 +100,13 @@
                 <button class="btn-add" id="openModalBtn"><i class="fa-solid fa-plus"></i> Add New Item</button>
             </div>
 
+            <div class="category-tabs">
+                <button class="tab-btn active" onclick="filterCategory('All')">All Items</button>
+                <button class="tab-btn" onclick="filterCategory('Food')">Food</button>
+                <button class="tab-btn" onclick="filterCategory('Beverage')">Beverage</button>
+                <button class="tab-btn" onclick="filterCategory('Others')">Others</button>
+            </div>
+
             <div class="table-card">
                 <table>
                     <thead>
@@ -120,7 +132,7 @@
             <form id="addItemForm">
                 <div class="form-group"><label>Item Name</label><input type="text" id="itemName" class="form-control" placeholder="e.g., Nasi Lemak" required></div>
                 <div class="form-group"><label>Price (RM)</label><input type="number" id="itemPrice" class="form-control" placeholder="3.50" step="0.01" required></div>
-                <div class="form-group"><label>Category</label><select id="itemCategory" class="form-control"><option value="Food">Food</option><option value="Main Dish">Main Dish</option><option value="Beverage">Beverage</option></select></div>
+                <div class="form-group"><label>Category</label><select id="itemCategory" class="form-control"><option value="Food">Food</option><option value="Beverage">Beverage</option><option value="Others">Others</option></select></div>
                 <div class="form-group"><label>Food Image</label><input type="file" id="itemImage" class="form-control" accept="image/*"></div>
                 <button type="submit" class="btn-submit">Save Item</button>
             </form>
@@ -138,8 +150,8 @@
                 <div class="form-group"><label>Category</label>
                     <select id="editCategory" class="form-control">
                         <option value="Food">Food</option>
-                        <option value="Main Dish">Main Dish</option>
                         <option value="Beverage">Beverage</option>
+                        <option value="Others">Others</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -169,19 +181,39 @@
         closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
         function closeEditModal() { editModal.style.display = 'none'; }
 
-  async function loadMenuData() {
-            try {
-                const response = await fetch(`${API_BASE}/fetch_menu.php?stall_id=1`);
-                const result = await response.json();
-                if(result.status === 'success') {
-                    currentMenuList = result.data; // Data ini sekarang mengandungi info 'status'
-                    const tbody = document.getElementById('menuTableBody');
-                    tbody.innerHTML = '';
-                    result.data.forEach(item => {
+        let activeCategory = 'All';
+
+        function filterCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText === 'All Items')) {
+                    btn.classList.add('active');
+                }
+            });
+            renderMenuTable();
+        }
+
+        function renderMenuTable() {
+            const tbody = document.getElementById('menuTableBody');
+            tbody.innerHTML = '';
+            
+            const categories = activeCategory === 'All' ? ['Food', 'Beverage', 'Others'] : [activeCategory];
+            
+            categories.forEach(cat => {
+                const itemsInCategory = currentMenuList.filter(i => (i.category || 'Food') === cat);
+                
+                if (itemsInCategory.length > 0) {
+                    tbody.innerHTML += `
+                        <tr style="background-color: #f8f9fa;">
+                            <td colspan="6" style="font-size: 16px; font-weight: 800; color: #8A6D3B; padding: 15px 10px;">
+                                ${cat}
+                            </td>
+                        </tr>
+                    `;
+                    
+                    itemsInCategory.forEach(item => {
                         const imgUrl = (item.food_image && item.food_image !== 'default_food.jpg') ? `${API_BASE}/uploads/${item.food_image}` : 'https://via.placeholder.com/60';
-                        
-                        // LOGIK PENTING: Semak status dari database
-                        // Pastikan 'Available' dieja tepat seperti dalam database awak
                         const isChecked = (item.status === 'Available') ? 'checked' : '';
                         
                         const row = `
@@ -189,7 +221,7 @@
                                 <td><img src="${imgUrl}" class="item-thumb" onerror="this.src='https://via.placeholder.com/60'"></td>
                                 <td class="item-name">${item.item_name}</td>
                                 <td><span class="price-box">RM ${parseFloat(item.price).toFixed(2)}</span></td>
-                                <td>${item.category || 'N/A'}</td>
+                                <td>${item.category || 'Food'}</td>
                                 <td>
                                     <div class="flex-center">
                                         <label class="switch">
@@ -212,6 +244,17 @@
                         `;
                         tbody.innerHTML += row;
                     });
+                }
+            });
+        }
+
+        async function loadMenuData() {
+            try {
+                const response = await fetch(`${API_BASE}/fetch_menu.php?stall_id=1`);
+                const result = await response.json();
+                if(result.status === 'success') {
+                    currentMenuList = result.data;
+                    renderMenuTable();
                 }
             } catch (error) { console.error("Error fetching menu:", error); }
         }

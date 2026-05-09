@@ -8,20 +8,21 @@ async function checkGlobalOrders() {
         
         if(result.status === 'success') {
             const currentOrders = result.data;
+            const pendingOrders = currentOrders.filter(o => o.status === 'Pending');
             const badge = document.getElementById('orderBadge');
             
             if (badge) {
-                badge.innerText = currentOrders.length;
-                badge.style.display = currentOrders.length > 0 ? 'inline-block' : 'none';
+                badge.innerText = pendingOrders.length;
+                badge.style.display = pendingOrders.length > 0 ? 'inline-block' : 'none';
             }
 
             let lastCount = parseInt(localStorage.getItem('lastPendingOrderCount')) || 0;
             
-            if (currentOrders.length > lastCount) {
+            if (pendingOrders.length > lastCount) {
                 notificationSoundGlobal.play().catch(e => console.log("Audio autoplay blocked by browser:", e));
             }
             
-            localStorage.setItem('lastPendingOrderCount', currentOrders.length);
+            localStorage.setItem('lastPendingOrderCount', pendingOrders.length);
 
             const event = new CustomEvent('globalOrdersUpdated', { detail: currentOrders });
             document.dispatchEvent(event);

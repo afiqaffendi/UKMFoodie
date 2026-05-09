@@ -11,7 +11,11 @@ if (isset($data['order_id']) && isset($data['status'])) {
     $order_id = $conn->real_escape_string($data['order_id']);
     $status = $conn->real_escape_string($data['status']);
 
-    $sql = "UPDATE orders SET status = '$status' WHERE id = '$order_id'";
+    if ($status === 'Preparing') {
+        $sql = "UPDATE orders SET status = '$status', accepted_at = NOW() WHERE id = '$order_id'";
+    } else {
+        $sql = "UPDATE orders SET status = '$status' WHERE id = '$order_id'";
+    }
 
     if ($conn->query($sql) === TRUE) {
         echo json_encode(["status" => "success", "message" => "Status pesanan dikemaskini."]);

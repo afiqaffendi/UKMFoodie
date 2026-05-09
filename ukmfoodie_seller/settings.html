@@ -10,9 +10,9 @@
     <style>
         :root { --primary-yellow: #FFC93C; --sidebar-dark: #1E1E2D; --bg-light: #E9ECEF; --text-dark: #1A1A1A; --text-gray: #888888; --white: #FFFFFF; --border-color: #E6E6E8; --blue-link: #3B82F6; --green-accept: #50CD89; --red-reject: #F1416C; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { display: flex; background-color: var(--bg-light); min-height: 100vh; }
+        body { display: flex; background-color: var(--bg-light); height: 100vh; overflow: hidden; }
         
-        .sidebar { width: 260px; background-color: var(--sidebar-dark); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar { width: 260px; background-color: var(--sidebar-dark); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; overflow-y: auto; }
         .sidebar-logo { padding: 25px; display: flex; align-items: center; gap: 15px; font-size: 20px; font-weight: 700; color: var(--primary-yellow); }
         .logo-box { width: 35px; height: 35px; background-color: var(--primary-yellow); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: var(--text-dark); }
         .nav-links { list-style: none; padding: 0 15px; margin-top: 20px; }
@@ -22,7 +22,7 @@
         .nav-links a.active { background-color: var(--primary-yellow); color: var(--text-dark); }
         .badge { background-color: var(--red-reject); color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: auto; font-weight: 700; }
 
-        .main-content { flex: 1; padding: 0; display: flex; flex-direction: column; overflow-y: auto; }
+        .main-content { flex: 1; padding: 0; display: flex; flex-direction: column; overflow-y: auto; height: 100vh; }
         .top-navbar { background-color: var(--white); padding: 15px 30px; font-weight: 500; color: var(--text-gray); font-size: 14px; }
         .content-wrapper { padding: 30px; }
 

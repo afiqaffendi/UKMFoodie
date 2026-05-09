@@ -1,6 +1,6 @@
 <?php
 $conn = new mysqli('localhost', 'root', '', 'ukmfoodie_db');
-$result = $conn->query('DESCRIBE stalls');
+$result = $conn->query('DESCRIBE users');
 $cols = [];
 while($row = $result->fetch_assoc()) {
     $cols[] = $row;

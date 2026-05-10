@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - UKMFoodie</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-yellow: #FFC93C;
+            --sidebar-bg: #D1D5DB; /* Back to UI Admin color */
+            --bg-light: #E5E7EB;
+            --text-dark: #1F2937;
+            --text-gray: #6B7280;
+            --white: #FFFFFF;
+            --border-color: #D1D5DB;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { display: flex; background-color: var(--bg-light); height: 100vh; overflow: hidden; }
+
+        /* === SIDEBAR (Size matched with Seller, Color from Admin UI) === */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .logo-box {
+            width: 35px;
+            height: 35px;
+            background-color: var(--primary-yellow);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-dark);
+        }
+
+        .nav-links { list-style: none; padding: 0 15px; margin-top: 20px; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--text-dark);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            transition: 0.3s;
+        }
+
+        .nav-item i { margin-right: 15px; font-size: 18px; }
+        .nav-item.active { background-color: var(--primary-yellow); }
+        .nav-item:hover:not(.active) { background-color: rgba(0,0,0,0.05); }
+
+        .badge {
+            background-color: #EF4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: auto;
+            display: none;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+        }
+
+        /* === MAIN CONTENT === */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; height: 100vh; }
+        
+        .top-navbar { 
+            background-color: var(--white); 
+            padding: 15px 30px; 
+            font-weight: 500; 
+            color: var(--text-gray); 
+            font-size: 14px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            border-bottom: 1px solid var(--border-color); 
+        }
+
+        .content-wrapper { padding: 40px; }
+        
+        /* === STAT CARDS === */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 40px; }
+        .stat-card { background-color: var(--white); padding: 30px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); display: flex; flex-direction: column; }
+        .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .stat-header h3 { font-size: 15px; font-weight: 600; color: var(--text-gray); }
+        .stat-header i { font-size: 20px; color: var(--text-gray); }
+        .stat-value { font-size: 32px; font-weight: 700; color: var(--text-dark); }
+
+        /* === ACTIVITY TABLE === */
+        .section-title { font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; }
+        .card { background-color: var(--white); border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px 10px; font-size: 13px; color: var(--text-gray); border-bottom: 1px solid #F3F4F6; }
+        td { padding: 15px 10px; font-size: 13px; color: var(--text-dark); border-bottom: 1px solid #F3F4F6; }
+        .view-all { text-align: right; margin-top: 15px; }
+        .view-all a { font-size: 12px; color: var(--text-gray); text-decoration: none; font-weight: 600; }
+        .view-all a:hover { color: var(--text-dark); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-box"><i class="fa-solid fa-utensils"></i></div>
+            UKMFoodie
+        </div>
+        <nav class="nav-links">
+            <a href="dashboard.html" class="nav-item active"><i class="fa-solid fa-table-cells-large"></i> Overview</a>
+            <a href="users.html" class="nav-item"><i class="fa-solid fa-users"></i> User Management</a>
+            <a href="approvals.html" class="nav-item"><i class="fa-solid fa-store"></i> Stalls Approval <span class="badge" id="pendingBadge">0</span></a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-navbar">
+            UKMFoodie Admin Portal
+        </div>
+        
+        <div class="content-wrapper">
+            <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3>Total Registered Users</h3>
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="stat-value" id="totalUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3>Active Stalls</h3>
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <div class="stat-value" id="activeStalls">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3>Total Daily Transactions</h3>
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div class="stat-value" id="dailyRevenue">RM 0.00</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Recent System Activity</h2>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Action</th>
+                        <th>User</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody id="activityBody">
+                    <tr><td colspan="4" style="text-align:center; padding:20px;">Loading activity...</td></tr>
+                </tbody>
+            </table>
+            <div class="view-all"><a href="#">View All <i class="fa-solid fa-chevron-down"></i></a></div>
+        </div>
+    </main>
+
+    <script src="admin_notifications.js"></script>
+    <script>
+        const API_BASE = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api';
+
+        function timeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            
+            let interval = Math.floor(seconds / 3600);
+            if (interval >= 1) return interval + " hours ago";
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) return interval + " mins ago";
+            return "Just now";
+        }
+
+        async function fetchDashboardData() {
+            try {
+                const response = await fetch(`${API_BASE}/fetch_admin_stats.php`);
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    document.getElementById('totalUsers').innerText = result.stats.total_users;
+                    document.getElementById('activeStalls').innerText = result.stats.active_stalls;
+                    document.getElementById('dailyRevenue').innerText = result.stats.daily_revenue;
+
+                    const tbody = document.getElementById('activityBody');
+                    tbody.innerHTML = '';
+                    result.activities.forEach(act => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${timeAgo(act.created_at)}</td>
+                                <td>${act.action}</td>
+                                <td style="font-weight: 600;">${act.user}</td>
+                                <td>${act.details}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching stats:", error);
+            }
+        }
+
+        window.onload = fetchDashboardData;
+    </script>
+</body>
+</html>

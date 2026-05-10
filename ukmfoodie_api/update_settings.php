@@ -18,6 +18,8 @@ if(isset($_POST['stall_id'])) {
     $closing_time = $conn->real_escape_string($_POST['closing_time']);
     $off_days = isset($_POST['off_days']) ? $conn->real_escape_string($_POST['off_days']) : '';
     $status = isset($_POST['status']) ? $conn->real_escape_string($_POST['status']) : 'Buka';
+    $latitude = isset($_POST['latitude']) ? $conn->real_escape_string($_POST['latitude']) : 2.9289;
+    $longitude = isset($_POST['longitude']) ? $conn->real_escape_string($_POST['longitude']) : 101.7801;
 
     $image_query = "";
     
@@ -50,7 +52,9 @@ if(isset($_POST['stall_id'])) {
             opening_time='$opening_time',
             closing_time='$closing_time',
             off_days='$off_days',
-            status='$status'
+            status='$status',
+            latitude='$latitude',
+            longitude='$longitude'
             $image_query
             WHERE id=$id";
             

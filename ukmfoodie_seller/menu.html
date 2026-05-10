@@ -6,6 +6,7 @@
     <title>Menu Management - UKMFoodie Seller</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="auth_check.js"></script>
     
     <style>
         :root {
@@ -34,7 +35,7 @@
 
         /* === MAIN CONTENT === */
         .main-content { flex: 1; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
-        .top-navbar { background-color: var(--white); padding: 15px 30px; font-weight: 500; color: var(--text-gray); font-size: 14px; }
+        .top-navbar { background-color: var(--white); padding: 15px 30px; font-weight: 500; color: var(--text-gray); font-size: 14px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
         .content-wrapper { padding: 30px; }
 
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
@@ -95,16 +96,18 @@
         <div class="top-navbar">UKMFoodie Seller Portal</div>
 
         <div class="content-wrapper">
-            <div class="page-header">
+            <div class="page-header" style="margin-bottom: 15px;">
                 <h1>Menu Management</h1>
-                <button class="btn-add" id="openModalBtn"><i class="fa-solid fa-plus"></i> Add New Item</button>
             </div>
 
-            <div class="category-tabs">
-                <button class="tab-btn active" onclick="filterCategory('All')">All Items</button>
-                <button class="tab-btn" onclick="filterCategory('Food')">Food</button>
-                <button class="tab-btn" onclick="filterCategory('Beverage')">Beverage</button>
-                <button class="tab-btn" onclick="filterCategory('Others')">Others</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <div class="category-tabs" style="margin-bottom: 0;">
+                    <button class="tab-btn active" onclick="filterCategory('All')">All Items</button>
+                    <button class="tab-btn" onclick="filterCategory('Food')">Food</button>
+                    <button class="tab-btn" onclick="filterCategory('Beverage')">Beverage</button>
+                    <button class="tab-btn" onclick="filterCategory('Others')">Others</button>
+                </div>
+                <button class="btn-add" id="openModalBtn"><i class="fa-solid fa-plus"></i> Add New Item</button>
             </div>
 
             <div class="table-card">
@@ -250,7 +253,8 @@
 
         async function loadMenuData() {
             try {
-                const response = await fetch(`${API_BASE}/fetch_menu.php?stall_id=1`);
+                const stall_id = localStorage.getItem('stall_id') || 1;
+                const response = await fetch(`${API_BASE}/fetch_menu.php?stall_id=${stall_id}`);
                 const result = await response.json();
                 if(result.status === 'success') {
                     currentMenuList = result.data;
@@ -302,8 +306,9 @@
         // TAMBAH ITEM BARU
         document.getElementById('addItemForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            const stall_id = localStorage.getItem('stall_id') || 1;
             const formData = new FormData();
-            formData.append('stall_id', 1);
+            formData.append('stall_id', stall_id);
             formData.append('item_name', document.getElementById('itemName').value);
             formData.append('price', document.getElementById('itemPrice').value);
             formData.append('category', document.getElementById('itemCategory').value);

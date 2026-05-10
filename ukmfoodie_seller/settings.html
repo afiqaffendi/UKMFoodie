@@ -6,6 +6,9 @@
     <title>Settings - UKMFoodie Seller</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="auth_check.js"></script>
     
     <style>
         :root { --primary-yellow: #FFC93C; --sidebar-dark: #1E1E2D; --bg-light: #E9ECEF; --text-dark: #1A1A1A; --text-gray: #888888; --white: #FFFFFF; --border-color: #E6E6E8; --blue-link: #3B82F6; --green-accept: #50CD89; --red-reject: #F1416C; }
@@ -23,7 +26,7 @@
         .badge { background-color: var(--red-reject); color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: auto; font-weight: 700; }
 
         .main-content { flex: 1; padding: 0; display: flex; flex-direction: column; overflow-y: auto; height: 100vh; }
-        .top-navbar { background-color: var(--white); padding: 15px 30px; font-weight: 500; color: var(--text-gray); font-size: 14px; }
+        .top-navbar { background-color: var(--white); padding: 15px 30px; font-weight: 500; color: var(--text-gray); font-size: 14px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
         .content-wrapper { padding: 30px; }
 
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
@@ -75,6 +78,9 @@
         
         .btn-save-settings { width: 100%; background-color: var(--primary-yellow); color: var(--text-dark); border: none; padding: 15px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 4px 6px rgba(255, 201, 60, 0.2); }
         .btn-save-settings:hover { transform: translateY(-2px); }
+
+        #map { height: 250px; width: 100%; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 10px; }
+        .map-hint { font-size: 11px; color: var(--text-gray); margin-top: 5px; display: block; }
     </style>
 </head>
 <body>
@@ -147,6 +153,14 @@
                                     <input type="email" id="stallEmail" class="form-control" value="pakmus@ukm.edu.my">
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Store Location (Pin on Map)</label>
+                            <div id="map"></div>
+                            <span class="map-hint"><i class="fa-solid fa-circle-info"></i> Click on the map to pin your exact location.</span>
+                            <input type="hidden" id="latitude" value="2.9289">
+                            <input type="hidden" id="longitude" value="101.7801">
                         </div>
                     </div>
 
@@ -224,13 +238,46 @@
                         </div>
                     </div>
 
-                    <button class="btn-logout">Log Out</button>
+                    <button class="btn-logout" onclick="logoutSeller()">Log Out</button>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
+        // Global Map Variables
+        let map, marker;
+        const defaultLat = 2.9289;
+        const defaultLng = 101.7801;
+
+        function initMap(lat, lng) {
+            if (!map) {
+                map = L.map('map').setView([lat, lng], 16);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+
+                map.on('click', function(e) {
+                    const newLat = e.latlng.lat;
+                    const newLng = e.latlng.lng;
+                    marker.setLatLng([newLat, newLng]);
+                    document.getElementById('latitude').value = newLat;
+                    document.getElementById('longitude').value = newLng;
+                });
+
+                marker.on('dragend', function(e) {
+                    const pos = marker.getLatLng();
+                    document.getElementById('latitude').value = pos.lat;
+                    document.getElementById('longitude').value = pos.lng;
+                });
+            } else {
+                map.setView([lat, lng], 16);
+                marker.setLatLng([lat, lng]);
+            }
+        }
+
         // Preview Imej Profil
         document.getElementById('imageInput').addEventListener('change', function(evt) {
             const file = evt.target.files[0];
@@ -258,10 +305,14 @@
                 text.style.color = 'var(--red-reject)';
             }
         });
-
+ 
         async function loadSettingsData() {
+            // Kita panggil initMap dengan nilai default dulu supaya peta muncul terus
+            initMap(defaultLat, defaultLng);
+
             try {
-                const response = await fetch('http://localhost/ukmfoodie_workspace/ukmfoodie_api/fetch_settings.php');
+                const stall_id = localStorage.getItem('stall_id') || 1;
+                const response = await fetch(`http://localhost/ukmfoodie_workspace/ukmfoodie_api/fetch_settings.php?stall_id=${stall_id}`);
                 const result = await response.json();
                 
                 if(result.status === 'success') {
@@ -285,6 +336,14 @@
                     
                     if(data.opening_time) document.getElementById('openTime').value = data.opening_time.substring(0, 5);
                     if(data.closing_time) document.getElementById('closeTime').value = data.closing_time.substring(0, 5);
+                    
+                    if(data.latitude && data.longitude) {
+                        document.getElementById('latitude').value = data.latitude;
+                        document.getElementById('longitude').value = data.longitude;
+                        initMap(parseFloat(data.latitude), parseFloat(data.longitude));
+                    } else {
+                        initMap(defaultLat, defaultLng);
+                    }
 
                     // Load status toggle
                     const toggle = document.getElementById('stallStatusToggle');
@@ -310,11 +369,19 @@
             }
         }
 
-        window.addEventListener('DOMContentLoaded', loadSettingsData);
+ 
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSettingsData();
+            // Paksa peta untuk refresh saiz kotak dia
+            setTimeout(() => {
+                if (map) map.invalidateSize();
+            }, 500);
+        });
 
         document.getElementById('saveSettingsBtn').addEventListener('click', async function() {
             const formData = new FormData();
-            formData.append('stall_id', 1); 
+            const stall_id = localStorage.getItem('stall_id') || 1;
+            formData.append('stall_id', stall_id); 
             formData.append('stall_name', document.getElementById('stallName').value);
             formData.append('description', document.getElementById('stallDesc').value);
             formData.append('phone', document.getElementById('stallPhone').value);
@@ -324,6 +391,8 @@
             formData.append('account_holder', document.getElementById('accHolder').value);
             formData.append('opening_time', document.getElementById('openTime').value);
             formData.append('closing_time', document.getElementById('closeTime').value);
+            formData.append('latitude', document.getElementById('latitude').value);
+            formData.append('longitude', document.getElementById('longitude').value);
 
             // Save status
             const statusVal = document.getElementById('stallStatusToggle').checked ? 'Buka' : 'Tutup';

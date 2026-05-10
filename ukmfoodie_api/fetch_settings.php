@@ -6,9 +6,8 @@ header("Content-Type: application/json; charset=UTF-8");
 // Panggil fail sambungan database
 include 'db.php';
 
-// Kita ambil tetapan untuk gerai ID 1 (Gerai Pak Mus)
-$stall_id = 1; 
-
+$stall_id = isset($_GET['stall_id']) ? $conn->real_escape_string($_GET['stall_id']) : 1; 
+// Jika stall_id 1 ialah default, kita biarkan as fallback, tapi utamakan dari parameter.
 $sql = "SELECT * FROM stalls WHERE id = $stall_id";
 $result = $conn->query($sql);
 

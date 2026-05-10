@@ -288,33 +288,33 @@
 
         <div class="content-wrapper">
             <div class="welcome-header">
-                <h1>WELCOME!!!</h1>
+                <h1 id="welcomeTitle">WELCOME!!!</h1>
                 <p>Here's what's happening in your stall today.</p>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-card">
                     <h3>Total Revenue Today</h3>
-                    <div class="value">RM 1,245</div>
-                    <div class="status green">+12% from yesterday</div>
+                    <div class="value" id="statRevenue">RM 0.00</div>
+                    <div class="status green" id="revChange">Active Tracking</div>
                     <i class="fa-solid fa-dollar-sign stat-icon"></i>
                 </div>
                 <div class="stat-card">
-                    <h3>Total Order</h3>
-                    <div class="value">32</div>
-                    <div class="status green">+5% from yesterday</div>
+                    <h3>Total Order Today</h3>
+                    <div class="value" id="statOrders">0</div>
+                    <div class="status green" id="orderChange">Orders placed today</div>
                     <i class="fa-regular fa-calendar stat-icon"></i>
                 </div>
                 <div class="stat-card">
                     <h3>Pending Orders</h3>
-                    <div class="value">5</div>
-                    <div class="status red">Needs Action</div>
+                    <div class="value" id="statPending">0</div>
+                    <div class="status red" id="pendingAction">Needs Action</div>
                     <i class="fa-solid fa-hourglass-half stat-icon"></i>
                 </div>
                 <div class="stat-card">
                     <h3>Stall Rating</h3>
-                    <div class="value">4.7</div>
-                    <div class="status text-gray" style="color:#888;">Based on 120 reviews</div>
+                    <div class="value" id="statRating">5.0</div>
+                    <div class="status text-gray" style="color:#888;">New Stall</div>
                     <i class="fa-regular fa-star stat-icon"></i>
                 </div>
             </div>
@@ -371,40 +371,12 @@
                         <tr>
                             <th>Order ID</th>
                             <th>Customer Name</th>
-                            <th>Item</th>
                             <th>Amount</th>
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td class="bold">#1005</td>
-                            <td>Alice Johnson</td>
-                            <td>2x Nasi Goreng Kampung, 2x Jus Oren</td>
-                            <td class="bold">RM 26.00</td>
-                            <td><div class="status-label pending"><input type="checkbox"> Pending</div></td>
-                        </tr>
-                        <tr>
-                            <td class="bold">#1004</td>
-                            <td>Bob Williams</td>
-                            <td>1x Laksa Sarawak, 1x ABC</td>
-                            <td class="bold">RM 18.00</td>
-                            <td><div class="status-label pending"><input type="checkbox"> Pending</div></td>
-                        </tr>
-                        <tr>
-                            <td class="bold">#1004</td>
-                            <td>Charlie Green</td>
-                            <td>3x Roti Canai, 1x Dal Curry</td>
-                            <td class="bold">RM 15.50</td>
-                            <td><div class="status-label completed"><input type="checkbox" checked disabled> Completed</div></td>
-                        </tr>
-                        <tr>
-                            <td class="bold">#1003</td>
-                            <td>Diana Prince</td>
-                            <td>2x Nasi Goreng Kampung, 2x Jus Oren</td>
-                            <td class="bold">RM 20.00</td>
-                            <td><div class="status-label completed"><input type="checkbox" checked disabled> Completed</div></td>
-                        </tr>
+                    <tbody id="recentOrdersBody">
+                        <tr><td colspan="4" style="text-align:center; padding:20px;">Loading recent orders...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -413,39 +385,73 @@
 
     <script>
         const ctx = document.getElementById('salesChart').getContext('2d');
-        const salesChart = new Chart(ctx, {
+        let salesChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
                 datasets: [{
                     label: 'Sales (RM)',
-                    data: [80, 170, 160, 240, 110, 50, 60],
-                    backgroundColor: '#FFC93C', // Warna kuning tema UKMFoodie
+                    data: [0, 0, 0, 0, 0, 0, 0],
+                    backgroundColor: '#FFC93C',
                     borderRadius: 4,
                     barPercentage: 0.6
                 }]
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: { display: false } // Sembunyikan label legend di atas
-                },
+                plugins: { legend: { display: false } },
                 scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 250,
-                        ticks: {
-                            stepSize: 50,
-                            callback: function(value) { return 'RM ' + value; }
-                        },
-                        grid: { color: '#F4F4F4' }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
+                    y: { beginAtZero: true, ticks: { callback: function(value) { return 'RM ' + value; } }, grid: { color: '#F4F4F4' } },
+                    x: { grid: { display: false } }
                 }
             }
         });
+
+        async function fetchDashboardData() {
+            const stall_id = localStorage.getItem('stall_id');
+            const stall_name = localStorage.getItem('stall_name');
+            if (stall_name) document.getElementById('welcomeTitle').innerText = `WELCOME, ${stall_name.toUpperCase()}!!!`;
+
+            try {
+                const response = await fetch(`http://localhost/ukmfoodie_workspace/ukmfoodie_api/fetch_seller_stats.php?stall_id=${stall_id}`);
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    // Update stats
+                    document.getElementById('statRevenue').innerText = `RM ${result.stats.revenue}`;
+                    document.getElementById('statOrders').innerText = result.stats.total_orders;
+                    document.getElementById('statPending').innerText = result.stats.pending_orders;
+                    document.getElementById('statRating').innerText = result.stats.rating;
+
+                    // Update chart
+                    salesChart.data.datasets[0].data = result.weekly_sales;
+                    salesChart.update();
+
+                    // Update Recent Orders
+                    const tbody = document.getElementById('recentOrdersBody');
+                    if (result.recent_orders.length > 0) {
+                        tbody.innerHTML = '';
+                        result.recent_orders.forEach(order => {
+                            const statusClass = order.status === 'Baru' ? 'pending' : 'completed';
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td class="bold">#${order.id}</td>
+                                    <td>${order.customer_name}</td>
+                                    <td class="bold">RM ${parseFloat(order.total_price).toFixed(2)}</td>
+                                    <td><div class="status-label ${statusClass}">${order.status}</div></td>
+                                </tr>
+                            `;
+                        });
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">No recent orders yet.</td></tr>';
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching dashboard data:", error);
+            }
+        }
+
+        window.onload = fetchDashboardData;
     </script>
     <script src="global_notification.js"></script>
 </body>

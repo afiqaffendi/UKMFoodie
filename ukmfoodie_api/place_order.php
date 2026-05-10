@@ -5,6 +5,7 @@ header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Ambil data dari $_POST (kerana kita hantar FormData dari React Native)
+    $user_id       = $conn->real_escape_string($_POST['user_id']);
     $stall_id      = $conn->real_escape_string($_POST['stall_id']);
     $customer_name = $conn->real_escape_string($_POST['customer_name']);
     $total_amount  = $conn->real_escape_string($_POST['total_amount']);
@@ -32,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // 2. SIMPAN KE JADUAL orders
     // Pastikan database awak ada kolum: customer_note, payment_receipt
-    $sql_order = "INSERT INTO orders (stall_id, customer_name, total_amount, status, collect_time, customer_note, payment_receipt) 
-                  VALUES ('$stall_id', '$customer_name', '$total_amount', 'Pending', '$collect_time', '$customer_note', '$receipt_name')";
+    $sql_order = "INSERT INTO orders (user_id, stall_id, customer_name, total_amount, status, collect_time, customer_note, payment_receipt) 
+                  VALUES ('$user_id', '$stall_id', '$customer_name', '$total_amount', 'Pending', '$collect_time', '$customer_note', '$receipt_name')";
 
     if ($conn->query($sql_order) === TRUE) {
         $order_id = $conn->insert_id;

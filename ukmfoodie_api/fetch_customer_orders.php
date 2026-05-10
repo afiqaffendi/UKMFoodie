@@ -3,10 +3,10 @@ include 'db.php';
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
-$customer_name = isset($_GET['customer_name']) ? $conn->real_escape_string($_GET['customer_name']) : '';
+$user_id = isset($_GET['user_id']) ? $conn->real_escape_string($_GET['user_id']) : '';
 
-if (empty($customer_name)) {
-    echo json_encode(["status" => "error", "message" => "Customer name is required"]);
+if (empty($user_id)) {
+    echo json_encode(["status" => "error", "message" => "User ID is required"]);
     exit;
 }
 
@@ -14,7 +14,7 @@ if (empty($customer_name)) {
 $sql = "SELECT o.*, s.stall_name 
         FROM orders o
         LEFT JOIN stalls s ON o.stall_id = s.id
-        WHERE o.customer_name = '$customer_name' 
+        WHERE o.user_id = '$user_id' 
         ORDER BY o.created_at DESC";
 
 $result = $conn->query($sql);

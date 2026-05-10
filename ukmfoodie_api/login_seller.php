@@ -32,7 +32,7 @@ if ($user_res->num_rows > 0) {
         
         // 3. Cari stall yang dimiliki oleh user ini
         $owner_id = $user['id'];
-        $stall_sql = "SELECT id as stall_id, stall_name FROM stalls WHERE owner_id = '$owner_id' LIMIT 1";
+        $stall_sql = "SELECT id as stall_id, stall_name, approval_status FROM stalls WHERE owner_id = '$owner_id' LIMIT 1";
         $stall_res = $conn->query($stall_sql);
         
         if ($stall_res->num_rows > 0) {

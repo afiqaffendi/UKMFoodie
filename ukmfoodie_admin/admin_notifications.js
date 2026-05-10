@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api';
+const API_BASE = window.location.origin + '/ukmfoodie_workspace/ukmfoodie_api';
 
 async function updateAdminBadges() {
     try {

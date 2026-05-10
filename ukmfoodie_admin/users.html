@@ -9,7 +9,7 @@
     <style>
         :root { 
             --primary-yellow: #FFC93C; 
-            --sidebar-bg: #D1D5DB; /* Back to UI Admin color */
+            --sidebar-bg: #D1D5DB; 
             --bg-light: #E5E7EB; 
             --text-dark: #1F2937; 
             --text-gray: #6B7280; 
@@ -21,7 +21,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { display: flex; background-color: var(--bg-light); height: 100vh; overflow: hidden; }
 
-        /* === SIDEBAR (Size matched with Seller, Color from Admin UI) === */
+        /* === SIDEBAR === */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -114,18 +114,49 @@
         /* SEARCH */
         .search-wrapper { position: relative; display: flex; align-items: center; }
         .search-wrapper i { position: absolute; left: 12px; color: var(--text-gray); font-size: 14px; }
-        .search-input { padding: 8px 15px 8px 35px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 13px; width: 200px; outline: none; }
+        .search-input { padding: 10px 15px 10px 40px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 14px; width: 250px; outline: none; transition: 0.3s; }
+        .search-input:focus { border-color: var(--primary-yellow); box-shadow: 0 0 0 3px rgba(255, 201, 60, 0.1); }
 
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 15px 10px; font-size: 13px; color: var(--text-gray); border-bottom: 1px solid #F3F4F6; }
-        td { padding: 15px 10px; font-size: 14px; color: var(--text-dark); border-bottom: 1px solid #F3F4F6; }
+        th { text-align: left; padding: 15px 15px; font-size: 13px; color: var(--text-gray); border-bottom: 1px solid #F3F4F6; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 18px 15px; font-size: 14px; color: var(--text-dark); border-bottom: 1px solid #F3F4F6; }
 
-        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; text-transform: uppercase; }
-        .status-badge.active { background-color: var(--green-badge); }
-        .status-badge.not-active { background-color: var(--red-badge); }
+        .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; text-transform: uppercase; }
+        .status-badge.active { background-color: #50CD89; }
+        
+        .btn-details { 
+            padding: 8px 15px; 
+            background-color: #F3F4F6; 
+            border: none; 
+            border-radius: 8px; 
+            color: var(--text-dark); 
+            font-size: 12px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-details:hover { background-color: var(--primary-yellow); }
 
-        .view-more { text-align: center; margin-top: 20px; }
-        .view-more a { font-size: 12px; color: var(--text-gray); text-decoration: none; font-weight: 600; }
+        /* MODAL */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        .modal-content { background-color: #fff; margin: 5% auto; padding: 0; border-radius: 16px; width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid #F3F4F6; display: flex; justify-content: space-between; align-items: center; background-color: #F9FAFB; }
+        .modal-header h2 { font-size: 18px; font-weight: 700; }
+        .close-modal { cursor: pointer; color: #9CA3AF; font-size: 20px; transition: 0.2s; }
+        .close-modal:hover { color: #1F2937; }
+
+        .modal-body { padding: 25px; }
+        .detail-row { display: flex; margin-bottom: 15px; border-bottom: 1px solid #F9FAFB; padding-bottom: 10px; }
+        .detail-label { width: 140px; font-size: 13px; color: var(--text-gray); font-weight: 500; }
+        .detail-value { flex: 1; font-size: 14px; color: var(--text-dark); font-weight: 600; }
+
+        .profile-img-large { width: 80px; height: 80px; border-radius: 40px; background-color: #F3F4F6; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px auto; overflow: hidden; border: 3px solid var(--primary-yellow); }
+        .profile-img-large img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body>
@@ -155,12 +186,12 @@
         <div class="card">
             <div class="tabs-container">
                 <div class="tabs">
-                    <button class="tab-btn active" onclick="switchRole('User', this)">User</button>
-                    <button class="tab-btn" onclick="switchRole('Seller', this)">Seller</button>
+                    <button class="tab-btn active" id="tabUser" onclick="switchRole('User', this)">User</button>
+                    <button class="tab-btn" id="tabSeller" onclick="switchRole('Seller', this)">Seller</button>
                 </div>
                 <div class="search-wrapper">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" class="search-input" placeholder="Search">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search by name, email..." onkeyup="handleSearch()">
                 </div>
             </div>
 
@@ -171,50 +202,141 @@
                         <th>Role</th>
                         <th>Name</th>
                         <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="userTableBody">
-                    <!-- Data will be loaded here -->
+                    <tr><td colspan="5" style="text-align:center; padding:40px; color:#999;">Loading users...</td></tr>
                 </tbody>
             </table>
-            <div class="view-more"><a href="#">View More <i class="fa-solid fa-chevron-down"></i></a></div>
         </div>
     </main>
 
+    <!-- Modal Details -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">User Details</h2>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="profile-img-large" id="modalImgContainer">
+                    <i class="fa-solid fa-user" style="font-size: 30px; color: #CCC;"></i>
+                </div>
+                <div id="modalDetailsBody">
+                    <!-- Dynamic details here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="admin_notifications.js"></script>
     <script>
-        const API_BASE = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api';
         let currentRole = 'User';
+        let allUsers = [];
 
-        async function fetchUsers(role) {
+        async function fetchUsers(role, searchQuery = '') {
             try {
-                const response = await fetch(`${API_BASE}/fetch_admin_users.php?role=${role}`);
+                const response = await fetch(`${API_BASE}/fetch_admin_users.php?role=${role}&search=${searchQuery}`);
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    const tbody = document.getElementById('userTableBody');
-                    tbody.innerHTML = '';
-                    result.data.forEach(user => {
-                        tbody.innerHTML += `
-                            <tr>
-                                <td style="color: var(--text-gray);">${user.formatted_id}</td>
-                                <td>${user.role}</td>
-                                <td style="font-weight: 500;">${user.fullname}</td>
-                                <td><span class="status-badge active">Active</span></td>
-                            </tr>
-                        `;
-                    });
+                    allUsers = result.data;
+                    renderTable(allUsers);
                 }
             } catch (error) {
                 console.error("Error fetching users:", error);
             }
         }
 
+        function renderTable(users) {
+            const tbody = document.getElementById('userTableBody');
+            if (users.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:40px; color:#999;">No ${currentRole.toLowerCase()}s found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            users.forEach(user => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="color: var(--text-gray); font-family: monospace; font-weight: 600;">${user.formatted_id}</td>
+                        <td>
+                            <span style="font-size: 12px; padding: 4px 10px; background: #EEE; border-radius: 4px; font-weight: 600;">
+                                ${user.role}
+                            </span>
+                        </td>
+                        <td style="font-weight: 600;">${user.fullname}</td>
+                        <td><span class="status-badge active">Active</span></td>
+                        <td>
+                            <button class="btn-details" onclick="showDetails(${user.id})">
+                                <i class="fa-solid fa-circle-info"></i> Details
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value;
+            fetchUsers(currentRole, query);
+        }
+
         function switchRole(role, btn) {
             currentRole = role;
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+            document.getElementById('searchInput').value = '';
             fetchUsers(role);
+        }
+
+        function showDetails(userId) {
+            const user = allUsers.find(u => u.id == userId);
+            if (!user) return;
+
+            const modal = document.getElementById('detailsModal');
+            const body = document.getElementById('modalDetailsBody');
+            const imgContainer = document.getElementById('modalImgContainer');
+
+            // Set Image
+            let imageToShow = user.profile_picture;
+            if (user.role === 'Seller' && user.stall_image) {
+                imageToShow = user.stall_image;
+            }
+
+            if (imageToShow && imageToShow !== 'default_profile.png' && imageToShow !== 'default_stall.png') {
+                imgContainer.innerHTML = `<img src="${API_BASE}/uploads/${imageToShow}" alt="Profile">`;
+            } else {
+                imgContainer.innerHTML = `<i class="fa-solid fa-user" style="font-size: 30px; color: #CCC;"></i>`;
+            }
+
+            let detailsHTML = `
+                <div class="detail-row"><div class="detail-label">Full Name</div><div class="detail-value">${user.fullname}</div></div>
+                <div class="detail-row"><div class="detail-label">Email Address</div><div class="detail-value">${user.email}</div></div>
+                <div class="detail-row"><div class="detail-label">Phone Number</div><div class="detail-value">${user.phone || 'N/A'}</div></div>
+                <div class="detail-row"><div class="detail-label">Role</div><div class="detail-value">${user.role}</div></div>
+                <div class="detail-row"><div class="detail-label">Date Joined</div><div class="detail-value">${new Date(user.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</div></div>
+            `;
+
+            if (currentRole === 'Seller') {
+                detailsHTML += `
+                    <div class="detail-row"><div class="detail-label">Stall Name</div><div class="detail-value" style="color: var(--primary-yellow);">${user.stall_name}</div></div>
+                    <div class="detail-row"><div class="detail-label">Stall Status</div><div class="detail-value" style="color: #50CD89;">${user.approval_status}</div></div>
+                `;
+            }
+
+            body.innerHTML = detailsHTML;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailsModal');
+            if (event.target == modal) closeModal();
         }
 
         window.onload = () => fetchUsers('User');

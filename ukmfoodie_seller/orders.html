@@ -84,6 +84,12 @@
         
         .close-modal { position: absolute; right: 15px; width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; border-radius: 50%; cursor: pointer; color: var(--text-gray); transition: 0.2s; background: var(--bg-light); }
         .close-modal:hover { background-color: var(--red-reject); color: var(--white); }
+
+        /* === CHAT BUBBLES === */
+        .chat-bubble { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 14px; line-height: 1.4; position: relative; }
+        .chat-customer { align-self: flex-start; background-color: #F1F5F9; color: var(--text-dark); border-bottom-left-radius: 2px; }
+        .chat-seller { align-self: flex-end; background-color: var(--primary-yellow); color: var(--text-dark); border-bottom-right-radius: 2px; }
+        .chat-time { font-size: 10px; color: var(--text-gray); margin-top: 4px; display: block; }
     </style>
 </head>
 <body>
@@ -96,6 +102,11 @@
             <li><a href="orders.html" class="active"><i class="fa-solid fa-inbox"></i> Incoming Orders <span class="badge" id="orderBadge" style="display: none;">0</span></a></li>
             <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Setting</a></li>
         </ul>
+        <div style="margin-top: auto; padding: 15px;">
+            <a href="#" onclick="logoutSeller()" style="background-color: #F1416C; color: white; text-decoration: none; display: flex; align-items: center; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 6px rgba(241, 65, 108, 0.2);">
+                <i class="fa-solid fa-right-from-bracket" style="margin-right: 15px; font-size: 18px;"></i> Logout
+            </a>
+        </div>
     </aside>
 
     <main class="main-content">
@@ -132,6 +143,22 @@
             </div>
             <div class="modal-body">
                 <img id="receiptImg" src="" alt="Receipt Image">
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="chatModal">
+        <div class="modal-content" style="max-width: 500px; height: 70vh;">
+            <div class="modal-header">
+                <h3 id="chatTitle">Chat with Customer</h3>
+                <span class="close-modal" onclick="closeChat()"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="modal-body" id="chatMessages" style="display: flex; flex-direction: column; gap: 10px; padding: 15px; background: #fff;">
+                <!-- Messages go here -->
+            </div>
+            <div style="padding: 15px; border-top: 1px solid var(--border-color); display: flex; gap: 10px; background: #fff; flex-shrink: 0;">
+                <input type="text" id="chatInput" style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; outline: none;" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                <button onclick="sendChatMessage()" style="background: var(--primary-yellow); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">Send</button>
             </div>
         </div>
     </div>
@@ -180,6 +207,12 @@
                         <h3 class="customer-name">${order.customer_name}</h3>
                         ${order.status === 'Pending' ? `<div class="collect-time"><i class="fa-regular fa-clock"></i> Collect Time: ${order.collect_time}</div>` : timerHtml}
                         
+                        ${order.customer_note ? `
+                        <div style="background-color: #FFF8DD; padding: 10px 15px; border-radius: 8px; border-left: 4px solid #FFC93C; margin-bottom: 20px;">
+                            <div style="font-size: 11px; font-weight: 700; color: #B8860B; text-transform: uppercase; margin-bottom: 4px;">Customer's Note:</div>
+                            <div style="font-size: 13px; color: #1A1A1A; font-style: italic;">"${order.customer_note}"</div>
+                        </div>` : ''}
+                        
                         <div class="ordered-items-title">Ordered Items:</div>
                         <div class="item-list">${itemsHtml}</div>
 
@@ -188,8 +221,14 @@
                             <span class="total-amount">RM ${parseFloat(order.total_amount).toFixed(2)}</span>
                         </div>
 
-                        <div class="receipt-link" onclick="viewReceipt('${order.payment_receipt}')">
-                            <i class="fa-solid fa-receipt"></i> View Receipt
+                        <div style="display: flex; gap: 15px;">
+                            <div class="receipt-link" onclick="viewReceipt('${order.payment_receipt}')">
+                                <i class="fa-solid fa-receipt"></i> View Receipt
+                            </div>
+                            <div class="receipt-link" onclick="openChat(${order.id}, '${order.customer_name}')" style="color: #B8860B; position: relative; margin-left: 10px;">
+                                <i class="fa-solid fa-comment-dots"></i> Chat
+                                ${order.unread_chats > 0 ? `<span style="position: absolute; top: -12px; left: -15px; background: #F1416C; color: white; border-radius: 50%; min-width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">${order.unread_chats}</span>` : ''}
+                            </div>
                         </div>
 
                         <div class="card-actions">
@@ -272,6 +311,92 @@
                     alert(`Order #${id} is now ${newStatus}`);
                 }
             } catch (error) { console.error("Error:", error); }
+        }
+
+        // CHAT LOGIC
+        let currentChatOrderId = null;
+        let chatInterval = null;
+
+        function openChat(orderId, customerName) {
+            currentChatOrderId = orderId;
+            document.getElementById('chatTitle').innerText = `Chat with ${customerName}`;
+            document.getElementById('chatModal').style.display = 'flex';
+            markMessagesAsRead();
+            fetchChatMessages();
+            chatInterval = setInterval(() => {
+                fetchChatMessages();
+                markMessagesAsRead();
+            }, 3000);
+        }
+
+        async function markMessagesAsRead() {
+            if (!currentChatOrderId) return;
+            try {
+                await fetch(`${API_BASE}/mark_chat_read.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ order_id: currentChatOrderId, reader_type: 'seller' })
+                });
+            } catch (error) { console.error("Mark read error:", error); }
+        }
+
+        function closeChat() {
+            document.getElementById('chatModal').style.display = 'none';
+            currentChatOrderId = null;
+            if (chatInterval) clearInterval(chatInterval);
+        }
+
+        async function fetchChatMessages() {
+            if (!currentChatOrderId) return;
+            try {
+                const response = await fetch(`${API_BASE}/fetch_chat.php?order_id=${currentChatOrderId}`);
+                const result = await response.json();
+                if (result.status === 'success') {
+                    const container = document.getElementById('chatMessages');
+                    container.innerHTML = '';
+                    result.data.forEach(msg => {
+                        const isSeller = msg.sender_type === 'seller';
+                        const bubbleClass = isSeller ? 'chat-seller' : 'chat-customer';
+                        const time = new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        
+                        container.innerHTML += `
+                            <div class="chat-bubble ${bubbleClass}">
+                                ${msg.message}
+                                <span class="chat-time">${time}</span>
+                            </div>
+                        `;
+                    });
+                    container.scrollTop = container.scrollHeight;
+                }
+            } catch (error) { console.error("Chat error:", error); }
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message || !currentChatOrderId) return;
+
+            const stallId = localStorage.getItem('stall_id');
+            const data = {
+                order_id: currentChatOrderId,
+                sender_id: stallId,
+                sender_type: 'seller',
+                message: message
+            };
+
+            input.value = '';
+
+            try {
+                const response = await fetch(`${API_BASE}/send_chat.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    fetchChatMessages();
+                }
+            } catch (error) { console.error("Send error:", error); }
         }
     </script>
     <script src="global_notification.js"></script>

@@ -146,6 +146,27 @@
             text-decoration: none;
             font-weight: 600;
         }
+
+        .btn-admin-toggle {
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        .btn-admin-toggle:hover { color: var(--text-dark); }
+        .admin-mode .logo-box { background-color: var(--text-dark); color: var(--primary-yellow); }
+        .admin-mode .btn-login { background-color: var(--text-dark); color: var(--primary-yellow); }
     </style>
 </head>
 <body>
@@ -181,10 +202,47 @@
         <div class="footer-text">
             Don't have a stall? <a href="register.html">Register Your Stall</a>
         </div>
+
+        <button type="button" class="btn-admin-toggle" onclick="toggleAdminMode()" id="adminToggleBtn">
+            <i class="fa-solid fa-user-shield"></i> Login as Admin
+        </button>
     </div>
 
     <script>
         const API_BASE = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api';
+
+        let isAdminMode = false;
+
+        function toggleAdminMode() {
+            isAdminMode = !isAdminMode;
+            const card = document.querySelector('.login-card');
+            const title = document.querySelector('h1');
+            const subtitle = document.querySelector('.logo-section p');
+            const loginBtn = document.getElementById('loginBtn');
+            const toggleBtn = document.getElementById('adminToggleBtn');
+            const footer = document.querySelector('.footer-text');
+            const emailInput = document.getElementById('email');
+
+            if (isAdminMode) {
+                card.classList.add('admin-mode');
+                title.innerText = 'Admin Portal';
+                subtitle.innerText = 'Sign in to manage UKMFoodie platform.';
+                loginBtn.innerText = 'Login as Admin';
+                toggleBtn.innerHTML = '<i class="fa-solid fa-store"></i> Back to Seller Login';
+                footer.style.opacity = '0';
+                footer.style.pointerEvents = 'none';
+                emailInput.placeholder = 'admin@gmail.com';
+            } else {
+                card.classList.remove('admin-mode');
+                title.innerText = 'Seller Portal';
+                subtitle.innerText = 'Welcome back! Please login to your account.';
+                loginBtn.innerText = 'Login to Portal';
+                toggleBtn.innerHTML = '<i class="fa-solid fa-user-shield"></i> Login as Admin';
+                footer.style.opacity = '1';
+                footer.style.pointerEvents = 'auto';
+                emailInput.placeholder = 'seller@ukm.edu.my';
+            }
+        }
 
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -194,8 +252,24 @@
             const loginBtn = document.getElementById('loginBtn');
 
             errorMsg.style.display = 'none';
-            loginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+            loginBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${isAdminMode ? 'Verifying Admin...' : 'Authenticating...'}`;
             loginBtn.disabled = true;
+
+            // Admin Login Logic (Hardcoded as requested)
+            if (isAdminMode) {
+                setTimeout(() => {
+                    if (email === 'admin@gmail.com' && password === '123456') {
+                        localStorage.setItem('admin_logged_in', 'true');
+                        window.location.href = '../ukmfoodie_admin/dashboard.html';
+                    } else {
+                        errorMsg.innerText = "Invalid Admin credentials.";
+                        errorMsg.style.display = 'block';
+                        loginBtn.innerHTML = 'Login as Admin';
+                        loginBtn.disabled = false;
+                    }
+                }, 800);
+                return;
+            }
 
             try {
                 const response = await fetch(`${API_BASE}/login_seller.php`, {

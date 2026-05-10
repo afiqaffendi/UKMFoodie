@@ -8,7 +8,9 @@ $stall_id = isset($_GET['stall_id']) ? $conn->real_escape_string($_GET['stall_id
 
 // 1. Ambil order yang aktif (Pending, Preparing, Ready)
 // Query ini akan menarik semua column termasuk payment_receipt dan customer_note
-$sql = "SELECT * FROM orders 
+$sql = "SELECT *, 
+               (SELECT COUNT(*) FROM chat_messages WHERE order_id = orders.id AND sender_type = 'customer' AND is_read = 0) as unread_chats
+        FROM orders 
         WHERE stall_id = '$stall_id' 
         AND status IN ('Pending', 'Preparing', 'Ready') 
         ORDER BY created_at DESC";

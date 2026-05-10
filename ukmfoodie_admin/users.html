@@ -6,6 +6,7 @@
     <title>User Management - UKMFoodie Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="auth_check.js"></script>
     <style>
         :root { 
             --primary-yellow: #FFC93C; 
@@ -171,6 +172,11 @@
             <a href="users.html" class="nav-item active"><i class="fa-solid fa-users"></i> User Management</a>
             <a href="approvals.html" class="nav-item"><i class="fa-solid fa-store"></i> Stalls Approval <span class="badge" id="pendingBadge">0</span></a>
         </nav>
+        <div style="margin-top: auto; padding: 15px;">
+            <a href="#" onclick="logoutAdmin()" class="nav-item" style="background-color: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.2);">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
     </aside>
 
     <main class="main-content">

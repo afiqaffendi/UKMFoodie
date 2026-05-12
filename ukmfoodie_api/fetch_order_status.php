@@ -6,9 +6,10 @@ header("Content-Type: application/json");
 if (isset($_GET['order_id'])) {
     $order_id = $conn->real_escape_string($_GET['order_id']);
 
-    $sql = "SELECT o.status, o.collect_time, o.stall_id, o.accepted_at, o.total_amount, o.created_at,
+    $sql = "SELECT o.status, o.collect_time, o.stall_id, o.user_id, o.accepted_at, o.total_amount, o.created_at,
                    (SELECT SUM(quantity) FROM order_items WHERE order_id = o.id) as num_items,
-                   (SELECT COUNT(*) FROM chat_messages WHERE order_id = o.id AND sender_type = 'seller' AND is_read = 0) as unread_chats
+                   (SELECT COUNT(*) FROM chat_messages WHERE order_id = o.id AND sender_type = 'seller' AND is_read = 0) as unread_chats,
+                   (SELECT COUNT(*) FROM reviews WHERE order_id = o.id) as is_reviewed
             FROM orders o WHERE o.id = '$order_id'";
     $result = $conn->query($sql);
 

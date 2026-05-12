@@ -7,10 +7,17 @@ header("Content-Type: application/json; charset=UTF-8");
 include 'db.php';
 
 // Ambil semua gerai dari pangkalan data, TERMASUK stall_image
-$sql = "SELECT id, stall_name, description, opening_time, closing_time, status, stall_image, off_days, latitude, longitude, location_area 
-        FROM stalls 
-        WHERE approval_status = 'Approved' 
-        ORDER BY id ASC";
+$sql = "SELECT s.id, s.stall_name, s.description, s.opening_time, s.closing_time, s.status, s.stall_image, s.off_days, s.latitude, s.longitude, s.location_area,
+               COALESCE(r.avg_rating, 0) as avg_rating,
+               COALESCE(r.total_reviews, 0) as total_reviews
+        FROM stalls s
+        LEFT JOIN (
+            SELECT stall_id, AVG(rating) as avg_rating, COUNT(*) as total_reviews
+            FROM reviews
+            GROUP BY stall_id
+        ) r ON s.id = r.stall_id
+        WHERE s.approval_status = 'Approved' 
+        ORDER BY s.id ASC";
 $result = $conn->query($sql);
 
 $stalls = [];

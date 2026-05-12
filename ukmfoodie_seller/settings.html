@@ -156,6 +156,40 @@
                             <textarea id="stallAddress" class="form-control" style="padding-left:15px;" placeholder="Full address of your stall..."></textarea>
                         </div>
 
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-map-pin" style="margin-right:6px;color:#F1416C;"></i>Location Area <span style="font-size:11px;color:#888;font-weight:400;">(shown on stall card)</span></label>
+                            <select id="locationArea" class="form-control">
+                                <option value="">-- Pilih Lokasi --</option>
+                                <optgroup label="Kolej Kediaman">
+                                    <option value="Kolej Pendeta Za'ba">Kolej Pendeta Za'ba</option>
+                                    <option value="Kolej Keris Mas">Kolej Keris Mas</option>
+                                    <option value="Kolej Tun Hussein Onn">Kolej Tun Hussein Onn</option>
+                                    <option value="Kolej Aminuddin Baki">Kolej Aminuddin Baki</option>
+                                    <option value="Kolej Rahim Kajai">Kolej Rahim Kajai</option>
+                                    <option value="Kolej Ibrahim Yaakob">Kolej Ibrahim Yaakob</option>
+                                    <option value="Kolej Ungku Omar">Kolej Ungku Omar</option>
+                                    <option value="Kolej Dato' Onn">Kolej Dato' Onn</option>
+                                </optgroup>
+                                <optgroup label="Fakulti">
+                                    <option value="Fakulti Teknologi & Sains Maklumat (FTSM)">Fakulti Teknologi & Sains Maklumat (FTSM)</option>
+                                    <option value="Fakulti Kejuruteraan & Alam Bina (FKAB)">Fakulti Kejuruteraan & Alam Bina (FKAB)</option>
+                                    <option value="Fakulti Sains & Teknologi (FST)">Fakulti Sains & Teknologi (FST)</option>
+                                    <option value="Fakulti Pendidikan">Fakulti Pendidikan</option>
+                                    <option value="Fakulti Ekonomi & Pengurusan (FEP)">Fakulti Ekonomi & Pengurusan (FEP)</option>
+                                    <option value="Fakulti Sains Sosial & Kemanusiaan (FSSK)">Fakulti Sains Sosial & Kemanusiaan (FSSK)</option>
+                                    <option value="Fakulti Undang-Undang (FUU)">Fakulti Undang-Undang (FUU)</option>
+                                </optgroup>
+                                <optgroup label="Kemudahan Kampus">
+                                    <option value="Dewan Canselor Tun Abdul Razak (DKTAR)">Dewan Canselor Tun Abdul Razak (DKTAR)</option>
+                                    <option value="Kompleks Perdana Siswa">Kompleks Perdana Siswa</option>
+                                    <option value="Pusat Islam Universiti (PIU)">Pusat Islam Universiti (PIU)</option>
+                                    <option value="Pusat Kesihatan Universiti">Pusat Kesihatan Universiti</option>
+                                    <option value="Perpustakaan Tun Sri Lanang">Perpustakaan Tun Sri Lanang</option>
+                                    <option value="Stadium UKM">Stadium UKM</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Phone Number</label>
@@ -337,6 +371,7 @@
                     document.getElementById('stallName').value = data.stall_name || '';
                     document.getElementById('stallDesc').value = data.description || '';
                     document.getElementById('stallAddress').value = data.address || '';
+                    document.getElementById('locationArea').value = data.location_area || '';
                     document.getElementById('stallPhone').value = data.phone || '';
                     document.getElementById('stallEmail').value = data.email || '';
                     
@@ -404,6 +439,7 @@
             formData.append('stall_name', document.getElementById('stallName').value);
             formData.append('description', document.getElementById('stallDesc').value);
             formData.append('address', document.getElementById('stallAddress').value);
+            formData.append('location_area', document.getElementById('locationArea').value);
             formData.append('phone', document.getElementById('stallPhone').value);
             formData.append('email', document.getElementById('stallEmail').value);
             formData.append('bank_name', document.getElementById('bankName').value);

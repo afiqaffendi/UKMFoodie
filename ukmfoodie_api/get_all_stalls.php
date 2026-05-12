@@ -7,7 +7,7 @@ header("Content-Type: application/json; charset=UTF-8");
 include 'db.php';
 
 // Ambil semua gerai dari pangkalan data, TERMASUK stall_image
-$sql = "SELECT id, stall_name, description, opening_time, closing_time, status, stall_image, off_days, latitude, longitude 
+$sql = "SELECT id, stall_name, description, opening_time, closing_time, status, stall_image, off_days, latitude, longitude, location_area 
         FROM stalls 
         WHERE approval_status = 'Approved' 
         ORDER BY id ASC";

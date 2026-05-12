@@ -300,6 +300,7 @@
                                         <div class="contact-info"><i class="fa-solid fa-envelope"></i> ${stall.email}</div>
                                     </td>
                                     <td>
+                                        ${stall.location_area ? `<span class="location-tag" style="background:#FFF8DD;color:#B45309;border:1px solid #FDE68A;"><i class="fa-solid fa-map-pin" style="margin-right:4px;"></i>${stall.location_area}</span>` : ''}
                                         <span class="location-tag" title="${stall.address}">${stall.address || 'No address'}</span>
                                         <button class="mini-map-btn" onclick="openMap(${stall.latitude}, ${stall.longitude}, '${stall.stall_name}')">
                                             <i class="fa-solid fa-location-dot"></i> View Map

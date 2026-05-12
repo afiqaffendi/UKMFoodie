@@ -22,6 +22,7 @@ if(isset($_POST['stall_id'])) {
     $longitude = isset($_POST['longitude']) ? $conn->real_escape_string($_POST['longitude']) : 101.7801;
     $owner_name = $conn->real_escape_string($_POST['owner_name']);
     $address = $conn->real_escape_string($_POST['address']);
+    $location_area = $conn->real_escape_string($_POST['location_area'] ?? '');
 
     // Update users table for owner name
     $conn->query("UPDATE users SET fullname='$owner_name' WHERE id = (SELECT owner_id FROM stalls WHERE id=$id)");
@@ -60,7 +61,8 @@ if(isset($_POST['stall_id'])) {
             off_days='$off_days',
             status='$status',
             latitude='$latitude',
-            longitude='$longitude'
+            longitude='$longitude',
+            location_area='$location_area'
             $image_query
             WHERE id=$id";
             

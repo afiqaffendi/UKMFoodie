@@ -24,6 +24,7 @@ $stall_name = $conn->real_escape_string($data['stall_name']);
 $address = $conn->real_escape_string($data['address']);
 $lat = $conn->real_escape_string($data['latitude']);
 $lng = $conn->real_escape_string($data['longitude']);
+$location_area = $conn->real_escape_string($data['location_area'] ?? '');
 
 // 1. Semak jika email sudah wujud
 $check_sql = "SELECT id FROM users WHERE email = '$email'";
@@ -42,8 +43,8 @@ try {
     $user_id = $conn->insert_id;
 
     // 3. Insert ke table stalls
-    $stall_sql = "INSERT INTO stalls (owner_id, stall_name, phone, email, address, latitude, longitude, approval_status, status) 
-                  VALUES ('$user_id', '$stall_name', '$phone', '$email', '$address', '$lat', '$lng', 'Pending', 'Tutup')";
+    $stall_sql = "INSERT INTO stalls (owner_id, stall_name, phone, email, address, location_area, latitude, longitude, approval_status, status) 
+                  VALUES ('$user_id', '$stall_name', '$phone', '$email', '$address', '$location_area', '$lat', '$lng', 'Pending', 'Tutup')";
     
     if (!$conn->query($stall_sql)) throw new Exception("Failed to register stall");
 

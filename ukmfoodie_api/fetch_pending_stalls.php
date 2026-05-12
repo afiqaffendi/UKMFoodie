@@ -8,7 +8,7 @@ if ($conn->connect_error) {
     die(json_encode(['status' => 'error', 'message' => 'Database connection failed']));
 }
 
-$sql = "SELECT stalls.id, stalls.stall_name, stalls.address, stalls.phone, stalls.email, stalls.latitude, stalls.longitude, stalls.created_at, users.fullname as owner_name 
+$sql = "SELECT stalls.id, stalls.stall_name, stalls.address, stalls.location_area, stalls.phone, stalls.email, stalls.latitude, stalls.longitude, stalls.created_at, users.fullname as owner_name 
         FROM stalls 
         JOIN users ON stalls.owner_id = users.id 
         WHERE stalls.approval_status = 'Pending'

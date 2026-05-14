@@ -6,6 +6,7 @@
     <title>Admin Dashboard - UKMFoodie</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="admin_notifications.js"></script>
     <script src="auth_check.js"></script>
     <style>
         :root {
@@ -46,12 +47,17 @@
         .logo-box {
             width: 35px;
             height: 35px;
-            background-color: var(--primary-yellow);
+            overflow: hidden;
             border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--text-dark);
+            background-color: #FFC93C;
+        }
+        .logo-box img {
+            width: 120%;
+            height: 120%;
+            object-fit: cover;
         }
 
         .nav-links { list-style: none; padding: 0 15px; margin-top: 20px; }
@@ -124,7 +130,7 @@
 
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <div class="logo-box"><i class="fa-solid fa-utensils"></i></div>
+            <div class="logo-box"><img src="assets/logo.png" alt="Logo"></div>
             UKMFoodie
         </div>
         <nav class="nav-links">
@@ -188,8 +194,8 @@
         </div>
     </main>
 
-    <script src="admin_notifications.js"></script>
     <script>
+        const ADMIN_API = window.API_BASE || (window.location.origin + '/ukmfoodie_workspace/ukmfoodie_api');
 
         function timeAgo(dateString) {
             const date = new Date(dateString);
@@ -205,7 +211,7 @@
 
         async function fetchDashboardData() {
             try {
-                const response = await fetch(`${API_BASE}/fetch_admin_stats.php`);
+                const response = await fetch(`${ADMIN_API}/fetch_admin_stats.php`);
                 const result = await response.json();
 
                 if (result.status === 'success') {

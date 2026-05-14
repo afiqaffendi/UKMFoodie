@@ -25,7 +25,7 @@ if(isset($data->email) && isset($data->password)) {
         if(password_verify($password, $user['password'])) {
             echo json_encode([
                 "status" => "success", 
-                "message" => "Log masuk berjaya!",
+                "message" => "Login successful!",
                 "data" => [
                     "id" => $user['id'],
                     "fullname" => $user['fullname'],
@@ -33,13 +33,13 @@ if(isset($data->email) && isset($data->password)) {
                 ]
             ]);
         } else {
-            echo json_encode(["status" => "error", "message" => "Kata laluan salah!"]);
+            echo json_encode(["status" => "error", "message" => "Incorrect password!"]);
         }
     } else {
-        echo json_encode(["status" => "error", "message" => "E-mel tidak wujud! Sila daftar dahulu."]);
+        echo json_encode(["status" => "error", "message" => "Email does not exist! Please register first."]);
     }
 } else {
-    echo json_encode(["status" => "error", "message" => "Sila isikan e-mel dan kata laluan."]);
+    echo json_encode(["status" => "error", "message" => "Please enter email and password."]);
 }
 
 $conn->close();

@@ -13,18 +13,18 @@ if ($id) {
     if ($conn->query($sql) === TRUE) {
         echo json_encode([
             "status" => "success", 
-            "message" => "Menu berjaya dipadam secara kekal."
+            "message" => "Menu permanently deleted."
         ]);
     } else {
         echo json_encode([
             "status" => "error", 
-            "message" => "Gagal memadam menu: " . $conn->error
+            "message" => "Failed to delete menu: " . $conn->error
         ]);
     }
 } else {
     echo json_encode([
         "status" => "error", 
-        "message" => "ID tidak sah atau tidak dijumpai."
+        "message" => "Invalid or missing ID."
     ]);
 }
 

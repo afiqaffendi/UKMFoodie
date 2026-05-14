@@ -6,6 +6,7 @@
     <title>User Management - UKMFoodie Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="admin_notifications.js"></script>
     <script src="auth_check.js"></script>
     <style>
         :root { 
@@ -47,12 +48,17 @@
         .logo-box {
             width: 35px;
             height: 35px;
-            background-color: var(--primary-yellow);
+            overflow: hidden;
             border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--text-dark);
+            background-color: #FFC93C;
+        }
+        .logo-box img {
+            width: 120%;
+            height: 120%;
+            object-fit: cover;
         }
 
         .nav-links { list-style: none; padding: 0 15px; margin-top: 20px; }
@@ -164,7 +170,7 @@
 
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <div class="logo-box"><i class="fa-solid fa-utensils"></i></div>
+            <div class="logo-box"><img src="assets/logo.png" alt="Logo"></div>
             UKMFoodie
         </div>
         <nav class="nav-links">
@@ -236,14 +242,15 @@
         </div>
     </div>
 
-    <script src="admin_notifications.js"></script>
+
     <script>
+        const ADMIN_API = window.API_BASE || (window.location.origin + '/ukmfoodie_workspace/ukmfoodie_api');
         let currentRole = 'User';
         let allUsers = [];
 
         async function fetchUsers(role, searchQuery = '') {
             try {
-                const response = await fetch(`${API_BASE}/fetch_admin_users.php?role=${role}&search=${searchQuery}`);
+                const response = await fetch(`${ADMIN_API}/fetch_admin_users.php?role=${role}&search=${searchQuery}`);
                 const result = await response.json();
 
                 if (result.status === 'success') {
@@ -312,7 +319,7 @@
             }
 
             if (imageToShow && imageToShow !== 'default_profile.png' && imageToShow !== 'default_stall.png') {
-                imgContainer.innerHTML = `<img src="${API_BASE}/uploads/${imageToShow}" alt="Profile">`;
+                imgContainer.innerHTML = `<img src="${ADMIN_API}/uploads/${imageToShow}" alt="Profile">`;
             } else {
                 imgContainer.innerHTML = `<i class="fa-solid fa-user" style="font-size: 30px; color: #CCC;"></i>`;
             }

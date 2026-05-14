@@ -1,6 +1,97 @@
 const API_BASE_GLOBAL = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api';
 const notificationSoundGlobal = new Audio('notification.mp3');
 
+// Inject CSS if not already present
+if (!document.querySelector('link[href*="notifications.css"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'notifications.css?v=' + new Date().getTime(); // Anti-cache
+    document.head.appendChild(link);
+}
+
+function showToast(title, message, type = 'success') {
+    let toastContainer = document.getElementById('web-toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'web-toast-container';
+        toastContainer.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px;';
+        document.body.appendChild(toastContainer);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `web-toast ${type}`;
+    toast.style.position = 'relative'; // Override fixed from CSS if it was there
+    toast.style.top = 'auto';
+    toast.style.right = 'auto';
+    toast.style.transform = 'translateX(120%)';
+    
+    const icon = type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-xmark' : 'fa-circle-info';
+    
+    toast.innerHTML = `
+        <i class="fa-solid ${icon} web-toast-icon"></i>
+        <div class="web-toast-content">
+            <span class="web-toast-title">${title}</span>
+            <span class="web-toast-message">${message}</span>
+        </div>
+    `;
+
+    toastContainer.appendChild(toast);
+
+    // Trigger animation
+    setTimeout(() => {
+        toast.classList.add('show');
+        toast.style.transform = 'translateX(0)';
+    }, 10);
+
+    // Remove after 4s
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.style.transform = 'translateX(120%)';
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
+}
+
+function showConfirm(title, message, onConfirm) {
+    const overlay = document.createElement('div');
+    overlay.className = 'confirm-overlay';
+    
+    overlay.innerHTML = `
+        <div class="confirm-modal">
+            <div class="confirm-icon">
+                <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <div class="confirm-title">${title}</div>
+            <div class="confirm-message">${message}</div>
+            <div class="confirm-actions">
+                <button class="confirm-btn confirm-btn-cancel" id="confirm-cancel">Cancel</button>
+                <button class="confirm-btn confirm-btn-confirm" id="confirm-ok">Confirm</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // Animate in
+    setTimeout(() => overlay.classList.add('show'), 10);
+
+    const closeModal = () => {
+        overlay.classList.remove('show');
+        setTimeout(() => overlay.remove(), 300);
+    };
+
+    overlay.querySelector('#confirm-cancel').onclick = closeModal;
+    overlay.querySelector('#confirm-ok').onclick = () => {
+        onConfirm();
+        closeModal();
+    };
+
+    // Close on overlay click
+    overlay.onclick = (e) => {
+        if (e.target === overlay) closeModal();
+    };
+}
+
+
 async function checkGlobalOrders() {
     try {
         const stall_id = localStorage.getItem('stall_id');
@@ -33,7 +124,7 @@ async function checkGlobalOrders() {
             if (hasNewOrder) {
                 notificationSoundGlobal.currentTime = 0; // Reset bunyi ke awal
                 notificationSoundGlobal.play().catch(e => {
-                    console.log("Audio diblokir oleh pelayar. Sila klik di mana-mana bahagian skrin sekali untuk aktifkan bunyi.", e);
+                    console.log("Audio blocked by browser. Please click anywhere on the screen once to enable sound.", e);
                 });
             }
             

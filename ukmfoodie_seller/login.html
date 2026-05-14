@@ -6,6 +6,7 @@
     <title>Seller Login - UKMFoodie</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="notifications.css">
     <style>
         :root {
             --primary-yellow: #FFC93C;
@@ -43,16 +44,20 @@
         }
 
         .logo-box {
-            width: 50px;
-            height: 50px;
-            background-color: var(--primary-yellow);
-            border-radius: 12px;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            overflow: hidden;
+            border-radius: 16px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0 auto 15px;
-            font-size: 24px;
-            color: var(--text-dark);
+            background-color: #FFC93C;
+        }
+        .logo-box img {
+            width: 120%;
+            height: 120%;
+            object-fit: cover;
         }
 
         .login-card h1 {
@@ -167,13 +172,19 @@
         .btn-admin-toggle:hover { color: var(--text-dark); }
         .admin-mode .logo-box { background-color: var(--text-dark); color: var(--primary-yellow); }
         .admin-mode .btn-login { background-color: var(--text-dark); color: var(--primary-yellow); }
+
+        /* Make placeholders much lighter */
+        .form-control::placeholder {
+            color: #D1D5DB; /* Light gray */
+            opacity: 1; /* Firefox */
+        }
     </style>
 </head>
 <body>
 
     <div class="login-card">
         <div class="logo-section">
-            <div class="logo-box"><i class="fa-solid fa-utensils"></i></div>
+            <div class="logo-box"><img src="assets/logo.png" alt="UKMFoodie Logo"></div>
             <h1>Seller Portal</h1>
             <p>Welcome back! Please login to your account.</p>
         </div>
@@ -262,8 +273,7 @@
                         localStorage.setItem('admin_logged_in', 'true');
                         window.location.href = '../ukmfoodie_admin/dashboard.html';
                     } else {
-                        errorMsg.innerText = "Invalid Admin credentials.";
-                        errorMsg.style.display = 'block';
+                        showToast("Login Failed", "Invalid Admin credentials.", "error");
                         loginBtn.innerHTML = 'Login as Admin';
                         loginBtn.disabled = false;
                     }
@@ -281,17 +291,14 @@
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    // Simpan data dalam localStorage
+                    // ... (keep storage logic)
                     localStorage.setItem('seller_id', result.data.user_id);
                     localStorage.setItem('seller_name', result.data.fullname);
                     localStorage.setItem('stall_id', result.data.stall_id);
                     localStorage.setItem('stall_name', result.data.stall_name);
-                    
-                    // Redirect ke dashboard
                     window.location.href = 'dashboard.html';
                 } else {
-                    errorMsg.innerText = result.message;
-                    errorMsg.style.display = 'block';
+                    showToast("Login Failed", result.message, "error");
                     loginBtn.innerHTML = 'Login to Portal';
                     loginBtn.disabled = false;
                 }
@@ -308,5 +315,6 @@
             localStorage.clear();
         }
     </script>
+    <script src="global_notification.js"></script>
 </body>
 </html>

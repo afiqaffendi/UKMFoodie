@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="notifications.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         :root { --primary-yellow: #FFC93C; --bg-light: #F4F7F6; --text-dark: #1A1A1A; --text-gray: #888888; --white: #FFFFFF; }
@@ -34,7 +35,22 @@
             border: 1px solid rgba(255,255,255,0.3);
         }
 
-        .logo-box { width: 50px; height: 50px; background-color: var(--primary-yellow); border-radius: 12px; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px; font-size: 24px; color: var(--text-dark); }
+        .logo-box {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            overflow: hidden;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #FFC93C;
+        }
+        .logo-box img {
+            width: 120%;
+            height: 120%;
+            object-fit: cover;
+        }
         h1 { font-size: 24px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; }
         p.subtitle { color: var(--text-gray); font-size: 14px; margin-bottom: 30px; }
 
@@ -58,13 +74,23 @@
         .footer-text { margin-top: 20px; font-size: 14px; color: var(--text-gray); }
         .footer-text a { color: var(--primary-yellow); text-decoration: none; font-weight: 600; }
 
+        /* Make placeholders much lighter */
+        .form-control::placeholder {
+            color: #D1D5DB; /* Light gray */
+            opacity: 1; /* Firefox */
+        }
+        
+        textarea.form-control::placeholder {
+            color: #D1D5DB;
+        }
+
         @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } }
     </style>
 </head>
 <body>
 
     <div class="reg-card">
-        <div class="logo-box"><i class="fa-solid fa-store"></i></div>
+        <div class="logo-box"><img src="assets/logo.png" alt="UKMFoodie Logo"></div>
         <h1>Register Your Stall</h1>
         <p class="subtitle">Join UKMFoodie and start growing your business.</p>
 
@@ -217,13 +243,20 @@
                 });
 
                 const result = await response.json();
-                alert(result.message);
                 
                 if (result.status === 'success') {
-                    window.location.href = 'login.html';
+                    showConfirm(
+                        "Application Submitted!",
+                        "Your registration request has been received and is currently under review by our team. You will be notified via email once your stall is approved.<br><br><b>Contact Admin for inquiries:</b><br>011-56588636",
+                        () => {
+                            window.location.href = 'login.html';
+                        }
+                    );
+                } else {
+                    showToast("Error", result.message, "error");
                 }
             } catch (error) {
-                alert("Failed to connect to server. Please try again.");
+                showToast("Connection Error", "Failed to connect to server. Please try again.", "error");
             } finally {
                 regBtn.innerHTML = originalText;
                 regBtn.disabled = false;
@@ -233,5 +266,6 @@
         // Small delay to fix map container issue
         setTimeout(() => map.invalidateSize(), 500);
     </script>
+    <script src="global_notification.js"></script>
 </body>
 </html>

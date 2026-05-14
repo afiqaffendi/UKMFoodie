@@ -47,20 +47,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($conn->query($sql) === TRUE) {
         echo json_encode([
             "status" => "success", 
-            "message" => "Menu berjaya ditambah!",
+            "message" => "Menu added successfully!",
             "image" => $image_name
         ]);
     } else {
         echo json_encode([
             "status" => "error", 
-            "message" => "Ralat Database: " . $conn->error
+            "message" => "Database Error: " . $conn->error
         ]);
     }
 
 } else {
     echo json_encode([
         "status" => "error", 
-        "message" => "Request method tidak sah (Guna POST)"
+        "message" => "Invalid request method (Use POST)"
     ]);
 }
 ?>

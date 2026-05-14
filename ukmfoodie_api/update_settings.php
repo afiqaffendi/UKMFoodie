@@ -67,7 +67,7 @@ if(isset($_POST['stall_id'])) {
             WHERE id=$id";
             
     if($conn->query($sql) === TRUE) {
-        echo json_encode(["status" => "success", "message" => "Profil & QR berjaya dikemas kini!"]);
+        echo json_encode(["status" => "success", "message" => "Profile & QR updated successfully!"]);
     } else {
         echo json_encode(["status" => "error", "message" => $conn->error]);
     }

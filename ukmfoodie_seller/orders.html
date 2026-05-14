@@ -6,7 +6,9 @@
     <title>Incoming Orders - UKMFoodie Seller</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="notifications.css">
     <script src="auth_check.js"></script>
+    <script src="global_notification.js"></script>
     
     <style>
         :root {
@@ -28,7 +30,8 @@
         /* === SIDEBAR STYLES === */
         .sidebar { width: 260px; background-color: var(--sidebar-dark); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; overflow-y: auto; }
         .sidebar-logo { padding: 25px; display: flex; align-items: center; gap: 15px; font-size: 20px; font-weight: 700; color: var(--primary-yellow); }
-        .logo-box { width: 35px; height: 35px; background-color: var(--primary-yellow); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: var(--text-dark); }
+        .logo-box { width: 35px; height: 35px; overflow: hidden; border-radius: 8px; display: flex; justify-content: center; align-items: center; background-color: #FFC93C; }
+        .logo-box img { width: 120%; height: 120%; object-fit: cover; }
         .nav-links { list-style: none; padding: 0 15px; margin-top: 20px; }
         .nav-links li { margin-bottom: 10px; }
         .nav-links a { display: flex; align-items: center; padding: 12px 20px; color: #A1A5B7; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; transition: 0.3s; }
@@ -95,7 +98,7 @@
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-logo"><div class="logo-box"><i class="fa-solid fa-utensils"></i></div>UKMFoodie</div>
+        <div class="sidebar-logo"><div class="logo-box"><img src="assets/logo.png" alt="Logo"></div>UKMFoodie</div>
         <ul class="nav-links">
             <li><a href="dashboard.html"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
             <li><a href="menu.html"><i class="fa-solid fa-book-open"></i> Menu Management</a></li>
@@ -296,21 +299,20 @@
         }
 
         async function updateStatus(id, newStatus) {
-            const confirmAction = confirm(`Are you sure to ${newStatus} this order?`);
-            if (!confirmAction) return;
-
-            try {
-                const response = await fetch(`${API_BASE}/update_order_status.php`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ order_id: id, status: newStatus })
-                });
-                const result = await response.json();
-                if (result.status === 'success') {
-                    loadOrders();
-                    alert(`Order #${id} is now ${newStatus}`);
-                }
-            } catch (error) { console.error("Error:", error); }
+            showConfirm("Update Status", `Are you sure you want to change order #${id} status to ${newStatus}?`, async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/update_order_status.php`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ order_id: id, status: newStatus })
+                    });
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        loadOrders();
+                        showToast("Success", `Order #${id} is now ${newStatus}`);
+                    }
+                } catch (error) { console.error("Error:", error); }
+            });
         }
 
         // CHAT LOGIC
@@ -399,6 +401,5 @@
             } catch (error) { console.error("Send error:", error); }
         }
     </script>
-    <script src="global_notification.js"></script>
 </body>
 </html>

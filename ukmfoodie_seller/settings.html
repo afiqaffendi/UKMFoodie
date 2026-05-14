@@ -7,8 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="notifications.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="auth_check.js"></script>
+    <script src="global_notification.js"></script>
     
     <style>
         :root { --primary-yellow: #FFC93C; --sidebar-dark: #1E1E2D; --bg-light: #E9ECEF; --text-dark: #1A1A1A; --text-gray: #888888; --white: #FFFFFF; --border-color: #E6E6E8; --blue-link: #3B82F6; --green-accept: #50CD89; --red-reject: #F1416C; }
@@ -17,7 +19,8 @@
         
         .sidebar { width: 260px; background-color: var(--sidebar-dark); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; overflow-y: auto; }
         .sidebar-logo { padding: 25px; display: flex; align-items: center; gap: 15px; font-size: 20px; font-weight: 700; color: var(--primary-yellow); }
-        .logo-box { width: 35px; height: 35px; background-color: var(--primary-yellow); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: var(--text-dark); }
+        .logo-box { width: 35px; height: 35px; overflow: hidden; border-radius: 8px; display: flex; justify-content: center; align-items: center; background-color: #FFC93C; }
+        .logo-box img { width: 120%; height: 120%; object-fit: cover; }
         .nav-links { list-style: none; padding: 0 15px; margin-top: 20px; }
         .nav-links li { margin-bottom: 10px; }
         .nav-links a { display: flex; align-items: center; padding: 12px 20px; color: #A1A5B7; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; transition: 0.3s; }
@@ -86,7 +89,7 @@
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-logo"><div class="logo-box"><i class="fa-solid fa-utensils"></i></div>UKMFoodie</div>
+        <div class="sidebar-logo"><div class="logo-box"><img src="assets/logo.png" alt="Logo"></div>UKMFoodie</div>
         <ul class="nav-links">
             <li><a href="dashboard.html"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
             <li><a href="menu.html"><i class="fa-solid fa-book-open"></i> Menu Management</a></li>
@@ -159,7 +162,7 @@
                         <div class="form-group">
                             <label><i class="fa-solid fa-map-pin" style="margin-right:6px;color:#F1416C;"></i>Location Area <span style="font-size:11px;color:#888;font-weight:400;">(shown on stall card)</span></label>
                             <select id="locationArea" class="form-control">
-                                <option value="">-- Pilih Lokasi --</option>
+                                <option value="">-- Select Location --</option>
                                 <optgroup label="Kolej Kediaman">
                                     <option value="Kolej Pendeta Za'ba">Kolej Pendeta Za'ba</option>
                                     <option value="Kolej Keris Mas">Kolej Keris Mas</option>
@@ -475,16 +478,15 @@
                 });
                 
                 const result = await response.json();
-                alert(result.status === 'success' ? 'Berjaya: ' + result.message : 'Gagal: ' + result.message);
+                showToast(result.status === 'success' ? "Success" : "Error", result.message, result.status === 'success' ? "success" : "error");
                 btn.innerHTML = originalText;
                 if(result.status === 'success') loadSettingsData();
                 
             } catch (error) {
-                alert('Ralat Sistem: Pastikan XAMPP sedang berjalan.');
+                showToast("System Error", "Make sure XAMPP is running.", "error");
                 console.error(error);
             }
         });
     </script>
-    <script src="global_notification.js"></script>
 </body>
 </html>

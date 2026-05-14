@@ -6,6 +6,7 @@
     <title>Stall Approvals - UKMFoodie Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="admin_notifications.js"></script>
     <script src="auth_check.js"></script>
     <style>
         :root {
@@ -48,12 +49,17 @@
         .logo-box {
             width: 35px;
             height: 35px;
-            background-color: var(--primary-yellow);
+            overflow: hidden;
             border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--text-dark);
+            background-color: #FFC93C;
+        }
+        .logo-box img {
+            width: 120%;
+            height: 120%;
+            object-fit: cover;
         }
 
         .nav-links { list-style: none; padding: 0 15px; margin-top: 20px; }
@@ -208,7 +214,7 @@
 
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <div class="logo-box"><i class="fa-solid fa-utensils"></i></div>
+            <div class="logo-box"><img src="assets/logo.png" alt="Logo"></div>
             UKMFoodie
         </div>
         <nav class="nav-links">
@@ -271,15 +277,14 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <script src="auth_check.js"></script>
-    <script src="admin_notifications.js"></script>
     <script>
+        const ADMIN_API = window.API_BASE || (window.location.origin + '/ukmfoodie_workspace/ukmfoodie_api');
         let leafletMap;
         let leafletMarker;
 
         async function fetchPendingStalls() {
             try {
-                const response = await fetch(`${API_BASE}/fetch_pending_stalls.php`);
+                const response = await fetch(`${ADMIN_API}/fetch_pending_stalls.php`);
                 const result = await response.json();
 
                 const tbody = document.getElementById('approvalsBody');
@@ -350,23 +355,29 @@
         }
 
         async function updateStatus(stallId, status) {
-            if (!confirm(`Are you sure you want to ${status.toLowerCase()} this stall?`)) return;
+            showConfirm(
+                `Confirm ${status}`,
+                `Are you sure you want to ${status.toLowerCase()} this stall?`,
+                async () => {
+                    try {
+                        const response = await fetch(`${ADMIN_API}/update_stall_approval.php`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ stall_id: stallId, status: status })
+                        });
 
-            try {
-                const response = await fetch(`${API_BASE}/update_stall_approval.php`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ stall_id: stallId, status: status })
-                });
-
-                const result = await response.json();
-                alert(result.message);
-                if (result.status === 'success') {
-                    fetchPendingStalls();
+                        const result = await response.json();
+                        if (result.status === 'success') {
+                            showToast("Success", result.message, "success");
+                            fetchPendingStalls();
+                        } else {
+                            showToast("Failed", result.message, "error");
+                        }
+                    } catch (error) {
+                        showToast("Error", "Failed to update status.", "error");
+                    }
                 }
-            } catch (error) {
-                alert("Failed to update status.");
-            }
+            );
         }
 
         window.onload = fetchPendingStalls;

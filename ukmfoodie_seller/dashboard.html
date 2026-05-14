@@ -6,7 +6,9 @@
     <title>UKMFoodie Seller Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="notifications.css">
     <script src="auth_check.js"></script>
+    <script src="global_notification.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
@@ -58,12 +60,17 @@
         .logo-box {
             width: 35px;
             height: 35px;
-            background-color: var(--primary-yellow);
+            overflow: hidden;
             border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--text-dark);
+            background-color: #FFC93C;
+        }
+        .logo-box img {
+            width: 120%;
+            height: 120%;
+            object-fit: cover;
         }
 
         .nav-links {
@@ -270,7 +277,7 @@
 
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <div class="logo-box"><i class="fa-solid fa-utensils"></i></div>
+            <div class="logo-box"><img src="assets/logo.png" alt="Logo"></div>
             UKMFoodie
         </div>
         <ul class="nav-links">
@@ -437,7 +444,7 @@
                     if (result.recent_orders.length > 0) {
                         tbody.innerHTML = '';
                         result.recent_orders.forEach(order => {
-                            const statusClass = order.status === 'Baru' ? 'pending' : 'completed';
+                            const statusClass = order.status === 'Pending' ? 'pending' : 'completed';
                             tbody.innerHTML += `
                                 <tr>
                                     <td class="bold">#${order.id}</td>
@@ -458,6 +465,5 @@
 
         window.onload = fetchDashboardData;
     </script>
-    <script src="global_notification.js"></script>
 </body>
 </html>

@@ -12,7 +12,7 @@ if ($stall_id == 0) {
 
 // 1. Revenue Today
 $today = date('Y-m-d');
-$rev_sql = "SELECT SUM(total_price) as total FROM orders WHERE stall_id = '$stall_id' AND DATE(created_at) = '$today' AND status = 'Selesai'";
+$rev_sql = "SELECT SUM(total_price) as total FROM orders WHERE stall_id = '$stall_id' AND DATE(created_at) = '$today' AND status = 'Completed'";
 $rev_res = $conn->query($rev_sql);
 $revenue = $rev_res->fetch_assoc()['total'] ?? 0;
 
@@ -22,7 +22,7 @@ $order_res = $conn->query($order_sql);
 $total_orders = $order_res->fetch_assoc()['total'] ?? 0;
 
 // 3. Pending Orders
-$pending_sql = "SELECT COUNT(*) as total FROM orders WHERE stall_id = '$stall_id' AND status = 'Baru'";
+$pending_sql = "SELECT COUNT(*) as total FROM orders WHERE stall_id = '$stall_id' AND status = 'Pending'";
 $pending_res = $conn->query($pending_sql);
 $pending_orders = $pending_res->fetch_assoc()['total'] ?? 0;
 
@@ -32,7 +32,7 @@ $week_sql = "SELECT DAYOFWEEK(created_at) as day, SUM(total_price) as total
              FROM orders 
              WHERE stall_id = '$stall_id' 
              AND created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-             AND status = 'Selesai'
+             AND status = 'Completed'
              GROUP BY DAYOFWEEK(created_at)";
 $week_res = $conn->query($week_sql);
 while($row = $week_res->fetch_assoc()) {

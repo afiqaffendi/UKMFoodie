@@ -6,7 +6,7 @@ header("Content-Type: application/json");
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Pastikan ID sentiasa ada
     if (!isset($_POST['id'])) {
-        echo json_encode(["status" => "error", "message" => "ID tidak sah"]);
+        echo json_encode(["status" => "error", "message" => "Invalid ID"]);
         exit;
     }
 
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // 3. Jika tiada data yang dihantar untuk dikemaskini
     if (empty($update_fields)) {
-        echo json_encode(["status" => "error", "message" => "Tiada data untuk dikemaskini"]);
+        echo json_encode(["status" => "error", "message" => "No data to update"]);
         exit;
     }
 
@@ -57,12 +57,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql = "UPDATE menu_items SET " . implode(', ', $update_fields) . " WHERE id = '$id'";
 
     if ($conn->query($sql) === TRUE) {
-        echo json_encode(["status" => "success", "message" => "Berjaya dikemaskini!"]);
+        echo json_encode(["status" => "success", "message" => "Updated successfully!"]);
     } else {
-        echo json_encode(["status" => "error", "message" => "Ralat SQL: " . $conn->error]);
+        echo json_encode(["status" => "error", "message" => "SQL Error: " . $conn->error]);
     }
 
 } else {
-    echo json_encode(["status" => "error", "message" => "Request method tidak sah (Guna POST)"]);
+    echo json_encode(["status" => "error", "message" => "Invalid request method (Use POST)"]);
 }
 ?>

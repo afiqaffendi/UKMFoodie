@@ -18,12 +18,12 @@ if (isset($data['order_id']) && isset($data['status'])) {
     }
 
     if ($conn->query($sql) === TRUE) {
-        echo json_encode(["status" => "success", "message" => "Status pesanan dikemaskini."]);
+        echo json_encode(["status" => "success", "message" => "Order status updated."]);
     } else {
         echo json_encode(["status" => "error", "message" => $conn->error]);
     }
 } else {
-    echo json_encode(["status" => "error", "message" => "Data tidak lengkap."]);
+    echo json_encode(["status" => "error", "message" => "Incomplete data."]);
 }
 
 $conn->close();

@@ -26,19 +26,19 @@ if(isset($data->fullname) && isset($data->email) && isset($data->password)) {
 
     if($result->num_rows > 0) {
         // Jika e-mel dah wujud
-        echo json_encode(["status" => "error", "message" => "E-mel ini telah didaftarkan!"]);
+        echo json_encode(["status" => "error", "message" => "This email is already registered!"]);
     } else {
         // Jika e-mel belum wujud, masukkan data ke dalam jadual users
         $sql = "INSERT INTO users (fullname, phone, email, password, role) VALUES ('$fullname', '$phone', '$email', '$password', '$role')";
         
         if($conn->query($sql) === TRUE) {
-            echo json_encode(["status" => "success", "message" => "Pendaftaran berjaya!"]);
+            echo json_encode(["status" => "success", "message" => "Registration successful!"]);
         } else {
-            echo json_encode(["status" => "error", "message" => "Ralat pangkalan data: " . $conn->error]);
+            echo json_encode(["status" => "error", "message" => "Database error: " . $conn->error]);
         }
     }
 } else {
-    echo json_encode(["status" => "error", "message" => "Sila isikan semua maklumat yang diperlukan."]);
+    echo json_encode(["status" => "error", "message" => "Please fill in all required information."]);
 }
 
 $conn->close();

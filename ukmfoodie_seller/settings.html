@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,93 +12,485 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="auth_check.js"></script>
     <script src="global_notification.js"></script>
-    
+
     <style>
-        :root { --primary-yellow: #FFC93C; --sidebar-dark: #1E1E2D; --bg-light: #E9ECEF; --text-dark: #1A1A1A; --text-gray: #888888; --white: #FFFFFF; --border-color: #E6E6E8; --blue-link: #3B82F6; --green-accept: #50CD89; --red-reject: #F1416C; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { display: flex; background-color: var(--bg-light); height: 100vh; overflow: hidden; }
-        
-        .sidebar { width: 260px; background-color: var(--sidebar-dark); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; overflow-y: auto; }
-        .sidebar-logo { padding: 25px; display: flex; align-items: center; gap: 15px; font-size: 20px; font-weight: 700; color: var(--primary-yellow); }
-        .logo-box { width: 35px; height: 35px; overflow: hidden; border-radius: 8px; display: flex; justify-content: center; align-items: center; background-color: #FFC93C; }
-        .logo-box img { width: 120%; height: 120%; object-fit: cover; }
-        .nav-links { list-style: none; padding: 0 15px; margin-top: 20px; }
-        .nav-links li { margin-bottom: 10px; }
-        .nav-links a { display: flex; align-items: center; padding: 12px 20px; color: #A1A5B7; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; transition: 0.3s; }
-        .nav-links a i { margin-right: 15px; font-size: 18px; }
-        .nav-links a.active { background-color: var(--primary-yellow); color: var(--text-dark); }
-        .badge { background-color: var(--red-reject); color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: auto; font-weight: 700; }
+        :root {
+            --primary-yellow: #FFC93C;
+            --sidebar-dark: #1E1E2D;
+            --bg-light: #E9ECEF;
+            --text-dark: #1A1A1A;
+            --text-gray: #888888;
+            --white: #FFFFFF;
+            --border-color: #E6E6E8;
+            --blue-link: #3B82F6;
+            --green-accept: #50CD89;
+            --red-reject: #F1416C;
+        }
 
-        .main-content { flex: 1; padding: 0; display: flex; flex-direction: column; overflow-y: auto; height: 100vh; }
-        .top-navbar { background-color: var(--white); padding: 15px 30px; font-weight: 500; color: var(--text-gray); font-size: 14px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
-        .content-wrapper { padding: 30px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .page-header-text h1 { font-size: 28px; color: var(--text-dark); font-weight: 700; margin-bottom: 5px; }
-        .page-header-text p { color: var(--text-gray); font-size: 15px; }
-        .stall-status-container { display: flex; align-items: center; gap: 15px; font-weight: 600; color: var(--text-dark); }
-        
-        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #D1D1D6; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        input:checked + .slider { background-color: var(--green-accept); }
-        input:checked + .slider:before { transform: translateX(22px); }
-        .status-text { color: var(--green-accept); font-weight: 700; }
+        body {
+            display: flex;
+            background-color: var(--bg-light);
+            height: 100vh;
+            overflow: hidden;
+        }
 
-        .settings-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: start; }
-        .card { background-color: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); margin-bottom: 25px; }
-        .card-title { font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-dark);
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
 
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-gray); margin-bottom: 8px; }
-        .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper i { position: absolute; left: 15px; color: #A9A9A9; font-size: 14px; }
-        .form-control { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; color: var(--text-dark); outline: none; transition: border-color 0.2s; }
-        .form-control:focus { border-color: var(--primary-yellow); }
-        textarea.form-control { padding: 12px 15px; resize: vertical; min-height: 80px; }
-        select.form-control { padding-left: 15px; } 
-        .form-row { display: flex; gap: 15px; }
-        .form-row .form-group { flex: 1; }
+        .sidebar-logo {
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-yellow);
+        }
 
-        .profile-img-section { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
-        .profile-img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); }
-        .btn-outline { background: none; border: 1px solid var(--red-reject); color: var(--red-reject); padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .logo-box {
+            width: 35px;
+            height: 35px;
+            overflow: hidden;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #FFC93C;
+        }
 
-        .warning-banner { background-color: #FFF8DD; color: #D9A000; padding: 12px 15px; border-radius: 8px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .btn-upload { background-color: var(--bg-light); border: 1px solid var(--border-color); color: var(--text-dark); padding: 10px 15px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: block; width: fit-content; margin-top: 10px; }
+        .logo-box img {
+            width: 120%;
+            height: 120%;
+            object-fit: cover;
+        }
 
-        .hours-container { display: flex; justify-content: space-around; gap: 20px; margin-bottom: 30px; }
-        .time-picker-mock { background-color: var(--bg-light); border-radius: 12px; padding: 15px; text-align: center; flex: 1; }
-        .time-picker-title { font-size: 14px; font-weight: 700; margin-bottom: 15px; color: var(--text-dark); }
-        .time-input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 18px; font-weight: 600; color: var(--blue-link); text-align: center; background-color: white; }
-        
-        .off-days-title { font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-        .checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; }
-        .checkbox-label { font-size: 13px; color: var(--text-gray); display: flex; align-items: center; gap: 6px; cursor: pointer; }
-        .checkbox-label input[type="checkbox"] { accent-color: var(--red-reject); width: 16px; height: 16px; }
+        .nav-links {
+            list-style: none;
+            padding: 0 15px;
+            margin-top: 20px;
+        }
 
-        .btn-logout { width: 100%; background-color: var(--red-reject); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
-        
-        .btn-save-settings { width: 100%; background-color: var(--primary-yellow); color: var(--text-dark); border: none; padding: 15px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 4px 6px rgba(255, 201, 60, 0.2); }
-        .btn-save-settings:hover { transform: translateY(-2px); }
+        .nav-links li {
+            margin-bottom: 10px;
+        }
 
-        #map { height: 250px; width: 100%; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 10px; }
-        .map-hint { font-size: 11px; color: var(--text-gray); margin-top: 5px; display: block; }
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #A1A5B7;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .nav-links a i {
+            margin-right: 15px;
+            font-size: 18px;
+        }
+
+        .nav-links a.active {
+            background-color: var(--primary-yellow);
+            color: var(--text-dark);
+        }
+
+        .badge {
+            background-color: var(--red-reject);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-left: auto;
+            font-weight: 700;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .top-navbar {
+            background-color: var(--white);
+            padding: 15px 30px;
+            font-weight: 500;
+            color: var(--text-gray);
+            font-size: 14px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .content-wrapper {
+            padding: 30px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header-text h1 {
+            font-size: 28px;
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .page-header-text p {
+            color: var(--text-gray);
+            font-size: 15px;
+        }
+
+        .stall-status-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #D1D1D6;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input:checked+.slider {
+            background-color: var(--green-accept);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(22px);
+        }
+
+        .status-text {
+            color: var(--green-accept);
+            font-weight: 700;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            color: #A9A9A9;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-dark);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-yellow);
+        }
+
+        textarea.form-control {
+            padding: 12px 15px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        select.form-control {
+            padding-left: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .profile-img-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .profile-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-outline {
+            background: none;
+            border: 1px solid var(--red-reject);
+            color: var(--red-reject);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .warning-banner {
+            background-color: #FFF8DD;
+            color: #D9A000;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-upload {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            width: fit-content;
+            margin-top: 10px;
+        }
+
+        .hours-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .time-picker-mock {
+            background-color: var(--bg-light);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .time-picker-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .time-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--blue-link);
+            text-align: center;
+            background-color: white;
+        }
+
+        .off-days-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .checkbox-label {
+            font-size: 13px;
+            color: var(--text-gray);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            accent-color: var(--red-reject);
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            background-color: var(--red-reject);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-save-settings {
+            width: 100%;
+            background-color: var(--primary-yellow);
+            color: var(--text-dark);
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 15px;
+            box-shadow: 0 4px 6px rgba(255, 201, 60, 0.2);
+        }
+
+        .btn-save-settings:hover {
+            transform: translateY(-2px);
+        }
+
+        #map {
+            height: 250px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+        }
+
+        .map-hint {
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-top: 5px;
+            display: block;
+        }
     </style>
 </head>
+
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-logo"><div class="logo-box"><img src="assets/logo.png" alt="Logo"></div>UKMFoodie</div>
+        <div class="sidebar-logo">
+            <div class="logo-box"><img src="assets/logo.png" alt="Logo"></div>UKMFoodie
+        </div>
         <ul class="nav-links">
             <li><a href="dashboard.html"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
             <li><a href="menu.html"><i class="fa-solid fa-book-open"></i> Menu Management</a></li>
-            <li><a href="orders.html"><i class="fa-solid fa-inbox"></i> Incoming Orders <span class="badge" id="orderBadge" style="display: none;">0</span></a></li>
+            <li><a href="orders.html"><i class="fa-solid fa-inbox"></i> Incoming Orders <span class="badge"
+                        id="orderBadge" style="display: none;">0</span></a></li>
             <li><a href="settings.html" class="active"><i class="fa-solid fa-gear"></i> Setting</a></li>
         </ul>
         <div style="margin-top: auto; padding: 15px;">
-            <a href="#" onclick="logoutSeller()" style="background-color: #F1416C; color: white; text-decoration: none; display: flex; align-items: center; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 6px rgba(241, 65, 108, 0.2);">
+            <a href="#" onclick="logoutSeller()"
+                style="background-color: #F1416C; color: white; text-decoration: none; display: flex; align-items: center; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 6px rgba(241, 65, 108, 0.2);">
                 <i class="fa-solid fa-right-from-bracket" style="margin-right: 15px; font-size: 18px;"></i> Logout
             </a>
         </div>
@@ -107,30 +500,32 @@
         <div class="top-navbar">UKMFoodie Seller Portal</div>
 
         <div class="content-wrapper">
-            
+
             <div class="page-header">
                 <div class="page-header-text">
                     <h1>Store Settings</h1>
                     <p>Update your store profile and payment details.</p>
                 </div>
-                
+
                 <div class="stall-status-container">
                     <span>Stall Status</span>
-                    <label class="switch"><input type="checkbox" id="stallStatusToggle" checked><span class="slider"></span></label>
+                    <label class="switch"><input type="checkbox" id="stallStatusToggle" checked><span
+                            class="slider"></span></label>
                     <span class="status-text">OPEN</span>
                 </div>
             </div>
 
             <div class="settings-grid">
-                
+
                 <div class="left-col">
-                    
+
                     <div class="card">
                         <div class="card-title">Store Profile</div>
                         <div class="profile-img-section">
                             <img src="https://via.placeholder.com/150" id="previewImg" class="profile-img">
                             <input type="file" id="imageInput" style="display:none;" accept="image/*">
-                            <button class="btn-outline" onclick="document.getElementById('imageInput').click()">Change Image</button>
+                            <button class="btn-outline" onclick="document.getElementById('imageInput').click()">Change
+                                Image</button>
                         </div>
 
                         <div class="form-group">
@@ -151,16 +546,20 @@
 
                         <div class="form-group">
                             <label>Description/Tagline</label>
-                            <textarea id="stallDesc" class="form-control" style="padding-left:15px;" placeholder="Describe your stall..."></textarea>
+                            <textarea id="stallDesc" class="form-control" style="padding-left:15px;"
+                                placeholder="Describe your stall..."></textarea>
                         </div>
 
                         <div class="form-group">
                             <label>Stall Address</label>
-                            <textarea id="stallAddress" class="form-control" style="padding-left:15px;" placeholder="Full address of your stall..."></textarea>
+                            <textarea id="stallAddress" class="form-control" style="padding-left:15px;"
+                                placeholder="Full address of your stall..."></textarea>
                         </div>
 
                         <div class="form-group">
-                            <label><i class="fa-solid fa-map-pin" style="margin-right:6px;color:#F1416C;"></i>Location Area <span style="font-size:11px;color:#888;font-weight:400;">(shown on stall card)</span></label>
+                            <label><i class="fa-solid fa-map-pin" style="margin-right:6px;color:#F1416C;"></i>Location
+                                Area <span style="font-size:11px;color:#888;font-weight:400;">(shown on stall
+                                    card)</span></label>
                             <select id="locationArea" class="form-control">
                                 <option value="">-- Select Location --</option>
                                 <optgroup label="Kolej Kediaman">
@@ -171,23 +570,36 @@
                                     <option value="Kolej Rahim Kajai">Kolej Rahim Kajai</option>
                                     <option value="Kolej Ibrahim Yaakob">Kolej Ibrahim Yaakob</option>
                                     <option value="Kolej Ungku Omar">Kolej Ungku Omar</option>
+                                    <option value="Kolej Burhanuddin Helmi">Kolej Burhanuddin Helmi</option>
                                     <option value="Kolej Dato' Onn">Kolej Dato' Onn</option>
+                                    <option value="Kolej Ibu Zain">Kolej Ibu Zain</option>
                                 </optgroup>
                                 <optgroup label="Fakulti">
-                                    <option value="Fakulti Teknologi & Sains Maklumat (FTSM)">Fakulti Teknologi & Sains Maklumat (FTSM)</option>
-                                    <option value="Fakulti Kejuruteraan & Alam Bina (FKAB)">Fakulti Kejuruteraan & Alam Bina (FKAB)</option>
-                                    <option value="Fakulti Sains & Teknologi (FST)">Fakulti Sains & Teknologi (FST)</option>
-                                    <option value="Fakulti Pendidikan">Fakulti Pendidikan</option>
-                                    <option value="Fakulti Ekonomi & Pengurusan (FEP)">Fakulti Ekonomi & Pengurusan (FEP)</option>
-                                    <option value="Fakulti Sains Sosial & Kemanusiaan (FSSK)">Fakulti Sains Sosial & Kemanusiaan (FSSK)</option>
+                                    <option value="Fakulti Teknologi & Sains Maklumat (FTSM)">Fakulti Teknologi & Sains
+                                        Maklumat (FTSM)</option>
+                                    <option value="Fakulti Kejuruteraan & Alam Bina (FKAB)">Fakulti Kejuruteraan & Alam
+                                        Bina (FKAB)</option>
+                                    <option value="Fakulti Sains & Teknologi (FST)">Fakulti Sains & Teknologi (FST)
+                                    </option>
+                                    <option value="Fakulti Pendidikan (FPEND)">Fakulti Pendidikan (FPEND)</option>
+                                    <option value="Fakulti Ekonomi & Pengurusan (FEP)">Fakulti Ekonomi & Pengurusan
+                                        (FEP)</option>
+                                    <option value="Fakulti Sains Sosial & Kemanusiaan (FSSK)">Fakulti Sains Sosial &
+                                        Kemanusiaan (FSSK)</option>
                                     <option value="Fakulti Undang-Undang (FUU)">Fakulti Undang-Undang (FUU)</option>
+                                    <option value="Fakulti Pengajian Islam (FPI)">Fakulti Pengajian Islam (FPI)</option>
+                                    <option value="Pusat Pengajian Citra Universiti (PPCU)">Pusat Pengajian Citra
+                                        Universiti (PPCU)</option>
                                 </optgroup>
                                 <optgroup label="Kemudahan Kampus">
-                                    <option value="Dewan Canselor Tun Abdul Razak (DKTAR)">Dewan Canselor Tun Abdul Razak (DKTAR)</option>
-                                    <option value="Kompleks Perdana Siswa">Kompleks Perdana Siswa</option>
-                                    <option value="Pusat Islam Universiti (PIU)">Pusat Islam Universiti (PIU)</option>
-                                    <option value="Pusat Kesihatan Universiti">Pusat Kesihatan Universiti</option>
-                                    <option value="Perpustakaan Tun Sri Lanang">Perpustakaan Tun Sri Lanang</option>
+                                    <option value="Dewan Canselor Tun Abdul Razak (DECTAR)">Dewan Canselor Tun Abdul
+                                        Razak (DECTAR)</option>
+                                    <option value="Pusanika">Pusanika</option>
+                                    <option value="Pusat Islam Universiti">Pusat Islam Universiti</option>
+                                    <option value="Pusat Kesihatan Universiti (PKU)">Pusat Kesihatan Universiti (PKU)
+                                    </option>
+                                    <option value="Perpustakaan Tun Sri Lanang (PTSL)">Perpustakaan Tun Sri Lanang
+                                        (PTSL)</option>
                                     <option value="Stadium UKM">Stadium UKM</option>
                                 </optgroup>
                             </select>
@@ -213,7 +625,8 @@
                         <div class="form-group">
                             <label>Store Location (Pin on Map)</label>
                             <div id="map"></div>
-                            <span class="map-hint"><i class="fa-solid fa-circle-info"></i> Click on the map to pin your exact location.</span>
+                            <span class="map-hint"><i class="fa-solid fa-circle-info"></i> Click on the map to pin your
+                                exact location.</span>
                             <input type="hidden" id="latitude" value="2.9289">
                             <input type="hidden" id="longitude" value="101.7801">
                         </div>
@@ -255,21 +668,26 @@
                         <div class="form-group">
                             <label>QR Payment Code</label>
                             <input type="file" id="qrInput" style="display:none;" accept="image/*">
-                            <button class="btn-upload" onclick="document.getElementById('qrInput').click()"><i class="fa-solid fa-qrcode"></i> Upload QR</button>
-                            <small id="qrFileName" style="color:var(--text-gray); font-size:11px; margin-top:5px; display:block;">No file chosen</small>
+                            <button class="btn-upload" onclick="document.getElementById('qrInput').click()"><i
+                                    class="fa-solid fa-qrcode"></i> Upload QR</button>
+                            <small id="qrFileName"
+                                style="color:var(--text-gray); font-size:11px; margin-top:5px; display:block;">No file
+                                chosen</small>
                         </div>
                     </div>
-                    
-                    <button id="saveSettingsBtn" class="btn-save-settings"><i class="fa-solid fa-floppy-disk"></i> Save All Settings</button>
+
+                    <button id="saveSettingsBtn" class="btn-save-settings"><i class="fa-solid fa-floppy-disk"></i> Save
+                        All Settings</button>
 
                 </div>
 
                 <div class="right-col">
-                    
+
                     <div class="card">
                         <div class="card-title">Hours & Security</div>
-                        
-                        <div style="text-align: center; font-weight: 600; color: #1A1A1A; margin-bottom: 15px;">Operating Hours</div>
+
+                        <div style="text-align: center; font-weight: 600; color: #1A1A1A; margin-bottom: 15px;">
+                            Operating Hours</div>
                         <div class="hours-container">
                             <div class="time-picker-mock">
                                 <div class="time-picker-title">Opening Time</div>
@@ -283,13 +701,20 @@
 
                         <div class="off-days-title"><i class="fa-regular fa-calendar"></i> Off Days</div>
                         <div class="checkbox-group">
-                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Monday"> Monday</label>
-                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Tuesday"> Tuesday</label>
-                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Wednesday"> Wednesday</label>
-                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Thursday"> Thursday</label>
-                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Friday" checked> Friday</label>
-                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Saturday"> Saturday</label>
-                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Sunday" checked> Sunday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Monday">
+                                Monday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Tuesday">
+                                Tuesday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Wednesday">
+                                Wednesday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Thursday">
+                                Thursday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Friday"
+                                    checked> Friday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Saturday">
+                                Saturday</label>
+                            <label class="checkbox-label"><input type="checkbox" class="off-day-cb" value="Sunday"
+                                    checked> Sunday</label>
                         </div>
                     </div>
                 </div>
@@ -312,7 +737,7 @@
 
                 marker = L.marker([lat, lng], { draggable: true }).addTo(map);
 
-                map.on('click', function(e) {
+                map.on('click', function (e) {
                     const newLat = e.latlng.lat;
                     const newLng = e.latlng.lng;
                     marker.setLatLng([newLat, newLng]);
@@ -320,7 +745,7 @@
                     document.getElementById('longitude').value = newLng;
                 });
 
-                marker.on('dragend', function(e) {
+                marker.on('dragend', function (e) {
                     const pos = marker.getLatLng();
                     document.getElementById('latitude').value = pos.lat;
                     document.getElementById('longitude').value = pos.lng;
@@ -332,7 +757,7 @@
         }
 
         // Preview Imej Profil
-        document.getElementById('imageInput').addEventListener('change', function(evt) {
+        document.getElementById('imageInput').addEventListener('change', function (evt) {
             const file = evt.target.files[0];
             if (file) {
                 document.getElementById('previewImg').src = URL.createObjectURL(file);
@@ -340,7 +765,7 @@
         });
 
         // Tunjuk nama fail QR yang dipilih
-        document.getElementById('qrInput').addEventListener('change', function(evt) {
+        document.getElementById('qrInput').addEventListener('change', function (evt) {
             const file = evt.target.files[0];
             if (file) {
                 document.getElementById('qrFileName').innerText = "Selected: " + file.name;
@@ -348,7 +773,7 @@
         });
 
         // Ubah teks status apabila toggle ditekan
-        document.getElementById('stallStatusToggle').addEventListener('change', function(evt) {
+        document.getElementById('stallStatusToggle').addEventListener('change', function (evt) {
             const text = document.querySelector('.status-text');
             if (evt.target.checked) {
                 text.innerText = 'OPEN';
@@ -358,7 +783,7 @@
                 text.style.color = 'var(--red-reject)';
             }
         });
- 
+
         async function loadSettingsData() {
             // Kita panggil initMap dengan nilai default dulu supaya peta muncul terus
             initMap(defaultLat, defaultLng);
@@ -367,8 +792,8 @@
                 const stall_id = localStorage.getItem('stall_id') || 1;
                 const response = await fetch(`http://localhost/ukmfoodie_workspace/ukmfoodie_api/fetch_settings.php?stall_id=${stall_id}`);
                 const result = await response.json();
-                
-                if(result.status === 'success') {
+
+                if (result.status === 'success') {
                     const data = result.data;
                     document.getElementById('ownerName').value = data.owner_name || '';
                     document.getElementById('stallName').value = data.stall_name || '';
@@ -377,23 +802,23 @@
                     document.getElementById('locationArea').value = data.location_area || '';
                     document.getElementById('stallPhone').value = data.phone || '';
                     document.getElementById('stallEmail').value = data.email || '';
-                    
-                    if(data.stall_image && data.stall_image !== 'default_stall.jpg') {
+
+                    if (data.stall_image && data.stall_image !== 'default_stall.jpg') {
                         document.getElementById('previewImg').src = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api/uploads/' + data.stall_image;
                     }
-                    
-                    if(data.qr_path && data.qr_path !== 'default_qr.png') {
+
+                    if (data.qr_path && data.qr_path !== 'default_qr.png') {
                         document.getElementById('qrFileName').innerText = "Current QR: " + data.qr_path;
                     }
-                    
-                    if(data.bank_name) document.getElementById('bankName').value = data.bank_name;
+
+                    if (data.bank_name) document.getElementById('bankName').value = data.bank_name;
                     document.getElementById('accNo').value = data.account_number || '';
                     document.getElementById('accHolder').value = data.account_holder || '';
-                    
-                    if(data.opening_time) document.getElementById('openTime').value = data.opening_time.substring(0, 5);
-                    if(data.closing_time) document.getElementById('closeTime').value = data.closing_time.substring(0, 5);
-                    
-                    if(data.latitude && data.longitude) {
+
+                    if (data.opening_time) document.getElementById('openTime').value = data.opening_time.substring(0, 5);
+                    if (data.closing_time) document.getElementById('closeTime').value = data.closing_time.substring(0, 5);
+
+                    if (data.latitude && data.longitude) {
                         document.getElementById('latitude').value = data.latitude;
                         document.getElementById('longitude').value = data.longitude;
                         initMap(parseFloat(data.latitude), parseFloat(data.longitude));
@@ -404,7 +829,7 @@
                     // Load status toggle
                     const toggle = document.getElementById('stallStatusToggle');
                     const statusText = document.querySelector('.status-text');
-                    if(data.status === 'Buka') {
+                    if (data.status === 'Buka') {
                         toggle.checked = true;
                         statusText.innerText = 'OPEN';
                         statusText.style.color = 'var(--green-accept)';
@@ -425,7 +850,7 @@
             }
         }
 
- 
+
         window.addEventListener('DOMContentLoaded', () => {
             loadSettingsData();
             // Paksa peta untuk refresh saiz kotak dia
@@ -434,10 +859,10 @@
             }, 500);
         });
 
-        document.getElementById('saveSettingsBtn').addEventListener('click', async function() {
+        document.getElementById('saveSettingsBtn').addEventListener('click', async function () {
             const formData = new FormData();
             const stall_id = localStorage.getItem('stall_id') || 1;
-            formData.append('stall_id', stall_id); 
+            formData.append('stall_id', stall_id);
             formData.append('owner_name', document.getElementById('ownerName').value);
             formData.append('stall_name', document.getElementById('stallName').value);
             formData.append('description', document.getElementById('stallDesc').value);
@@ -460,28 +885,28 @@
             // Save off days
             const selectedOffDays = Array.from(document.querySelectorAll('.off-day-cb:checked')).map(cb => cb.value).join(',');
             formData.append('off_days', selectedOffDays);
-            
+
             const profileFile = document.getElementById('imageInput').files[0];
-            if(profileFile) formData.append('stall_image', profileFile);
+            if (profileFile) formData.append('stall_image', profileFile);
 
             const qrFile = document.getElementById('qrInput').files[0];
-            if(qrFile) formData.append('qr_image', qrFile);
+            if (qrFile) formData.append('qr_image', qrFile);
 
             try {
                 const btn = document.getElementById('saveSettingsBtn');
                 const originalText = btn.innerHTML;
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-                
+
                 const response = await fetch('http://localhost/ukmfoodie_workspace/ukmfoodie_api/update_settings.php', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 const result = await response.json();
                 showToast(result.status === 'success' ? "Success" : "Error", result.message, result.status === 'success' ? "success" : "error");
                 btn.innerHTML = originalText;
-                if(result.status === 'success') loadSettingsData();
-                
+                if (result.status === 'success') loadSettingsData();
+
             } catch (error) {
                 showToast("System Error", "Make sure XAMPP is running.", "error");
                 console.error(error);
@@ -489,4 +914,5 @@
         });
     </script>
 </body>
+
 </html>

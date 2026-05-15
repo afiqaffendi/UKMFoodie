@@ -44,9 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $item_name = $conn->real_escape_string($item['item_name']);
             $qty       = $conn->real_escape_string($item['quantity']);
             $price     = $conn->real_escape_string($item['price']);
+            $note      = isset($item['note']) ? $conn->real_escape_string($item['note']) : '';
 
-            $sql_item = "INSERT INTO order_items (order_id, item_name, quantity, price) 
-                         VALUES ('$order_id', '$item_name', '$qty', '$price')";
+            $sql_item = "INSERT INTO order_items (order_id, item_name, quantity, price, note) 
+                         VALUES ('$order_id', '$item_name', '$qty', '$price', '$note')";
             $conn->query($sql_item);
         }
 

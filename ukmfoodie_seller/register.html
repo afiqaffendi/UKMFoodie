@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,11 +11,23 @@
     <link rel="stylesheet" href="notifications.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        :root { --primary-yellow: #FFC93C; --bg-light: #F4F7F6; --text-dark: #1A1A1A; --text-gray: #888888; --white: #FFFFFF; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        :root {
+            --primary-yellow: #FFC93C;
+            --bg-light: #F4F7F6;
+            --text-dark: #1A1A1A;
+            --text-gray: #888888;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
         body {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('assets/login-bg.jpg') no-repeat center center fixed;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/login-bg.jpg') no-repeat center center fixed;
             background-size: cover;
             min-height: 100vh;
             display: flex;
@@ -28,11 +41,11 @@
             backdrop-filter: blur(10px);
             padding: 40px;
             border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             width: 100%;
             max-width: 600px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .logo-box {
@@ -46,47 +59,153 @@
             align-items: center;
             background-color: #FFC93C;
         }
+
         .logo-box img {
             width: 120%;
             height: 120%;
             object-fit: cover;
         }
-        h1 { font-size: 24px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; }
-        p.subtitle { color: var(--text-gray); font-size: 14px; margin-bottom: 30px; }
 
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left; }
-        .full-width { grid-column: span 2; }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
 
-        .form-group { margin-bottom: 5px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--text-gray); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper i { position: absolute; left: 15px; color: #A9A9A9; font-size: 14px; }
-        .form-control { width: 100%; padding: 12px 15px 12px 42px; border: 1px solid #E0E0E0; border-radius: 10px; font-size: 14px; outline: none; transition: 0.3s; }
-        .form-control:focus { border-color: var(--primary-yellow); box-shadow: 0 0 0 3px rgba(255, 201, 60, 0.1); }
-        textarea.form-control { padding: 12px 15px; min-height: 80px; }
+        p.subtitle {
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
 
-        #map { height: 200px; border-radius: 12px; border: 1px solid #E0E0E0; margin-top: 10px; }
-        .map-hint { font-size: 11px; color: var(--text-gray); margin-top: 5px; display: block; }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
 
-        .btn-reg { width: 100%; background-color: var(--primary-yellow); color: var(--text-dark); border: none; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 25px; }
-        .btn-reg:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 201, 60, 0.3); }
+        .full-width {
+            grid-column: span 2;
+        }
 
-        .footer-text { margin-top: 20px; font-size: 14px; color: var(--text-gray); }
-        .footer-text a { color: var(--primary-yellow); text-decoration: none; font-weight: 600; }
+        .form-group {
+            margin-bottom: 5px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            color: #A9A9A9;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px 12px 42px;
+            border: 1px solid #E0E0E0;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-yellow);
+            box-shadow: 0 0 0 3px rgba(255, 201, 60, 0.1);
+        }
+
+        textarea.form-control {
+            padding: 12px 15px;
+            min-height: 80px;
+        }
+
+        #map {
+            height: 200px;
+            border-radius: 12px;
+            border: 1px solid #E0E0E0;
+            margin-top: 10px;
+        }
+
+        .map-hint {
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-top: 5px;
+            display: block;
+        }
+
+        .btn-reg {
+            width: 100%;
+            background-color: var(--primary-yellow);
+            color: var(--text-dark);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 25px;
+        }
+
+        .btn-reg:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 201, 60, 0.3);
+        }
+
+        .footer-text {
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .footer-text a {
+            color: var(--primary-yellow);
+            text-decoration: none;
+            font-weight: 600;
+        }
 
         /* Make placeholders much lighter */
         .form-control::placeholder {
-            color: #D1D5DB; /* Light gray */
-            opacity: 1; /* Firefox */
+            color: #D1D5DB;
+            /* Light gray */
+            opacity: 1;
+            /* Firefox */
         }
-        
+
         textarea.form-control::placeholder {
             color: #D1D5DB;
         }
 
-        @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } }
+        @media (max-width: 500px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <div class="reg-card">
@@ -138,11 +257,14 @@
 
                 <div class="form-group full-width">
                     <label>Stall Address</label>
-                    <textarea id="address" class="form-control" placeholder="Fakulti Teknologi dan Sains Maklumat (FTSM), UKM Bangi..." required></textarea>
+                    <textarea id="address" class="form-control"
+                        placeholder="Fakulti Teknologi dan Sains Maklumat (FTSM), UKM Bangi..." required></textarea>
                 </div>
 
                 <div class="form-group full-width">
-                    <label><i class="fa-solid fa-map-pin" style="margin-right:5px;color:#F1416C;"></i>Location Area <span style="text-transform:none;font-size:11px;color:#aaa;font-weight:400;">(shown on stall card)</span></label>
+                    <label><i class="fa-solid fa-map-pin" style="margin-right:5px;color:#F1416C;"></i>Location Area
+                        <span style="text-transform:none;font-size:11px;color:#aaa;font-weight:400;">(shown on stall
+                            card)</span></label>
                     <select id="location_area" class="form-control" style="padding-left:15px;">
                         <option value="">-- Select Location Area --</option>
                         <optgroup label="Kolej Kediaman">
@@ -153,23 +275,34 @@
                             <option value="Kolej Rahim Kajai">Kolej Rahim Kajai</option>
                             <option value="Kolej Ibrahim Yaakob">Kolej Ibrahim Yaakob</option>
                             <option value="Kolej Ungku Omar">Kolej Ungku Omar</option>
+                            <option value="Kolej Burhanuddin Helmi">Kolej Burhanuddin Helmi</option>
                             <option value="Kolej Dato' Onn">Kolej Dato' Onn</option>
+                            <option value="Kolej Ibu Zain">Kolej Ibu Zain</option>
                         </optgroup>
                         <optgroup label="Fakulti">
-                            <option value="Fakulti Teknologi & Sains Maklumat (FTSM)">Fakulti Teknologi & Sains Maklumat (FTSM)</option>
-                            <option value="Fakulti Kejuruteraan & Alam Bina (FKAB)">Fakulti Kejuruteraan & Alam Bina (FKAB)</option>
+                            <option value="Fakulti Teknologi & Sains Maklumat (FTSM)">Fakulti Teknologi & Sains Maklumat
+                                (FTSM)</option>
+                            <option value="Fakulti Kejuruteraan & Alam Bina (FKAB)">Fakulti Kejuruteraan & Alam Bina
+                                (FKAB)</option>
                             <option value="Fakulti Sains & Teknologi (FST)">Fakulti Sains & Teknologi (FST)</option>
-                            <option value="Fakulti Pendidikan">Fakulti Pendidikan</option>
-                            <option value="Fakulti Ekonomi & Pengurusan (FEP)">Fakulti Ekonomi & Pengurusan (FEP)</option>
-                            <option value="Fakulti Sains Sosial & Kemanusiaan (FSSK)">Fakulti Sains Sosial & Kemanusiaan (FSSK)</option>
+                            <option value="Fakulti Pendidikan (FPEND)">Fakulti Pendidikan (FPEND)</option>
+                            <option value="Fakulti Ekonomi & Pengurusan (FEP)">Fakulti Ekonomi & Pengurusan (FEP)
+                            </option>
+                            <option value="Fakulti Sains Sosial & Kemanusiaan (FSSK)">Fakulti Sains Sosial & Kemanusiaan
+                                (FSSK)</option>
                             <option value="Fakulti Undang-Undang (FUU)">Fakulti Undang-Undang (FUU)</option>
+                            <option value="Fakulti Pengajian Islam (FPI)">Fakulti Pengajian Islam (FPI)</option>
+                            <option value="Pusat Pengajian Citra Universiti (PPCU)">Pusat Pengajian Citra Universiti
+                                (PPCU)</option>
                         </optgroup>
                         <optgroup label="Kemudahan Kampus">
-                            <option value="Dewan Canselor Tun Abdul Razak (DKTAR)">Dewan Canselor Tun Abdul Razak (DKTAR)</option>
-                            <option value="Kompleks Perdana Siswa">Kompleks Perdana Siswa</option>
-                            <option value="Pusat Islam Universiti (PIU)">Pusat Islam Universiti (PIU)</option>
-                            <option value="Pusat Kesihatan Universiti">Pusat Kesihatan Universiti</option>
-                            <option value="Perpustakaan Tun Sri Lanang">Perpustakaan Tun Sri Lanang</option>
+                            <option value="Dewan Canselor Tun Abdul Razak (DECTAR)">Dewan Canselor Tun Abdul Razak
+                                (DECTAR)</option>
+                            <option value="Pusanika">Pusanika</option>
+                            <option value="Pusat Islam Universiti">Pusat Islam Universiti</option>
+                            <option value="Pusat Kesihatan Universiti (PKU)">Pusat Kesihatan Universiti (PKU)</option>
+                            <option value="Perpustakaan Tun Sri Lanang (PTSL)">Perpustakaan Tun Sri Lanang (PTSL)
+                            </option>
                             <option value="Stadium UKM">Stadium UKM</option>
                         </optgroup>
                     </select>
@@ -178,7 +311,8 @@
                 <div class="form-group full-width">
                     <label>Stall Location (Pin on Map)</label>
                     <div id="map"></div>
-                    <span class="map-hint"><i class="fa-solid fa-circle-info"></i> Click on the map to set your stall's exact location.</span>
+                    <span class="map-hint"><i class="fa-solid fa-circle-info"></i> Click on the map to set your stall's
+                        exact location.</span>
                     <input type="hidden" id="latitude" value="2.9289">
                     <input type="hidden" id="longitude" value="101.7801">
                 </div>
@@ -203,23 +337,23 @@
 
         let marker = L.marker([2.9289, 101.7801], { draggable: true }).addTo(map);
 
-        map.on('click', function(e) {
+        map.on('click', function (e) {
             marker.setLatLng(e.latlng);
             document.getElementById('latitude').value = e.latlng.lat;
             document.getElementById('longitude').value = e.latlng.lng;
         });
 
-        marker.on('dragend', function(e) {
+        marker.on('dragend', function (e) {
             const pos = marker.getLatLng();
             document.getElementById('latitude').value = pos.lat;
             document.getElementById('longitude').value = pos.lng;
         });
 
-        document.getElementById('regForm').addEventListener('submit', async function(e) {
+        document.getElementById('regForm').addEventListener('submit', async function (e) {
             e.preventDefault();
             const regBtn = document.getElementById('regBtn');
             const originalText = regBtn.innerHTML;
-            
+
             regBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
             regBtn.disabled = true;
 
@@ -243,7 +377,7 @@
                 });
 
                 const result = await response.json();
-                
+
                 if (result.status === 'success') {
                     showConfirm(
                         "Application Submitted!",
@@ -268,4 +402,5 @@
     </script>
     <script src="global_notification.js"></script>
 </body>
+
 </html>

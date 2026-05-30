@@ -673,8 +673,8 @@
                     pointBackgroundColor: '#fff',
                     pointBorderColor: '#FFC93C',
                     pointBorderWidth: 2,
-                    pointRadius: 0,
-                    pointHoverRadius: 6,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
                     pointHoverBackgroundColor: '#FFC93C',
                     pointHoverBorderColor: '#fff',
                     pointHoverBorderWidth: 3
@@ -734,7 +734,7 @@
                 const month = document.getElementById('filterMonth').value;
                 const week = document.getElementById('filterWeek').value;
 
-                const response = await fetch(`http://localhost/ukmfoodie_workspace/ukmfoodie_api/fetch_seller_stats.php?stall_id=${stall_id}&view_type=${viewType}&year=${year}&month=${month}&week=${week}`);
+                const response = await fetch(`${window.location.origin}/ukmfoodie_workspace/ukmfoodie_api/fetch_seller_stats.php?stall_id=${stall_id}&view_type=${viewType}&year=${year}&month=${month}&week=${week}`);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const text = await response.text();
                 try {
@@ -794,7 +794,7 @@
                     if (result.top_items.length > 0) {
                         topList.innerHTML = '';
                         result.top_items.forEach(item => {
-                            const imgSrc = item.food_image ? `http://localhost/ukmfoodie_workspace/ukmfoodie_api/uploads/${item.food_image}` : 'https://via.placeholder.com/50/FFC93C/ffffff?text=Food';
+                            const imgSrc = item.food_image ? `${window.location.origin}/ukmfoodie_workspace/ukmfoodie_api/uploads/${item.food_image}` : 'https://via.placeholder.com/50/FFC93C/ffffff?text=Food';
                             topList.innerHTML += `
                                 <li class="top-selling-item">
                                     <img src="${imgSrc}" alt="${item.item_name}">
@@ -823,7 +823,7 @@
         }
 
         function viewReceipt(fileName) {
-            const API_BASE = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api';
+            const API_BASE = window.location.origin + '/ukmfoodie_workspace/ukmfoodie_api';
             const modal = document.getElementById('receiptModal');
             const img = document.getElementById('receiptImg');
             

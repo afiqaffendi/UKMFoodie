@@ -29,7 +29,7 @@ if(isset($data->fullname) && isset($data->email) && isset($data->password)) {
         echo json_encode(["status" => "error", "message" => "This email is already registered!"]);
     } else {
         // Jika e-mel belum wujud, masukkan data ke dalam jadual users
-        $sql = "INSERT INTO users (fullname, phone, email, password, role) VALUES ('$fullname', '$phone', '$email', '$password', '$role')";
+        $sql = "INSERT INTO users (fullname, phone, email, password, role, last_login) VALUES ('$fullname', '$phone', '$email', '$password', '$role', NOW())";
         
         if($conn->query($sql) === TRUE) {
             echo json_encode(["status" => "success", "message" => "Registration successful!"]);

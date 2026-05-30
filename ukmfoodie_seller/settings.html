@@ -528,11 +528,14 @@
                     <p>Update your store profile and payment details.</p>
                 </div>
 
-                <div class="stall-status-container">
-                    <span>Stall Status</span>
-                    <label class="switch"><input type="checkbox" id="stallStatusToggle" checked><span
-                            class="slider"></span></label>
-                    <span class="status-text">OPEN</span>
+                <div class="stall-status-container" style="flex-direction: column; align-items: flex-end; gap: 5px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span style="font-size: 13px; color: var(--text-gray); font-weight: 600;">Manual Override (Accept Orders)</span>
+                        <label class="switch"><input type="checkbox" id="stallStatusToggle" checked><span class="slider"></span></label>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                        Real-Time Status: <span class="badge" id="realTimeStatusBadge" style="background-color: #E8FFF3; color: #50CD89; font-size: 12px; padding: 4px 10px; border-radius: 6px;">OPEN</span>
+                    </div>
                 </div>
             </div>
 
@@ -805,15 +808,40 @@
 
         // Ubah teks status apabila toggle ditekan
         document.getElementById('stallStatusToggle').addEventListener('change', function (evt) {
-            const text = document.querySelector('.status-text');
-            if (evt.target.checked) {
-                text.innerText = 'OPEN';
-                text.style.color = 'var(--green-accept)';
-            } else {
-                text.innerText = 'CLOSED';
-                text.style.color = 'var(--red-reject)';
-            }
+            updateRealTimeStatusBadge(evt.target.checked);
         });
+
+        function updateRealTimeStatusBadge(isToggleOn, openingTime, closingTime, offDaysArray) {
+            // Get values from inputs if not provided during load
+            if (!openingTime) openingTime = document.getElementById('openTime').value;
+            if (!closingTime) closingTime = document.getElementById('closeTime').value;
+            if (!offDaysArray) {
+                offDaysArray = Array.from(document.querySelectorAll('.off-day-cb:checked')).map(cb => cb.value);
+            }
+
+            const badge = document.getElementById('realTimeStatusBadge');
+            const currentDay = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+            const now = new Date();
+            const currentTimeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+            if (!isToggleOn) {
+                badge.innerText = 'CLOSED (Manual Override)';
+                badge.style.backgroundColor = '#FFF5F8';
+                badge.style.color = '#F1416C';
+            } else if (offDaysArray.includes(currentDay)) {
+                badge.innerText = 'CLOSED (Off Day)';
+                badge.style.backgroundColor = '#FFF5F8';
+                badge.style.color = '#F1416C';
+            } else if (openingTime && closingTime && (currentTimeStr < openingTime || currentTimeStr > closingTime)) {
+                badge.innerText = 'CLOSED (Outside Hours)';
+                badge.style.backgroundColor = '#FFF5F8';
+                badge.style.color = '#F1416C';
+            } else {
+                badge.innerText = 'OPEN (Live)';
+                badge.style.backgroundColor = '#E8FFF3';
+                badge.style.color = '#50CD89';
+            }
+        }
 
         async function loadSettingsData() {
             // Kita panggil initMap dengan nilai default dulu supaya peta muncul terus
@@ -821,7 +849,7 @@
 
             try {
                 const stall_id = localStorage.getItem('stall_id') || 1;
-                const response = await fetch(`http://localhost/ukmfoodie_workspace/ukmfoodie_api/fetch_settings.php?stall_id=${stall_id}`);
+                const response = await fetch(`${window.location.origin}/ukmfoodie_workspace/ukmfoodie_api/fetch_settings.php?stall_id=${stall_id}`);
                 const result = await response.json();
 
                 if (result.status === 'success') {
@@ -835,7 +863,7 @@
                     document.getElementById('stallEmail').value = data.email || '';
 
                     if (data.stall_image && data.stall_image !== 'default_stall.jpg') {
-                        document.getElementById('previewImg').src = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api/uploads/' + data.stall_image;
+                        document.getElementById('previewImg').src = window.location.origin + '/ukmfoodie_workspace/ukmfoodie_api/uploads/' + data.stall_image;
                     }
 
                     if (data.qr_path && data.qr_path !== 'default_qr.png') {
@@ -857,37 +885,70 @@
                         initMap(defaultLat, defaultLng);
                     }
 
-                    // Load status toggle
-                    const toggle = document.getElementById('stallStatusToggle');
-                    const statusText = document.querySelector('.status-text');
-                    if (data.status === 'Buka') {
-                        toggle.checked = true;
-                        statusText.innerText = 'OPEN';
-                        statusText.style.color = 'var(--green-accept)';
-                    } else {
-                        toggle.checked = false;
-                        statusText.innerText = 'CLOSED';
-                        statusText.style.color = 'var(--red-reject)';
-                    }
-
-                    // Load off days
+                    // Load off days first so we can check real-time status
                     const offDaysArray = data.off_days ? data.off_days.split(',') : [];
                     document.querySelectorAll('.off-day-cb').forEach(cb => {
                         cb.checked = offDaysArray.includes(cb.value);
                     });
+
+                    // Load status toggle
+                    const toggle = document.getElementById('stallStatusToggle');
+                    if (data.status === 'Buka') {
+                        toggle.checked = true;
+                    } else {
+                        toggle.checked = false;
+                    }
+                    
+                    // Update the real-time badge based on settings
+                    updateRealTimeStatusBadge(toggle.checked, document.getElementById('openTime').value, document.getElementById('closeTime').value, offDaysArray);
                 }
             } catch (error) {
                 console.error("Gagal menarik data tetapan:", error);
             }
         }
 
+        let isDirty = false;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadSettingsData();
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadSettingsData();
             // Paksa peta untuk refresh saiz kotak dia
             setTimeout(() => {
                 if (map) map.invalidateSize();
             }, 500);
+
+            // Selepas data dimuat naik, set event listener untuk kesan perubahan
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('change', () => { isDirty = true; });
+                input.addEventListener('input', () => { isDirty = true; });
+            });
+
+            // Kesan klik di peta (map marker)
+            if (map) {
+                map.on('click', () => { isDirty = true; });
+                if (marker) marker.on('dragend', () => { isDirty = true; });
+            }
+        });
+
+        // 1. Amaran jika tekan butang refresh atau pangkah tab
+        window.addEventListener('beforeunload', function (e) {
+            if (isDirty) {
+                // Teks ini selalunya diabaikan oleh browser moden, tapi ia perlu diletak untuk trigger dialog
+                e.preventDefault();
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+            }
+        });
+
+        // 2. Amaran jika tekan link di sidebar
+        document.querySelectorAll('.nav-links a, .btn-logout-sidebar').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (isDirty) {
+                    const confirmLeave = confirm('You have unsaved changes. Are you sure you want to leave this page?');
+                    if (!confirmLeave) {
+                        e.preventDefault(); // Batal navigasi
+                    }
+                }
+            });
         });
 
         document.getElementById('saveSettingsBtn').addEventListener('click', async function () {
@@ -928,7 +989,7 @@
                 const originalText = btn.innerHTML;
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
 
-                const response = await fetch('http://localhost/ukmfoodie_workspace/ukmfoodie_api/update_settings.php', {
+                const response = await fetch(window.location.origin + '/ukmfoodie_workspace/ukmfoodie_api/update_settings.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -936,7 +997,10 @@
                 const result = await response.json();
                 showToast(result.status === 'success' ? "Success" : "Error", result.message, result.status === 'success' ? "success" : "error");
                 btn.innerHTML = originalText;
-                if (result.status === 'success') loadSettingsData();
+                if (result.status === 'success') {
+                    isDirty = false; // Reset isDirty flag selepas berjaya save
+                    loadSettingsData();
+                }
 
             } catch (error) {
                 showToast("System Error", "Make sure XAMPP is running.", "error");
@@ -945,5 +1009,4 @@
         });
     </script>
 </body>
-
-</html>
+</html>>

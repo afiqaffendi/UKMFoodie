@@ -204,7 +204,7 @@
         const editModal = document.getElementById('editItemModal');
         const openBtn = document.getElementById('openModalBtn');
         const closeBtn = document.getElementById('closeModalBtn');
-        const API_BASE = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api';
+        const API_BASE = window.location.origin + '/ukmfoodie_workspace/ukmfoodie_api';
 
         openBtn.addEventListener('click', () => { modal.style.display = 'flex'; });
         closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });

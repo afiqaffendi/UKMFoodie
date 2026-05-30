@@ -130,7 +130,7 @@
 
         .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; text-transform: uppercase; }
         .status-badge.active { background-color: #50CD89; }
-        
+        .status-badge.grey { background-color: #6B7280; text-transform: none; }
         .btn-details { 
             padding: 8px 15px; 
             background-color: #F3F4F6; 
@@ -248,6 +248,26 @@
         let currentRole = 'User';
         let allUsers = [];
 
+        function timeSince(dateString) {
+            if (!dateString) return "Just now";
+            const date = new Date(dateString);
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            let interval = seconds / 31536000;
+            if (interval > 1) return Math.floor(interval) + " years ago";
+            interval = seconds / 2592000;
+            if (interval > 1) return Math.floor(interval) + " months ago";
+            interval = seconds / 604800;
+            if (interval > 1) return Math.floor(interval) + " weeks ago";
+            interval = seconds / 86400;
+            if (interval > 1) return Math.floor(interval) + " days ago";
+            interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + " hours ago";
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + " mins ago";
+            return "Just now";
+        }
+
         async function fetchUsers(role, searchQuery = '') {
             try {
                 const response = await fetch(`${ADMIN_API}/fetch_admin_users.php?role=${role}&search=${searchQuery}`);
@@ -280,7 +300,7 @@
                             </span>
                         </td>
                         <td style="font-weight: 600;">${user.fullname}</td>
-                        <td><span class="status-badge active">Active</span></td>
+                        <td><span class="status-badge grey">Active ${timeSince(user.last_login)}</span></td>
                         <td>
                             <button class="btn-details" onclick="showDetails(${user.id})">
                                 <i class="fa-solid fa-circle-info"></i> Details

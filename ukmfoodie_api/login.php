@@ -23,6 +23,10 @@ if(isset($data->email) && isset($data->password)) {
         
         // Semak kata laluan (kerana kita encrypt masa register tadi)
         if(password_verify($password, $user['password'])) {
+            // Update last_login timestamp
+            $updateSql = "UPDATE users SET last_login = NOW() WHERE id = {$user['id']}";
+            $conn->query($updateSql);
+
             echo json_encode([
                 "status" => "success", 
                 "message" => "Login successful!",

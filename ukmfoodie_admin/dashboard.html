@@ -6,6 +6,7 @@
     <title>Admin Dashboard - UKMFoodie</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="admin_notifications.js"></script>
     <script src="auth_check.js"></script>
     <style>
@@ -107,13 +108,114 @@
 
         .content-wrapper { padding: 40px; }
         
+        /* === DASHBOARD LAYOUT === */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-container { grid-template-columns: 1fr; }
+            .stats-column { flex-direction: row !important; flex-wrap: wrap; }
+            .stats-column .stat-card { flex: 1; min-width: 200px; }
+        }
+
+        .stats-column { display: flex; flex-direction: column; gap: 20px; }
+        .main-stats-area { display: flex; flex-direction: column; gap: 25px; }
+
         /* === STAT CARDS === */
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 40px; }
-        .stat-card { background-color: var(--white); padding: 30px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); display: flex; flex-direction: column; }
-        .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .stat-header h3 { font-size: 15px; font-weight: 600; color: var(--text-gray); }
-        .stat-header i { font-size: 20px; color: var(--text-gray); }
-        .stat-value { font-size: 32px; font-weight: 700; color: var(--text-dark); }
+        .stat-card {
+            background-color: var(--white);
+            padding: 25px 20px;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            position: relative;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.02);
+            overflow: hidden;
+        }
+
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+
+        /* Color accents */
+        .stat-card.users { border-bottom: 4px solid #009EF7; }
+        .stat-card.stalls { border-bottom: 4px solid #50CD89; }
+        .stat-card.orders { border-bottom: 4px solid #F1416C; }
+        .stat-card.revenue { border-bottom: 4px solid #FFC93C; }
+        .stat-card.platform { border-bottom: 4px solid #7239EA; }
+
+        .stat-card h3 {
+            font-size: 11px;
+            color: var(--text-gray);
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .stat-icon-wrapper {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .users .stat-icon-wrapper { background-color: #F1FAFF; color: #009EF7; }
+        .stalls .stat-icon-wrapper { background-color: #E8FFF3; color: #50CD89; }
+        .orders .stat-icon-wrapper { background-color: #FFF5F8; color: #F1416C; }
+        .revenue .stat-icon-wrapper { background-color: #FFF8DD; color: #FFC93C; }
+        .platform .stat-icon-wrapper { background-color: #F8F5FF; color: #7239EA; }
+
+        /* === CHART FILTERS === */
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .chart-filters {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #E1E3EA;
+            font-size: 12px;
+            color: #3F4254;
+            background-color: #F9F9F9;
+            cursor: pointer;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .filter-select:hover {
+            border-color: var(--primary-yellow);
+        }
+
+        .filter-select:focus {
+            border-color: var(--primary-yellow);
+            box-shadow: 0 0 0 2px rgba(255, 201, 60, 0.2);
+        }
 
         /* === ACTIVITY TABLE === */
         .section-title { font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; }
@@ -122,8 +224,17 @@
         th { text-align: left; padding: 15px 10px; font-size: 13px; color: var(--text-gray); border-bottom: 1px solid #F3F4F6; }
         td { padding: 15px 10px; font-size: 13px; color: var(--text-dark); border-bottom: 1px solid #F3F4F6; }
         .view-all { text-align: right; margin-top: 15px; }
-        .view-all a { font-size: 12px; color: var(--text-gray); text-decoration: none; font-weight: 600; }
+        .view-all a { font-size: 12px; color: var(--text-gray); text-decoration: none; font-weight: 600; cursor: pointer; }
         .view-all a:hover { color: var(--text-dark); }
+
+        /* === MODAL === */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: white; border-radius: 12px; max-width: 600px; width: 100%; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; display: flex; flex-direction: column; max-height: 80vh; }
+        .modal-header { padding: 18px 25px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+        .modal-header h3 { font-size: 16px; font-weight: 700; color: var(--text-dark); }
+        .close-modal { cursor: pointer; color: var(--text-gray); font-size: 18px; transition: 0.2s; }
+        .close-modal:hover { color: #F1416C; }
+        .modal-body { padding: 0; overflow-y: auto; background-color: #fff; }
     </style>
 </head>
 <body>
@@ -151,93 +262,287 @@
         </div>
         
         <div class="content-wrapper">
-            <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <h3>Total Registered Users</h3>
-                    <i class="fa-solid fa-users"></i>
+            <div class="dashboard-container">
+                <!-- Stats Column (Left Side) -->
+                <div class="stats-column">
+                    <div class="stat-card users">
+                        <h3>Total Registered Users</h3>
+                        <div class="value" id="totalUsers">0</div>
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card stalls">
+                        <h3>Active Stalls</h3>
+                        <div class="value" id="activeStalls">0</div>
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-store"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card orders">
+                        <h3>Total Orders Today</h3>
+                        <div class="value" id="totalOrdersToday">0</div>
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card revenue">
+                        <h3>Daily Revenue</h3>
+                        <div class="value" id="dailyRevenue">RM 0.00</div>
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card platform">
+                        <h3>Total Platform Revenue</h3>
+                        <div class="value" id="totalPlatformRevenue">RM 0.00</div>
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-sack-dollar"></i>
+                        </div>
+                    </div>
                 </div>
-                <div class="stat-value" id="totalUsers">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <h3>Active Stalls</h3>
-                    <i class="fa-solid fa-store"></i>
-                </div>
-                <div class="stat-value" id="activeStalls">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <h3>Total Daily Transactions</h3>
-                    <i class="fa-solid fa-chart-line"></i>
-                </div>
-                <div class="stat-value" id="dailyRevenue">RM 0.00</div>
-            </div>
-        </div>
 
-        <h2 class="section-title">Recent System Activity</h2>
-        <div class="card">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Time</th>
-                        <th>Action</th>
-                        <th>User</th>
-                        <th>Details</th>
-                    </tr>
-                </thead>
-                <tbody id="activityBody">
-                    <tr><td colspan="4" style="text-align:center; padding:20px;">Loading activity...</td></tr>
-                </tbody>
-            </table>
-            <div class="view-all"><a href="#">View All <i class="fa-solid fa-chevron-down"></i></a></div>
+                <!-- Main Content Area (Right Side) -->
+                <div class="main-stats-area">
+                    <!-- Charts Row 1 -->
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                        <div class="card">
+                            <div class="chart-header" style="margin-bottom: 0;">
+                                <h2 class="section-title" id="salesTrendTitle" style="margin-bottom: 0;">Platform Sales Trend (7 Days)</h2>
+                                <div class="chart-filters">
+                                    <select id="salesFilter" class="filter-select" onchange="updateSalesChart(this.value)">
+                                        <option value="weekly">This Week</option>
+                                        <option value="monthly">This Month</option>
+                                        <option value="yearly">This Year</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="height: 250px; margin-top: 15px;"><canvas id="salesTrendChart"></canvas></div>
+                        </div>
+                        <div class="card">
+                            <h2 class="section-title">Order Status</h2>
+                            <div style="height: 250px; display:flex; justify-content:center;"><canvas id="orderStatusChart"></canvas></div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row 2 & Table -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="card">
+                            <h2 class="section-title">Top 5 Best-Selling Stalls</h2>
+                            <div style="height: 250px;"><canvas id="topStallsChart"></canvas></div>
+                        </div>
+                        <div class="card">
+                            <h2 class="section-title">Recent System Activity</h2>
+                            <div style="overflow-x: auto;">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Action</th>
+                                            <th>User</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="activityBody">
+                                        <tr><td colspan="3" style="text-align:center; padding:20px;">Loading activity...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="view-all"><a href="#" onclick="openActivityModal(); return false;">View All <i class="fa-solid fa-chevron-down"></i></a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
+    <!-- Activity Modal -->
+    <div id="activityModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>All System Activity</h3>
+                <i class="fa-solid fa-xmark close-modal" onclick="closeActivityModal()"></i>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <thead style="position: sticky; top: 0; background: #F9FAFB; z-index: 10;">
+                        <tr>
+                            <th style="padding: 15px 20px;">Time</th>
+                            <th>Action</th>
+                            <th>User</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allActivityBody">
+                        <tr><td colspan="3" style="text-align:center; padding:20px;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <script>
         const ADMIN_API = window.API_BASE || (window.location.origin + '/ukmfoodie_workspace/ukmfoodie_api');
+
+        // Initialize Chart.js Instances
+        let salesTrendChart, orderStatusChart, topStallsChart;
+
+        function initCharts() {
+            // Sales Trend Line Chart
+            const ctxSales = document.getElementById('salesTrendChart').getContext('2d');
+            const gradient = ctxSales.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(255, 201, 60, 0.4)');
+            gradient.addColorStop(1, 'rgba(255, 201, 60, 0)');
+
+            salesTrendChart = new Chart(ctxSales, {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Revenue (RM)', data: [], borderColor: '#FFC93C', backgroundColor: gradient, fill: true, tension: 0.4, pointBackgroundColor: '#fff', pointBorderColor: '#FFC93C', pointBorderWidth: 2 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#F4F4F4' } }, x: { grid: { display: false } } } }
+            });
+
+            // Order Status Pie Chart
+            const ctxStatus = document.getElementById('orderStatusChart').getContext('2d');
+            orderStatusChart = new Chart(ctxStatus, {
+                type: 'pie',
+                data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } } }
+            });
+
+            // Top Stalls Bar Chart
+            const ctxStalls = document.getElementById('topStallsChart').getContext('2d');
+            topStallsChart = new Chart(ctxStalls, {
+                type: 'bar',
+                data: { labels: [], datasets: [{ label: 'Orders', data: [], backgroundColor: '#009EF7', borderRadius: 4 }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, grid: { color: '#F4F4F4' } }, y: { grid: { display: false } } } }
+            });
+        }
 
         function timeAgo(dateString) {
             const date = new Date(dateString);
             const now = new Date();
             const seconds = Math.floor((now - date) / 1000);
             
-            let interval = Math.floor(seconds / 3600);
-            if (interval >= 1) return interval + " hours ago";
+            let interval = Math.floor(seconds / 86400);
+            if (interval > 1) return interval + " days ago";
+            if (interval === 1) return "1 day ago";
+            
+            interval = Math.floor(seconds / 3600);
+            if (interval > 1) return interval + " hours ago";
+            if (interval === 1) return "1 hour ago";
+            
             interval = Math.floor(seconds / 60);
-            if (interval >= 1) return interval + " mins ago";
+            if (interval > 1) return interval + " mins ago";
+            if (interval === 1) return "1 min ago";
+            
             return "Just now";
         }
 
         async function fetchDashboardData() {
             try {
-                const response = await fetch(`${ADMIN_API}/fetch_admin_stats.php`);
+                // Fetch default (weekly) on load for all dashboard elements
+                const filter = document.getElementById('salesFilter').value;
+                const response = await fetch(`${ADMIN_API}/fetch_admin_stats.php?filter=${filter}`);
                 const result = await response.json();
 
                 if (result.status === 'success') {
                     document.getElementById('totalUsers').innerText = result.stats.total_users;
                     document.getElementById('activeStalls').innerText = result.stats.active_stalls;
+                    document.getElementById('totalOrdersToday').innerText = result.stats.total_orders_today;
                     document.getElementById('dailyRevenue').innerText = result.stats.daily_revenue;
+                    document.getElementById('totalPlatformRevenue').innerText = result.stats.total_platform_revenue;
 
+                    // Update Activity Table
                     const tbody = document.getElementById('activityBody');
                     tbody.innerHTML = '';
                     result.activities.forEach(act => {
                         tbody.innerHTML += `
                             <tr>
-                                <td>${timeAgo(act.created_at)}</td>
+                                <td><span style="font-size:11px; color:#999;">${timeAgo(act.created_at)}</span></td>
                                 <td>${act.action}</td>
                                 <td style="font-weight: 600;">${act.user}</td>
-                                <td>${act.details}</td>
                             </tr>
                         `;
                     });
+
+                    // Update Charts
+                    if (result.charts) {
+                        salesTrendChart.data.labels = result.charts.sales_trend.labels;
+                        salesTrendChart.data.datasets[0].data = result.charts.sales_trend.data;
+                        salesTrendChart.update();
+
+                        orderStatusChart.data.labels = result.charts.order_status.labels;
+                        orderStatusChart.data.datasets[0].data = result.charts.order_status.data;
+                        orderStatusChart.data.datasets[0].backgroundColor = result.charts.order_status.colors;
+                        orderStatusChart.update();
+
+                        topStallsChart.data.labels = result.charts.top_stalls.labels;
+                        topStallsChart.data.datasets[0].data = result.charts.top_stalls.data;
+                        topStallsChart.update();
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching stats:", error);
             }
         }
 
-        window.onload = fetchDashboardData;
+        async function updateSalesChart(filter) {
+            try {
+                // Update title
+                const titleEl = document.getElementById('salesTrendTitle');
+                if (filter === 'weekly') titleEl.innerText = 'Platform Sales Trend (7 Days)';
+                else if (filter === 'monthly') titleEl.innerText = 'Platform Sales Trend (This Month)';
+                else if (filter === 'yearly') titleEl.innerText = 'Platform Sales Trend (This Year)';
+
+                // Fetch just for the sales trend update
+                const response = await fetch(`${ADMIN_API}/fetch_admin_stats.php?filter=${filter}`);
+                const result = await response.json();
+
+                if (result.status === 'success' && result.charts) {
+                    salesTrendChart.data.labels = result.charts.sales_trend.labels;
+                    salesTrendChart.data.datasets[0].data = result.charts.sales_trend.data;
+                    salesTrendChart.update();
+                }
+            } catch (error) {
+                console.error("Error updating sales chart:", error);
+            }
+        }
+
+        async function openActivityModal() {
+            document.getElementById('activityModal').style.display = 'flex';
+            const tbody = document.getElementById('allActivityBody');
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:40px;">Loading...</td></tr>';
+            
+            try {
+                const response = await fetch(`${ADMIN_API}/fetch_admin_stats.php?action=all_activities`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    tbody.innerHTML = '';
+                    if (result.activities.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:40px;">No activity found.</td></tr>';
+                    } else {
+                        result.activities.forEach(act => {
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td style="padding: 12px 20px;"><span style="font-size:11px; color:#999;">${timeAgo(act.created_at)}</span></td>
+                                    <td>${act.action}</td>
+                                    <td style="font-weight: 600;">${act.user}</td>
+                                </tr>
+                            `;
+                        });
+                    }
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:red;">Error loading data</td></tr>';
+            }
+        }
+
+        function closeActivityModal() {
+            document.getElementById('activityModal').style.display = 'none';
+        }
+
+        window.onload = () => {
+            initCharts();
+            fetchDashboardData();
+        };
     </script>
 </body>
 </html>

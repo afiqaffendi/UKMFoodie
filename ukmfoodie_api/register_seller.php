@@ -37,7 +37,7 @@ if ($check_res->num_rows > 0) {
 $conn->begin_transaction();
 
 try {
-    $user_sql = "INSERT INTO users (fullname, email, password, phone, role) VALUES ('$fullname', '$email', '$password', '$phone', 'Seller')";
+    $user_sql = "INSERT INTO users (fullname, email, password, phone, role, last_login) VALUES ('$fullname', '$email', '$password', '$phone', 'Seller', NOW())";
     if (!$conn->query($user_sql)) throw new Exception("Failed to create user account");
     
     $user_id = $conn->insert_id;

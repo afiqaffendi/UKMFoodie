@@ -1,4 +1,4 @@
-const API_BASE_GLOBAL = 'http://localhost/ukmfoodie_workspace/ukmfoodie_api';
+const API_BASE_GLOBAL = window.location.origin + '/ukmfoodie_workspace/ukmfoodie_api';
 const notificationSoundGlobal = new Audio('notification.mp3');
 
 // Inject CSS if not already present

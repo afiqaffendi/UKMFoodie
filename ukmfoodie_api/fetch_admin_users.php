@@ -9,7 +9,7 @@ $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : 
 
 if ($role === 'User') {
     // Fetch Customers
-    $sql = "SELECT id, fullname, email, phone, role, created_at, profile_picture 
+    $sql = "SELECT id, fullname, email, phone, role, created_at, profile_picture, last_login 
             FROM users 
             WHERE (role = 'customer' OR role = 'User')";
     
@@ -18,7 +18,7 @@ if ($role === 'User') {
     }
 } else {
     // Fetch Approved Sellers
-    $sql = "SELECT u.id, u.fullname, u.email, u.phone, u.role, u.created_at, u.profile_picture, s.stall_name, s.approval_status, s.stall_image 
+    $sql = "SELECT u.id, u.fullname, u.email, u.phone, u.role, u.created_at, u.profile_picture, u.last_login, s.stall_name, s.approval_status, s.stall_image 
             FROM users u
             JOIN stalls s ON u.id = s.owner_id
             WHERE u.role = 'Seller' AND s.approval_status = 'Approved'";

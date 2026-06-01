@@ -242,12 +242,12 @@
                     `;
                     
                     itemsInCategory.forEach(item => {
-                        const imgUrl = (item.food_image && item.food_image !== 'default_food.jpg') ? `${API_BASE}/uploads/${item.food_image}` : 'https://via.placeholder.com/60';
+                        const imgUrl = (item.food_image && item.food_image !== 'default_food.jpg') ? `${API_BASE}/uploads/${item.food_image}` : `${API_BASE}/uploads/default_food.jpg`;
                         const isChecked = (item.status === 'Available') ? 'checked' : '';
                         
                         const row = `
                             <tr>
-                                <td><img src="${imgUrl}" class="item-thumb" onerror="this.src='https://via.placeholder.com/60'"></td>
+                                <td><img src="${imgUrl}" class="item-thumb" onerror="this.onerror=null; this.src='${API_BASE}/uploads/default_food.jpg';"></td>
                                 <td class="item-name">${item.item_name}</td>
                                 <td><span class="price-box">RM ${parseFloat(item.price).toFixed(2)}</span></td>
                                 <td>${item.category || 'Food'}</td>

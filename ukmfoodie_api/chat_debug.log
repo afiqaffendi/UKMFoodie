@@ -1,0 +1,168 @@
+[2026-06-01 18:58:15] Raw Input Received: {\
+[2026-06-01 18:58:15] Error: Mesej kosong.
+[2026-06-01 18:59:04] Raw Input Received: {"message":"kedai mana best"}
+[2026-06-01 18:59:06] Groq API Response - HTTP Code: 200
+[2026-06-01 18:59:06] Groq API Raw Response: {"id":"chatcmpl-47a9ac22-204f-4feb-ba69-204a392a2472","object":"chat.completion","created":1780333146,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Kedai mana best? Saya rasa Gerai Pak Pendi adalah pilihan yang hebat! Mereka menawarkan Nasi Goreng Ayam Goreng yang sedap dan Nasi Lemak Pedas Cili Padi yang memuaskan. Harganya juga sangat terjangkau, mulai dari RM5.80 hingga RM9.00. Apa kata, cuba Gerai Pak Pendi dan lihat sendiri!\n\nJika anda ingin mencari gerai lain, saya boleh membantu anda. Saya ada senarai menu dan harga dari gerai-gerai lain di UKMFoodie. Berapa jenis makanan yang anda suka?"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.141320063,"prompt_tokens":4771,"prompt_time":0.470879762,"completion_tokens":147,"completion_time":0.798660598,"total_tokens":4918,"total_time":1.26954036},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt21zv02f4try7kwf5wz8f90","seed":835969852},"service_tier":"on_demand"}
+
+[2026-06-01 18:59:06] Success Response sent to app: Kedai mana best? Saya rasa Gerai Pak Pendi adalah pilihan yang hebat! Mereka menawarkan Nasi Goreng Ayam Goreng yang sedap dan Nasi Lemak Pedas Cili Padi yang memuaskan. Harganya juga sangat terjangkau, mulai dari RM5.80 hingga RM9.00. Apa kata, cuba Gerai Pak Pendi dan lihat sendiri!
+
+Jika anda ingin mencari gerai lain, saya boleh membantu anda. Saya ada senarai menu dan harga dari gerai-gerai lain di UKMFoodie. Berapa jenis makanan yang anda suka?
+[2026-06-01 19:02:39] Raw Input Received: {"message":"nak makan"}
+[2026-06-01 19:02:40] Groq API Response - HTTP Code: 200
+[2026-06-01 19:02:40] Groq API Raw Response: {"id":"chatcmpl-f2924262-f6ac-4ab6-816e-92fa7c45b26a","object":"chat.completion","created":1780333360,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Pelajar universiti!\n\nSaya rasa kamu lapar dan nak makan, kan? Saya ada beberapa cadangan makanan yang sedap untuk kamu!\n\nSaya ada beberapa gerai yang menawarkan menu makanan yang sedap dan murah. Berikut adalah beberapa pilihan:\n\n1. Gerai Pak Pendi - Mereka menawarkan Nasi Goreng Ayam Goreng (RM7.30), Nasi Lemak Pedas Cili Padi (RM9.00), dan Nasi Kukus Ayam Crispy Pattaya (RM6.10).\n2. ali cafe - Mereka menawarkan Nasi Goreng Ayam Bakar (RM14.00), Nasi Lemak Kam Heong (RM10.40), dan Nasi Kukus Ayam Masak Merah Kaw-Kaw (RM11.50).\n3. ozil cafe - Mereka menawarkan Nasi Goreng Ayam Crispy (RM8.20), Nasi Lemak Kampung (RM6.20), dan Nasi Kukus Ayam Percik Double Cheese (RM14.30).\n\nMana gerai yang kamu nak pergi, pelajar?"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.121393659,"prompt_tokens":4770,"prompt_time":0.453723562,"completion_tokens":254,"completion_time":0.395443444,"total_tokens":5024,"total_time":0.849167006},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt226cv4f10bcxjjvthkzcd5","seed":523625608},"service_tier":"on_demand"}
+
+[2026-06-01 19:02:40] Success Response sent to app: Pelajar universiti!
+
+Saya rasa kamu lapar dan nak makan, kan? Saya ada beberapa cadangan makanan yang sedap untuk kamu!
+
+Saya ada beberapa gerai yang menawarkan menu makanan yang sedap dan murah. Berikut adalah beberapa pilihan:
+
+1. Gerai Pak Pendi - Mereka menawarkan Nasi Goreng Ayam Goreng (RM7.30), Nasi Lemak Pedas Cili Padi (RM9.00), dan Nasi Kukus Ayam Crispy Pattaya (RM6.10).
+2. ali cafe - Mereka menawarkan Nasi Goreng Ayam Bakar (RM14.00), Nasi Lemak Kam Heong (RM10.40), dan Nasi Kukus Ayam Masak Merah Kaw-Kaw (RM11.50).
+3. ozil cafe - Mereka menawarkan Nasi Goreng Ayam Crispy (RM8.20), Nasi Lemak Kampung (RM6.20), dan Nasi Kukus Ayam Percik Double Cheese (RM14.30).
+
+Mana gerai yang kamu nak pergi, pelajar?
+[2026-06-01 19:03:02] Raw Input Received: {"message":"ada berapa gerai kat sini"}
+[2026-06-01 19:03:02] Groq API Response - HTTP Code: 429
+[2026-06-01 19:03:02] Groq API Raw Response: {"error":{"message":"Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krdcd2d5f198nr7pk3w1v9c3` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Used 3233, Requested 5029. Please try again in 22.62s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing","type":"tokens","code":"rate_limit_exceeded"}}
+
+[2026-06-01 19:03:02] Error Response: HTTP 429. Raw: {"error":{"message":"Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krdcd2d5f198nr7pk3w1v9c3` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Used 3233, Requested 5029. Please try again in 22.62s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing","type":"tokens","code":"rate_limit_exceeded"}}
+
+[2026-06-01 19:03:08] Raw Input Received: {"message":"nak makan la"}
+[2026-06-01 19:03:09] Groq API Response - HTTP Code: 429
+[2026-06-01 19:03:09] Groq API Raw Response: {"error":{"message":"Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krdcd2d5f198nr7pk3w1v9c3` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Used 2593, Requested 5271. Please try again in 18.64s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing","type":"tokens","code":"rate_limit_exceeded"}}
+
+[2026-06-01 19:03:09] Error Response: HTTP 429. Raw: {"error":{"message":"Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krdcd2d5f198nr7pk3w1v9c3` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Used 2593, Requested 5271. Please try again in 18.64s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing","type":"tokens","code":"rate_limit_exceeded"}}
+
+[2026-06-01 19:03:14] Raw Input Received: {"message":"eh kenapa ni"}
+[2026-06-01 19:03:14] Groq API Response - HTTP Code: 429
+[2026-06-01 19:03:14] Groq API Raw Response: {"error":{"message":"Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krdcd2d5f198nr7pk3w1v9c3` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Used 2058, Requested 4918. Please try again in 9.76s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing","type":"tokens","code":"rate_limit_exceeded"}}
+
+[2026-06-01 19:03:14] Error Response: HTTP 429. Raw: {"error":{"message":"Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krdcd2d5f198nr7pk3w1v9c3` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Used 2058, Requested 4918. Please try again in 9.76s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing","type":"tokens","code":"rate_limit_exceeded"}}
+
+[2026-06-01 19:04:20] Raw Input Received: {"message":"kedai mana best"}
+[2026-06-01 19:04:22] Groq API Response - HTTP Code: 200
+[2026-06-01 19:04:22] Groq API Raw Response: {"id":"chatcmpl-d5334688-1b1a-4e71-8d4f-785f49924581","object":"chat.completion","created":1780333462,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Kedai mana best? Saya ada beberapa gerai yang popular di UKMFoodie! \n\nPort Ahmad Best mempunyai menu Nasi Goreng Daging Salai yang sangat sedap, dengan harga RM13.60. Atau, jika kamu suka nasi lemak, Port Ahmad Best juga mempunyai Nasi Lemak Kaw-Kaw yang murah, hanya RM13.40.\n\nJika kamu suka makanan yang lebih ringan, Restoran Aiman Legend mempunyai Nasi Lemak Teriyaki yang hanya RM5.00. Atau, kamu juga boleh mencuba Nasi Goreng Daging Blackpepper yang sedap, dengan harga RM12.00.\n\nMana yang paling best untuk kamu?"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.317448683,"prompt_tokens":1310,"prompt_time":0.250111133,"completion_tokens":160,"completion_time":0.361163816,"total_tokens":1470,"total_time":0.611274949},"usage_breakdown":null,"system_fingerprint":"fp_03e8423237","x_groq":{"id":"req_01kt229fzye9zavet322s3e3jn","seed":1281267698},"service_tier":"on_demand"}
+
+[2026-06-01 19:04:22] Success Response sent to app: Kedai mana best? Saya ada beberapa gerai yang popular di UKMFoodie! 
+
+Port Ahmad Best mempunyai menu Nasi Goreng Daging Salai yang sangat sedap, dengan harga RM13.60. Atau, jika kamu suka nasi lemak, Port Ahmad Best juga mempunyai Nasi Lemak Kaw-Kaw yang murah, hanya RM13.40.
+
+Jika kamu suka makanan yang lebih ringan, Restoran Aiman Legend mempunyai Nasi Lemak Teriyaki yang hanya RM5.00. Atau, kamu juga boleh mencuba Nasi Goreng Daging Blackpepper yang sedap, dengan harga RM12.00.
+
+Mana yang paling best untuk kamu?
+[2026-06-01 19:11:12] Raw Input Received: {"message":"hai"}
+[2026-06-01 19:11:13] Groq API Response - HTTP Code: 200
+[2026-06-01 19:11:13] Groq API Raw Response: {"id":"chatcmpl-ae101da3-d957-490b-9b97-68cd09708b3b","object":"chat.completion","created":1780333873,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Hai! Saya Pembantu AI UKMFoodie. Bagaimana saya boleh membantu anda hari ini?"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.111632587,"prompt_tokens":1304,"prompt_time":0.115241982,"completion_tokens":26,"completion_time":0.039404561,"total_tokens":1330,"total_time":0.154646543},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt22p1s3fpg8br46cys4hx0t","seed":1857901052},"service_tier":"on_demand"}
+
+[2026-06-01 19:11:13] Success Response sent to app: Hai! Saya Pembantu AI UKMFoodie. Bagaimana saya boleh membantu anda hari ini?
+[2026-06-01 19:11:19] Raw Input Received: {"message":"nak makan nasi"}
+[2026-06-01 19:11:20] Groq API Response - HTTP Code: 200
+[2026-06-01 19:11:20] Groq API Raw Response: {"id":"chatcmpl-c957fb6a-1a0c-468f-a15f-c0b12989d26a","object":"chat.completion","created":1780333880,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Nasi memang satu pilihan yang sangat baik! Di UKMFoodie, ada beberapa gerai yang menawarkan nasi sebagai menu utama. \n\nGerai Santai Zikri Viral, Warung Dinesh Legend, Dapur Hakim Sedap, Kiosk Jamal Maju, Restoran Borhan Legend, Kiosk Faisal Legend, Port Syahirah Maju, dan Kiosk Farhan Berkat semua menawarkan pilihan nasi yang sedap. \n\nTapi, jika kamu ingin tahu menu nasi yang paling sedap di setiap gerai, saya sarankan kamu untuk melawat skrin gerai tersebut secara terus di dalam aplikasi UKMFoodie. Kamu boleh melihat senarai menu lengkap yang ditawarkan oleh setiap gerai!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.163988339,"prompt_tokens":1234,"prompt_time":0.099960878,"completion_tokens":172,"completion_time":0.229837726,"total_tokens":1406,"total_time":0.329798604},"usage_breakdown":null,"system_fingerprint":"fp_7ccc667439","x_groq":{"id":"req_01kt22p8n9fg9tz51etchnb1fs","seed":1454202572},"service_tier":"on_demand"}
+
+[2026-06-01 19:11:20] Success Response sent to app: Nasi memang satu pilihan yang sangat baik! Di UKMFoodie, ada beberapa gerai yang menawarkan nasi sebagai menu utama. 
+
+Gerai Santai Zikri Viral, Warung Dinesh Legend, Dapur Hakim Sedap, Kiosk Jamal Maju, Restoran Borhan Legend, Kiosk Faisal Legend, Port Syahirah Maju, dan Kiosk Farhan Berkat semua menawarkan pilihan nasi yang sedap. 
+
+Tapi, jika kamu ingin tahu menu nasi yang paling sedap di setiap gerai, saya sarankan kamu untuk melawat skrin gerai tersebut secara terus di dalam aplikasi UKMFoodie. Kamu boleh melihat senarai menu lengkap yang ditawarkan oleh setiap gerai!
+[2026-06-01 19:11:38] Raw Input Received: {"message":"nak nasi ayam ada?"}
+[2026-06-01 19:11:38] Groq API Response - HTTP Code: 200
+[2026-06-01 19:11:38] Groq API Raw Response: {"id":"chatcmpl-7f794409-70e1-4088-a5d0-43523a4615c3","object":"chat.completion","created":1780333898,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Maaf, saya tidak dapati nasi ayam dalam senarai menu yang saya ada. Anda boleh cuba melawat skrin gerai Port Amin Viral secara terus di dalam aplikasi UKMFoodie untuk melihat senarai menu lengkap yang ditawarkan!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.049674375,"prompt_tokens":1277,"prompt_time":0.144963227,"completion_tokens":63,"completion_time":0.089291102,"total_tokens":1340,"total_time":0.234254329},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt22ptr2eyxta2bgpxwxm4f3","seed":1846113856},"service_tier":"on_demand"}
+
+[2026-06-01 19:11:38] Success Response sent to app: Maaf, saya tidak dapati nasi ayam dalam senarai menu yang saya ada. Anda boleh cuba melawat skrin gerai Port Amin Viral secara terus di dalam aplikasi UKMFoodie untuk melihat senarai menu lengkap yang ditawarkan!
+[2026-06-01 19:11:53] Raw Input Received: {"message":"nasi kerabu ada?"}
+[2026-06-01 19:11:54] Groq API Response - HTTP Code: 200
+[2026-06-01 19:11:54] Groq API Raw Response: {"id":"chatcmpl-24e82b5e-3811-4820-a199-af3e40bb7518","object":"chat.completion","created":1780333914,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Maaf, saya tidak dapat menemukan menu Nasi Kerabu di dalam senarai gerai dan menu yang saya ada. Anda boleh cuba melawat skrin gerai Dapur Haziq Viral, Kedai Makan Zaim Best, Warung Syuhada Viral, Santai Balkis Best, Restoran Batrisyia Bunda, Santai Badrul Ceria, Santai Zikri Viral, atau Warung Syed Maju secara terus di dalam aplikasi UKMFoodie untuk melihat senarai menu lengkap yang ditawarkan!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.066702424,"prompt_tokens":1254,"prompt_time":0.224546124,"completion_tokens":129,"completion_time":0.246594741,"total_tokens":1383,"total_time":0.471140865},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt22q9cbfs28a5zzdvhpk8je","seed":880569245},"service_tier":"on_demand"}
+
+[2026-06-01 19:11:54] Success Response sent to app: Maaf, saya tidak dapat menemukan menu Nasi Kerabu di dalam senarai gerai dan menu yang saya ada. Anda boleh cuba melawat skrin gerai Dapur Haziq Viral, Kedai Makan Zaim Best, Warung Syuhada Viral, Santai Balkis Best, Restoran Batrisyia Bunda, Santai Badrul Ceria, Santai Zikri Viral, atau Warung Syed Maju secara terus di dalam aplikasi UKMFoodie untuk melihat senarai menu lengkap yang ditawarkan!
+[2026-06-01 19:12:10] Raw Input Received: {"message":"gerai apa je yang bukak sekarang eh"}
+[2026-06-01 19:12:11] Groq API Response - HTTP Code: 200
+[2026-06-01 19:12:11] Groq API Raw Response: {"id":"chatcmpl-8d425ef7-8d73-42ce-a925-d70fc6e00f35","object":"chat.completion","created":1780333931,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Saya rasa kamu mahu tahu gerai mana yang buka sekarang! Berdasarkan data real-time yang saya ada, saya tidak dapat melihat maklumat tentang gerai mana yang buka atau tutup. Namun, saya boleh cadangkan kamu untuk melawat skrin gerai tersebut secara terus di dalam aplikasi UKMFoodie untuk melihat senarai menu lengkap yang ditawarkan!\n\nJika kamu ingin tahu tentang gerai mana yang popular atau paling banyak dipilih, saya boleh membantu kamu dengan senarai gerai yang ada di UKMFoodie. Contohnya, ada gerai seperti Warung Syed Maju, Port Jufri Viral, Kiosk Faisal Legend, Kiosk Bukhari Viral, Dapur Bilal Kita, Dapur Bakar Best, Bistro Iqbal Maju, dan Santai Arif Maju.\n\nMana yang kamu mahu tahu lebih lanjut?"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.049947357,"prompt_tokens":1285,"prompt_time":0.131796461,"completion_tokens":207,"completion_time":0.36696365,"total_tokens":1492,"total_time":0.498760111},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt22qtsnfkja13zth1c7d1x0","seed":1864714984},"service_tier":"on_demand"}
+
+[2026-06-01 19:12:11] Success Response sent to app: Saya rasa kamu mahu tahu gerai mana yang buka sekarang! Berdasarkan data real-time yang saya ada, saya tidak dapat melihat maklumat tentang gerai mana yang buka atau tutup. Namun, saya boleh cadangkan kamu untuk melawat skrin gerai tersebut secara terus di dalam aplikasi UKMFoodie untuk melihat senarai menu lengkap yang ditawarkan!
+
+Jika kamu ingin tahu tentang gerai mana yang popular atau paling banyak dipilih, saya boleh membantu kamu dengan senarai gerai yang ada di UKMFoodie. Contohnya, ada gerai seperti Warung Syed Maju, Port Jufri Viral, Kiosk Faisal Legend, Kiosk Bukhari Viral, Dapur Bilal Kita, Dapur Bakar Best, Bistro Iqbal Maju, dan Santai Arif Maju.
+
+Mana yang kamu mahu tahu lebih lanjut?
+[2026-06-01 19:12:37] Raw Input Received: {"message":"siapa saya"}
+[2026-06-01 19:12:38] Groq API Response - HTTP Code: 200
+[2026-06-01 19:12:38] Groq API Raw Response: {"id":"chatcmpl-76fed853-34ff-474f-8a37-7c740dbddba0","object":"chat.completion","created":1780333958,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Maaf, saya tidak dapat mengenali identiti anda secara langsung. Namun, saya dapat membantu menjawab soalan-soalan berkaitan UKMFoodie dan menu makanan/minuman yang ditawarkan oleh gerai-gerai di UKM. Sila tanyakan apa-apa soalan yang ingin anda tahu!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.124576875,"prompt_tokens":1267,"prompt_time":0.181777949,"completion_tokens":75,"completion_time":0.417109436,"total_tokens":1342,"total_time":0.598887385},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt22rmqcf2e85x0kkwaep156","seed":2129086374},"service_tier":"on_demand"}
+
+[2026-06-01 19:12:38] Success Response sent to app: Maaf, saya tidak dapat mengenali identiti anda secara langsung. Namun, saya dapat membantu menjawab soalan-soalan berkaitan UKMFoodie dan menu makanan/minuman yang ditawarkan oleh gerai-gerai di UKM. Sila tanyakan apa-apa soalan yang ingin anda tahu!
+[2026-06-01 19:12:45] Raw Input Received: {"message":"siapa awak?"}
+[2026-06-01 19:12:46] Groq API Response - HTTP Code: 200
+[2026-06-01 19:12:46] Groq API Raw Response: {"id":"chatcmpl-d39b04a2-167b-4017-941e-aa5fea996fec","object":"chat.completion","created":1780333966,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Saya adalah Pembantu AI UKMFoodie, sebuah aplikasi pesanan makanan khas untuk pelajar Universiti Kebangsaan Malaysia (UKM). Saya di sini untuk membantu menjawab soalan-soalan berkaitan menu, gerai, harga, dan sebarang urusan berkaitan aplikasi UKMFoodie."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.265868862,"prompt_tokens":1274,"prompt_time":0.189051863,"completion_tokens":77,"completion_time":0.109476927,"total_tokens":1351,"total_time":0.29852879},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt22rw57f2saa2rsnasm5c3t","seed":1513317546},"service_tier":"on_demand"}
+
+[2026-06-01 19:12:46] Success Response sent to app: Saya adalah Pembantu AI UKMFoodie, sebuah aplikasi pesanan makanan khas untuk pelajar Universiti Kebangsaan Malaysia (UKM). Saya di sini untuk membantu menjawab soalan-soalan berkaitan menu, gerai, harga, dan sebarang urusan berkaitan aplikasi UKMFoodie.
+[2026-06-01 19:12:56] Raw Input Received: {"message":"nak minum"}
+[2026-06-01 19:12:57] Groq API Response - HTTP Code: 200
+[2026-06-01 19:12:57] Groq API Raw Response: {"id":"chatcmpl-d03a39df-0d11-4880-8c07-41844ee47a9d","object":"chat.completion","created":1780333977,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Saya rasa anda ingin tahu tentang minuman yang ada di UKMFoodie. \n\nSenarai minuman yang ada di UKMFoodie tidak disebutkan secara terperinci di atas, tetapi saya boleh memberitahu anda bahawa setiap gerai mungkin menawarkan minuman yang berbeza-beza. \n\nAnda boleh melawat skrin gerai tersebut secara terus di dalam aplikasi UKMFoodie untuk melihat senarai minuman lengkap yang ditawarkan!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.165148051,"prompt_tokens":1283,"prompt_time":0.101213642,"completion_tokens":113,"completion_time":0.16295268,"total_tokens":1396,"total_time":0.264166322},"usage_breakdown":null,"system_fingerprint":"fp_7ccc667439","x_groq":{"id":"req_01kt22s7cbf3dtrm0d80wxzx4r","seed":1403592532},"service_tier":"on_demand"}
+
+[2026-06-01 19:12:57] Success Response sent to app: Saya rasa anda ingin tahu tentang minuman yang ada di UKMFoodie. 
+
+Senarai minuman yang ada di UKMFoodie tidak disebutkan secara terperinci di atas, tetapi saya boleh memberitahu anda bahawa setiap gerai mungkin menawarkan minuman yang berbeza-beza. 
+
+Anda boleh melawat skrin gerai tersebut secara terus di dalam aplikasi UKMFoodie untuk melihat senarai minuman lengkap yang ditawarkan!
+[2026-06-01 19:13:19] Raw Input Received: {"message":"semalam saya dah makan nasi harini nak makan apa eh"}
+[2026-06-01 19:13:21] Groq API Response - HTTP Code: 200
+[2026-06-01 19:13:21] Groq API Raw Response: {"id":"chatcmpl-74a8c608-7ddf-4593-9245-7720fdaf3a69","object":"chat.completion","created":1780334001,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Saya faham! Anda lapar dan ingin tahu apa yang boleh dimakan hari ini. Saya ada beberapa cadangan untuk anda!\n\nSaya lihat ada beberapa gerai yang menawarkan menu yang sedap di UKMFoodie. Apakah anda suka makanan Melayu atau Barat? Atau mungkin anda ingin cuba sesuatu yang baru?\n\nSaya ada beberapa pilihan untuk anda:\n\n1. Nasi Goreng Udang Galah dari Selera Amir Sedap (RM13.40)\n2. Nasi Lemak Crispy dari Selera Amir Sedap (RM13.70)\n3. Nasi Kukus Sotong Sumbat Kampung dari Selera Amir Sedap (RM14.10)\n\nAtau, jika anda ingin cuba sesuatu yang lain, saya boleh bantu anda cari gerai lain yang menawarkan menu yang sedap!\n\nApa yang anda suka?"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.10523024,"prompt_tokens":1291,"prompt_time":0.511361646,"completion_tokens":203,"completion_time":0.905848643,"total_tokens":1494,"total_time":1.417210289},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt22sxztf4qastaxjn8h5htj","seed":178575368},"service_tier":"on_demand"}
+
+[2026-06-01 19:13:21] Success Response sent to app: Saya faham! Anda lapar dan ingin tahu apa yang boleh dimakan hari ini. Saya ada beberapa cadangan untuk anda!
+
+Saya lihat ada beberapa gerai yang menawarkan menu yang sedap di UKMFoodie. Apakah anda suka makanan Melayu atau Barat? Atau mungkin anda ingin cuba sesuatu yang baru?
+
+Saya ada beberapa pilihan untuk anda:
+
+1. Nasi Goreng Udang Galah dari Selera Amir Sedap (RM13.40)
+2. Nasi Lemak Crispy dari Selera Amir Sedap (RM13.70)
+3. Nasi Kukus Sotong Sumbat Kampung dari Selera Amir Sedap (RM14.10)
+
+Atau, jika anda ingin cuba sesuatu yang lain, saya boleh bantu anda cari gerai lain yang menawarkan menu yang sedap!
+
+Apa yang anda suka?
+[2026-06-01 19:13:40] Raw Input Received: {"message":"makanan apa yang paling murah sekali"}
+[2026-06-01 19:13:41] Groq API Response - HTTP Code: 200
+[2026-06-01 19:13:41] Groq API Raw Response: {"id":"chatcmpl-a3aefd04-1603-410c-b17d-ce3868fb508a","object":"chat.completion","created":1780334021,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Saya lihat ada beberapa pilihan makanan yang murah di UKMFoodie. Berdasarkan data real-time yang saya ada, makanan yang paling murah sekali adalah Nasi Kukus Udang Galah Pedas Cili Padi dari Gerai Port Ahmad Best dengan harga RM6.40."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.159045157,"prompt_tokens":1295,"prompt_time":0.077778361,"completion_tokens":70,"completion_time":0.132463756,"total_tokens":1365,"total_time":0.210242117},"usage_breakdown":null,"system_fingerprint":"fp_7ccc667439","x_groq":{"id":"req_01kt22tj3vfz6v5nzr1t2c8xhn","seed":1628929118},"service_tier":"on_demand"}
+
+[2026-06-01 19:13:41] Success Response sent to app: Saya lihat ada beberapa pilihan makanan yang murah di UKMFoodie. Berdasarkan data real-time yang saya ada, makanan yang paling murah sekali adalah Nasi Kukus Udang Galah Pedas Cili Padi dari Gerai Port Ahmad Best dengan harga RM6.40.
+[2026-06-01 19:13:53] Raw Input Received: {"message":"yang rm 2 ada tak"}
+[2026-06-01 19:13:54] Groq API Response - HTTP Code: 200
+[2026-06-01 19:13:54] Groq API Raw Response: {"id":"chatcmpl-e72a3d61-f7c7-47b9-a273-6eb1e836e038","object":"chat.completion","created":1780334034,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Maaf, saya tidak menemukan menu dengan harga RM2 di dalam senarai DATA SEMASA yang diberikan. Anda boleh mencari gerai tersebut secara terus di dalam aplikasi UKMFoodie untuk melihat senarai menu lengkap yang ditawarkan!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.077556569,"prompt_tokens":1239,"prompt_time":0.08633272,"completion_tokens":60,"completion_time":0.164704988,"total_tokens":1299,"total_time":0.251037708},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt22tysgfzv8483sgdxb4dm1","seed":1047503828},"service_tier":"on_demand"}
+
+[2026-06-01 19:13:54] Success Response sent to app: Maaf, saya tidak menemukan menu dengan harga RM2 di dalam senarai DATA SEMASA yang diberikan. Anda boleh mencari gerai tersebut secara terus di dalam aplikasi UKMFoodie untuk melihat senarai menu lengkap yang ditawarkan!
+[2026-06-01 19:14:08] Raw Input Received: {"message":"okay terima kasih"}
+[2026-06-01 19:14:09] Groq API Response - HTTP Code: 200
+[2026-06-01 19:14:09] Groq API Raw Response: {"id":"chatcmpl-805a8a00-0a3b-4139-ba1d-46d422620db4","object":"chat.completion","created":1780334049,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Saya siap membantu menjawab soalan-soalan berkaitan UKMFoodie. Sila tanyakan apa sahaja!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.222585129,"prompt_tokens":1274,"prompt_time":0.099252879,"completion_tokens":31,"completion_time":0.214478171,"total_tokens":1305,"total_time":0.31373105},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt22vdvwe0ravdmhbky2sdg5","seed":1259866390},"service_tier":"on_demand"}
+
+[2026-06-01 19:14:09] Success Response sent to app: Saya siap membantu menjawab soalan-soalan berkaitan UKMFoodie. Sila tanyakan apa sahaja!
+[2026-06-01 19:14:16] Raw Input Received: {"message":"tiber"}
+[2026-06-01 19:14:17] Groq API Response - HTTP Code: 200
+[2026-06-01 19:14:17] Groq API Raw Response: {"id":"chatcmpl-0c7b937f-3f5a-487d-9be1-6f552283e9da","object":"chat.completion","created":1780334057,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Maaf, saya tidak faham apa yang dimaksudkan dengan \"tiber\". Saya adalah Pembantu AI UKMFoodie, dan saya hanya boleh membantu menjawab persoalan berkaitan menu, gerai, atau aplikasi UKMFoodie. Sila beritahu saya apa yang kamu cari atau tanya!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.062335372,"prompt_tokens":1270,"prompt_time":0.087012669,"completion_tokens":74,"completion_time":0.098508736,"total_tokens":1344,"total_time":0.185521405},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt22vndbf7nsgw71gwqbpgss","seed":1356300567},"service_tier":"on_demand"}
+
+[2026-06-01 19:14:17] Success Response sent to app: Maaf, saya tidak faham apa yang dimaksudkan dengan "tiber". Saya adalah Pembantu AI UKMFoodie, dan saya hanya boleh membantu menjawab persoalan berkaitan menu, gerai, atau aplikasi UKMFoodie. Sila beritahu saya apa yang kamu cari atau tanya!
+[2026-06-01 19:14:30] Raw Input Received: {"message":"i know who you are"}
+[2026-06-01 19:14:30] Groq API Response - HTTP Code: 200
+[2026-06-01 19:14:30] Groq API Raw Response: {"id":"chatcmpl-644b4e2f-7871-4380-bcce-c63a63059808","object":"chat.completion","created":1780334070,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Maaf, saya tidak faham maksud anda. Saya adalah Pembantu AI UKMFoodie, dan saya di sini untuk membantu menjawab soalan-soalan berkaitan menu, gerai, atau aplikasi UKMFoodie. Jika anda mempunyai soalan atau keperluan, sila beritahu saya!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.052671147,"prompt_tokens":1300,"prompt_time":0.086421294,"completion_tokens":77,"completion_time":0.124635077,"total_tokens":1377,"total_time":0.211056371},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt22w2phf8pb2byygnva2r76","seed":2103123378},"service_tier":"on_demand"}
+
+[2026-06-01 19:14:30] Success Response sent to app: Maaf, saya tidak faham maksud anda. Saya adalah Pembantu AI UKMFoodie, dan saya di sini untuk membantu menjawab soalan-soalan berkaitan menu, gerai, atau aplikasi UKMFoodie. Jika anda mempunyai soalan atau keperluan, sila beritahu saya!
+[2026-06-01 19:14:41] Raw Input Received: {"message":"i want to eat"}
+[2026-06-01 19:14:41] Groq API Response - HTTP Code: 200
+[2026-06-01 19:14:41] Groq API Raw Response: {"id":"chatcmpl-06bb16eb-6847-40b0-932d-46e824d087f2","object":"chat.completion","created":1780334081,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Saya faham! Anda lapar dan ingin makan, kan? Saya boleh membantu anda mencari gerai atau menu yang sesuai dengan selera anda.\n\nSaya ada beberapa gerai yang popular di UKMFoodie, seperti Dapur Zul Sedap, Restoran Aiman Legend, Santai Arif Maju, dan lain-lain. Mereka menawarkan pelbagai jenis makanan, dari nasi goreng hingga nasi lemak.\n\nApa jenis makanan yang anda suka? Nasi goreng, nasi lemak, atau makanan lain?"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.164386022,"prompt_tokens":1315,"prompt_time":0.106483556,"completion_tokens":130,"completion_time":0.208958182,"total_tokens":1445,"total_time":0.315441738},"usage_breakdown":null,"system_fingerprint":"fp_7ccc667439","x_groq":{"id":"req_01kt22wdbae2q88cm1g0a8q2be","seed":20374964},"service_tier":"on_demand"}
+
+[2026-06-01 19:14:41] Success Response sent to app: Saya faham! Anda lapar dan ingin makan, kan? Saya boleh membantu anda mencari gerai atau menu yang sesuai dengan selera anda.
+
+Saya ada beberapa gerai yang popular di UKMFoodie, seperti Dapur Zul Sedap, Restoran Aiman Legend, Santai Arif Maju, dan lain-lain. Mereka menawarkan pelbagai jenis makanan, dari nasi goreng hingga nasi lemak.
+
+Apa jenis makanan yang anda suka? Nasi goreng, nasi lemak, atau makanan lain?
+[2026-06-01 19:14:56] Raw Input Received: {"message":"please speak english i dont understand you"}
+[2026-06-01 19:14:57] Groq API Response - HTTP Code: 200
+[2026-06-01 19:14:57] Groq API Raw Response: {"id":"chatcmpl-74eb99d1-6aed-4bfa-807a-6aa6a151d45c","object":"chat.completion","created":1780334097,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"I'll communicate with you in English from now on.\n\nHow can I assist you with UKMFoodie today? Do you have any questions about the stalls, menus, or the application?"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.154311474,"prompt_tokens":1292,"prompt_time":0.346256201,"completion_tokens":39,"completion_time":0.141875769,"total_tokens":1331,"total_time":0.48813197},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt22ww14fact31bqfmq9ec8y","seed":1867214886},"service_tier":"on_demand"}
+
+[2026-06-01 19:14:57] Success Response sent to app: I'll communicate with you in English from now on.
+
+How can I assist you with UKMFoodie today? Do you have any questions about the stalls, menus, or the application?
+[2026-06-01 19:15:04] Raw Input Received: {"message":"lessgooo"}
+[2026-06-01 19:15:05] Groq API Response - HTTP Code: 200
+[2026-06-01 19:15:05] Groq API Raw Response: {"id":"chatcmpl-cf453adf-5d6f-4f17-9243-b93413bd8f82","object":"chat.completion","created":1780334105,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Maaf, saya tidak faham apa yang anda maksudkan dengan \"lessgooo\". Saya adalah Pembantu AI UKMFoodie, dan saya di sini untuk membantu menjawab soalan-soalan berkaitan menu, gerai, atau aplikasi UKMFoodie. Sila ajukan soalan yang lebih jelas, dan saya akan berusaha membantu!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.056543959,"prompt_tokens":1272,"prompt_time":0.251382984,"completion_tokens":82,"completion_time":0.329037279,"total_tokens":1354,"total_time":0.580420263},"usage_breakdown":null,"system_fingerprint":"fp_4387d3edbb","x_groq":{"id":"req_01kt22x4f8fatsfkf16r2jh5ng","seed":1411534867},"service_tier":"on_demand"}
+
+[2026-06-01 19:15:05] Success Response sent to app: Maaf, saya tidak faham apa yang anda maksudkan dengan "lessgooo". Saya adalah Pembantu AI UKMFoodie, dan saya di sini untuk membantu menjawab soalan-soalan berkaitan menu, gerai, atau aplikasi UKMFoodie. Sila ajukan soalan yang lebih jelas, dan saya akan berusaha membantu!
